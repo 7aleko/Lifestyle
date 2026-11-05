@@ -2,8 +2,8 @@
 <html lang="en" class="h-full bg-appBg sm:bg-slate-950">
 <head>
     <meta charset="UTF-8">
-    <!-- viewport-fit=cover makes env(safe-area-inset-*) real values (they're 0px without it). Zoom stays enabled for accessibility; input zoom is fixed via 16px inputs instead. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+    <!-- Mobile viewport configured with zoom locked per app requirement -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     <meta name="theme-color" content="#F3F4F6">
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F4F6">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#F3F4F6">
@@ -428,93 +428,105 @@
             animation: fillProgress 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* ================= INSTAGRAM FLOATING FROSTED GLASS BAR & APPLE BEZIER PHYSICS ================= */
+        /* ================= APPLE FITNESS & GLISSE FLOATING LIQUID GLASS BAR ================= */
         .nav-bar {
-            transition: transform 0.45s var(--ease-drawer), 
-                        opacity 0.35s var(--ease-drawer);
-            will-change: transform, opacity;
-        }
-        .nav-bar.shrunk {
-            transform: translateY(6px) scale(0.92);
-            opacity: 0.82;
+            /* Hero card gradient: deep midnight emerald-to-black, dark & partially see-through */
+            background: 
+                radial-gradient(ellipse 70% 90% at 15% 0%, rgba(16, 185, 129, 0.10) 0%, transparent 60%),
+                linear-gradient(135deg, rgba(2, 26, 17, 0.84) 0%, rgba(4, 16, 11, 0.85) 45%, rgba(2, 4, 10, 0.88) 100%);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 
+                inset 0 1.2px 1px 0 rgba(255, 255, 255, 0.28),
+                inset 0 -1px 1px 0 rgba(0, 0, 0, 0.6),
+                0 20px 48px -6px rgba(0, 0, 0, 0.75),
+                0 4px 16px -2px rgba(0, 0, 0, 0.4);
+            will-change: transform;
         }
 
         /* Tactile pop on navbar when tab is clicked */
         @keyframes navPop {
             0% { transform: scale(1); }
-            35% { transform: scale(1.025); }
+            35% { transform: scale(1.02); }
             100% { transform: scale(1); }
         }
         .nav-pop-active {
-            animation: navPop 0.35s var(--ease-spring);
+            animation: navPop 0.3s var(--ease-spring);
         }
 
         .nav-bar button {
-            transition: transform 0.35s var(--ease-spring), 
+            transition: transform 0.25s var(--ease-spring), 
                         color 0.2s ease,
                         opacity 0.2s ease;
         }
         /* Instant press-down feedback (fires on touch-down, not release) */
         .nav-bar button:active {
-            transform: scale(0.88) !important;
-            opacity: 0.8 !important;
+            transform: scale(0.92) !important;
+            opacity: 0.85 !important;
             transition-duration: 0.08s !important;
         }
 
-        /* Instagram Frosted Glass Pill Base Styles */
+        /* Apple Fitness + Glisse Optical Specular Pill Indicator */
         .nav-pill-indicator {
             position: absolute;
-            top: 6px;
-            bottom: 6px;
+            top: 5px;
+            bottom: 5px;
             left: 0;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.14);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            border-radius: 9999px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            box-shadow: 
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.45),
+                inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3),
+                0 4px 14px -1px rgba(0, 0, 0, 0.35);
             pointer-events: none;
             z-index: 0;
 
             /* Apple signature sheet curve: snappy start, long settle */
-            transition: transform 0.45s var(--ease-drawer), 
-                        width 0.45s var(--ease-drawer),
-                        opacity 0.3s ease;
+            transition: transform 0.42s var(--ease-drawer), 
+                        width 0.42s var(--ease-drawer),
+                        opacity 0.25s ease;
             will-change: transform, width;
         }
 
-        /* Luminous Lime Color Flash on Click (DOES NOT TOUCH TRANSFORM TO PRESERVE BEZIER CURVE) */
+        /* Luminous Lime Color Flash on Click */
         @keyframes pillColorBurst {
             0% {
-                background: rgba(210, 248, 24, 0.38);
-                border-color: rgba(210, 248, 24, 0.85);
-                box-shadow: 0 0 25px rgba(210, 248, 24, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+                background: linear-gradient(180deg, rgba(210, 248, 24, 0.32) 0%, rgba(210, 248, 24, 0.12) 100%);
+                border-color: rgba(210, 248, 24, 0.7);
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 0 20px rgba(210, 248, 24, 0.45);
             }
             100% {
-                background: rgba(255, 255, 255, 0.14);
-                border-color: rgba(255, 255, 255, 0.28);
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%);
+                border-color: rgba(255, 255, 255, 0.24);
+                box-shadow: 
+                    inset 0 1px 1px 0 rgba(255, 255, 255, 0.45),
+                    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3),
+                    0 4px 14px -1px rgba(0, 0, 0, 0.35);
             }
         }
         .pill-flash {
-            animation: pillColorBurst 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: pillColorBurst 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         /* Finger-tracking: near 1:1 while dragging, pill swells under the finger */
         .nav-bar.is-dragging .nav-pill-indicator {
             transition: transform 0.06s linear, width 0.15s var(--ease-out), background 0.2s ease, box-shadow 0.2s ease !important;
-            background: rgba(255, 255, 255, 0.24);
-            box-shadow: 0 8px 30px rgba(210, 248, 24, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.12) 100%);
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), 0 8px 24px rgba(0, 0, 0, 0.45);
         }
 
         /* Icon Micro-Burst & Lime Glow */
         @keyframes iconBurst {
             0% { transform: scale(1); }
-            40% { transform: scale(1.3) translateY(-2px); filter: drop-shadow(0 0 18px rgba(210, 248, 24, 1)); color: #CCFF00; }
-            100% { transform: scale(1.14); filter: drop-shadow(0 0 10px rgba(210, 248, 24, 0.6)); color: #CCFF00; }
+            40% { transform: scale(1.25) translateY(-1.5px); filter: drop-shadow(0 0 14px rgba(210, 248, 24, 0.9)); color: #CCFF00; }
+            100% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(210, 248, 24, 0.5)); color: #CCFF00; }
         }
         .icon-burst {
-            animation: iconBurst 0.4s var(--ease-spring) forwards !important;
+            animation: iconBurst 0.38s var(--ease-spring) forwards !important;
         }
 
         /* Label Pop */
@@ -606,6 +618,17 @@
 
         #app-container.drawer-open #drawer-dismiss-overlay {
             display: block !important;
+        }
+
+        /* ================= APPLE SHEET RECEDING STAGE (VAUL / IOS FLUID DEPTH) ================= */
+        #app-container.modal-active {
+            background: #000000 !important;
+        }
+        #app-container.modal-active #app-side-drawer,
+        #app-container.modal-active #drawer-layer-card {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
 
         .drawer-nav-item {
@@ -738,27 +761,27 @@
     <div id="drawer-layer-card" class="absolute inset-0 bg-emerald-500/[0.12] backdrop-blur-2xl rounded-[32px] border border-emerald-400/30 shadow-2xl pointer-events-none z-10 opacity-0" style="transform: translate3d(0,0,0) scale(1);"></div>
 
     <!-- Main Screen Content Stage (Transforms in 3D when drawer opens) -->
-    <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30 pt-[env(safe-area-inset-top,0px)] sm:pt-6 pb-[env(safe-area-inset-bottom,0px)]">
+    <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30 pb-[env(safe-area-inset-bottom,0px)]">
 
-        <!-- iOS Top Bar -->
-        <div class="bg-appBg pt-2 px-6 pb-2 shrink-0 z-20">
-            <div class="flex justify-between items-center py-1">
+        <!-- iOS Native Navigation Top Bar (Edge-to-edge under status bar with frosted glass) -->
+        <header id="app-top-bar" class="w-full bg-appBg/90 backdrop-blur-xl shrink-0 z-20 pt-[max(0.65rem,calc(env(safe-area-inset-top,0px)+0.3rem))] sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all">
+            <div class="flex justify-between items-center py-0.5">
                 <div class="flex items-center gap-0.5">
                     <span class="text-2xl font-black tracking-tight text-slate-900">lifestyle</span>
                     <span class="w-2 h-2 rounded-full bg-limeAccent inline-block ml-[2px] translate-y-2"></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <!-- Hamburger Menu Button replacing Profile Picture -->
+                    <!-- Hamburger Menu Button -->
                     <button id="btn-hamburger" 
                             onclick="toggleSideDrawer()" 
                             aria-label="Open Navigation Menu" 
                             aria-expanded="false" 
-                            class="w-12 h-12 rounded-2xl bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-md border border-slate-800/80 transition-all cursor-pointer group">
-                        <i class="fa-solid fa-bars text-lg transition-transform group-hover:scale-110"></i>
+                            class="w-10 h-10 rounded-full bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
+                        <i class="fa-solid fa-bars text-sm transition-transform group-hover:scale-110"></i>
                     </button>
                 </div>
             </div>
-        </div>
+        </header>
 
 <!-- ================= VIEW: SCHEDULE WHITEBOARD (APPL  E GLASS & HIGH-CONTRAST MOBILE UI) ================= -->
 <main id="view-schedule" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-3.5 py-3 space-y-4 pb-32 relative max-w-full select-none">
@@ -1030,7 +1053,7 @@
             </h1>
 
             <!-- ULTRA-MINIMAL APPLE GLASS SITE CARD WITH DYNAMIC AMBIENT BOTTOM GRADIENT -->
-            <div onclick="switchTab('roster')" role="button" tabindex="0" aria-label="Today's rostered site: Lugarno at 935 Forest Road. Work shift 7:00 AM to 3:30 PM. Tap to view full schedule." 
+            <div onclick="switchTab('week')" role="button" tabindex="0" aria-label="Today's rostered site: Lugarno at 935 Forest Road. Work shift 7:00 AM to 3:30 PM. Tap to view full schedule." 
                 class="relative rounded-[22px] p-6 bg-slate-900/40 hover:bg-slate-900/60 backdrop-blur-3xl border border-white/15 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.22),0_12px_32px_0_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer group/site active:scale-[0.98] mb-5 overflow-hidden flex flex-col justify-between">
 
                 <!-- ================= DYNAMIC AMBIENT BOTTOM GRADIENT EFFECT ================= -->
@@ -1342,7 +1365,7 @@
     </div>
 </main>
 <!-- ================= VIEW 2: ROSTER TAB (SPACIOUS FIXED CARDS + 120HZ ACCORDION) ================= -->
-<main id="view-roster" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-5 py-4 space-y-4 pb-[220px] relative max-w-full">
+<main id="view-week" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-5 py-4 space-y-4 pb-[220px] relative max-w-full">
     <!-- Lightweight Ambient Background Glows (Matched with Active Sites) -->
     <div class="absolute -top-10 left-6 w-40 h-40 bg-emerald-500/15 rounded-full blur-[60px] pointer-events-none"></div>
     <div class="absolute top-48 right-4 w-40 h-40 bg-blue-500/15 rounded-full blur-[60px] pointer-events-none"></div>
@@ -1842,8 +1865,7 @@
             </div>
         </main>
 
-<!-- Floating iOS Bottom Navigation Bar -->
-<!-- Floating Bottom Nav Bar with Instagram Drag & Release Physics -->
+<!-- Apple Fitness & Glisse Inspired Floating Liquid Glass Toolbar -->
 <nav id="floating-nav" 
      role="navigation"
      aria-label="Bottom Navigation"
@@ -1852,10 +1874,10 @@
      onpointerup="onNavPointerUp(event)" 
      onpointercancel="onNavPointerCancel(event)"
      onpointerleave="onNavPointerUp(event)"
-     style="bottom: max(0.75rem, calc(env(safe-area-inset-bottom, 0px) + 0.25rem));"
-     class="nav-bar absolute left-4 right-4 bg-gradient-to-tr from-[#0a140f]/95 via-[#0e1713]/90 to-[#121c17]/95 backdrop-blur-2xl border border-white/15 rounded-3xl px-2 py-2 grid grid-cols-5 items-center shadow-[0_15px_35px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.2)] z-40 text-white select-none touch-none">
+     style="bottom: max(0.85rem, calc(env(safe-area-inset-bottom, 0px) + 0.35rem));"
+     class="nav-bar absolute left-3.5 right-3.5 rounded-full px-1.5 py-1.5 grid grid-cols-5 items-center z-40 text-white select-none touch-none">
      
-    <!-- Frosted Pill Element -->
+    <!-- Optical Specular Pill Indicator -->
     <div id="nav-pill" class="nav-pill-indicator opacity-0"></div>
 
     <!-- Tab 1: Home -->
@@ -1864,20 +1886,20 @@
             role="tab"
             aria-selected="true"
             aria-label="Home"
-            class="relative z-10 nav-btn flex flex-col items-center justify-center h-14 rounded-xl text-brand-lime transition-colors duration-150 focus:outline-none">
-        <i class="fa-solid fa-house text-[20px] mb-1.5" aria-hidden="true"></i>
-        <span class="text-[12px] font-medium leading-none tracking-normal">Home</span>
+            class="relative z-10 nav-btn flex flex-col items-center justify-center h-[54px] rounded-full text-brand-lime transition-colors duration-150 focus:outline-none">
+        <i class="fa-solid fa-house text-[18px] mb-1" aria-hidden="true"></i>
+        <span class="text-[11px] font-black leading-none tracking-tight">Home</span>
     </button>
 
     <!-- Tab 2: Roster -->
-    <button onclick="switchTab('roster')" 
-            id="tab-roster" 
+    <button onclick="switchTab('week')" 
+            id="tab-week" 
             role="tab"
             aria-selected="false"
-            aria-label="Roster"
-            class="relative z-10 nav-btn flex flex-col items-center justify-center h-14 rounded-xl text-slate-400 hover:text-white transition-colors duration-150 focus:outline-none">
-        <i class="fa-solid fa-calendar-days text-[20px] mb-1.5" aria-hidden="true"></i>
-        <span class="text-[12px] font-medium leading-none tracking-normal">Roster</span>
+            aria-label="Week"
+            class="relative z-10 nav-btn flex flex-col items-center justify-center h-[54px] rounded-full text-white/80 hover:text-white transition-colors duration-150 focus:outline-none">
+        <i class="fa-solid fa-calendar-days text-[18px] mb-1" aria-hidden="true"></i>
+        <span class="text-[11px] font-bold leading-none tracking-tight">My Week</span>
     </button>
 
     <!-- Tab 3: Chat -->
@@ -1886,9 +1908,9 @@
             role="tab"
             aria-selected="false"
             aria-label="Chat"
-            class="relative z-10 nav-btn flex flex-col items-center justify-center h-14 rounded-xl text-slate-400 hover:text-white transition-colors duration-150 focus:outline-none">
-        <i class="fa-solid fa-comments text-[20px] mb-1.5" aria-hidden="true"></i>
-        <span class="text-[12px] font-medium leading-none tracking-normal">Chat</span>
+            class="relative z-10 nav-btn flex flex-col items-center justify-center h-[54px] rounded-full text-white/80 hover:text-white transition-colors duration-150 focus:outline-none">
+        <i class="fa-solid fa-comments text-[18px] mb-1" aria-hidden="true"></i>
+        <span class="text-[11px] font-bold leading-none tracking-tight">Chat</span>
     </button>
 
     <!-- Tab 4: Jobs -->
@@ -1897,9 +1919,9 @@
             role="tab"
             aria-selected="false"
             aria-label="Jobs"
-            class="relative z-10 nav-btn flex flex-col items-center justify-center h-14 rounded-xl text-slate-400 hover:text-white transition-colors duration-150 focus:outline-none">
-        <i class="fa-solid fa-briefcase text-[20px] mb-1.5" aria-hidden="true"></i>
-        <span class="text-[12px] font-medium leading-none tracking-normal">Jobs</span>
+            class="relative z-10 nav-btn flex flex-col items-center justify-center h-[54px] rounded-full text-white/80 hover:text-white transition-colors duration-150 focus:outline-none">
+        <i class="fa-solid fa-briefcase text-[18px] mb-1" aria-hidden="true"></i>
+        <span class="text-[11px] font-bold leading-none tracking-tight">Jobs</span>
     </button>
 
     <!-- Tab 5: Team -->
@@ -1908,9 +1930,9 @@
             role="tab"
             aria-selected="false"
             aria-label="Team"
-            class="relative z-10 nav-btn flex flex-col items-center justify-center h-14 rounded-xl text-slate-400 hover:text-white transition-colors duration-150 focus:outline-none">
-        <i class="fa-solid fa-user-group text-[20px] mb-1.5" aria-hidden="true"></i>
-        <span class="text-[12px] font-medium leading-none tracking-normal">Team</span>
+            class="relative z-10 nav-btn flex flex-col items-center justify-center h-[54px] rounded-full text-white/80 hover:text-white transition-colors duration-150 focus:outline-none">
+        <i class="fa-solid fa-user-group text-[18px] mb-1" aria-hidden="true"></i>
+        <span class="text-[11px] font-bold leading-none tracking-tight">Team</span>
     </button>
 </nav>
 
@@ -1918,9 +1940,9 @@
         <div id="drawer-dismiss-overlay" onclick="closeSideDrawer()" class="absolute inset-0 z-50 cursor-pointer hidden bg-black/5 backdrop-blur-[0.5px]"></div>
     </div> <!-- /#app-main-stage -->
 
-        <!-- Universal Modal Overlay with Apple Floating Island Sheet -->
-        <div id="modal-overlay" aria-hidden="true" class="absolute inset-0 bg-slate-950/60 backdrop-blur-md z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))]">
-            <div id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl rounded-[32px] p-5 pt-2.5 shadow-[0_25px_60px_rgba(0,0,0,0.45),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border border-white/80 transform translate-y-[120%] transition-transform duration-350 max-h-[85vh] flex flex-col overflow-hidden will-change-transform">
+        <!-- Universal Modal Overlay with Apple Bottom Sheet -->
+        <div id="modal-overlay" aria-hidden="true" class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-0 sm:p-4">
+            <div id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl rounded-t-[32px] rounded-b-none sm:rounded-[32px] p-5 pt-2.5 pb-[max(1.5rem,calc(env(safe-area-inset-bottom,0px)+1.25rem))] shadow-[0_-12px_40px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border-t border-x sm:border border-white/80 transform translate-y-[120%] transition-transform duration-350 max-h-[88vh] flex flex-col overflow-hidden will-change-transform">
                 <!-- iOS Drag Handle Pill Zone (Large hit area) -->
                 <div id="modal-drag-zone" class="w-full pt-1 pb-2.5 flex justify-center cursor-grab active:cursor-grabbing select-none shrink-0 group">
                     <div class="w-10 h-1 bg-slate-300/90 group-hover:bg-slate-400 group-active:bg-slate-500 rounded-full transition-colors"></div>
@@ -2267,7 +2289,7 @@ function trackPillToPointer(e) {
     const navRect = navBar.getBoundingClientRect();
     const touchX = e.clientX - navRect.left;
 
-    const navTabs = ['home', 'roster', 'chat', 'jobs', 'team'];
+    const navTabs = ['home', 'week', 'chat', 'jobs', 'team'];
     let matchedTab = currentHoveredTab;
 
     navTabs.forEach(t => {
@@ -2302,14 +2324,13 @@ function switchTab(tabName) {
     triggerHaptic('medium');
     const navBar = document.getElementById('floating-nav');
     if (navBar) {
-        navBar.classList.remove('shrunk');
         navBar.classList.remove('nav-pop-active');
         void navBar.offsetWidth;
         navBar.classList.add('nav-pop-active');
     }
 
-    const allViews = ['home', 'roster', 'sitehub', 'chat', 'jobs', 'team', 'tools', 'user-account', 'schedule'];
-    const navTabs = ['home', 'roster', 'chat', 'jobs', 'team'];
+    const allViews = ['home', 'week', 'sitehub', 'chat', 'jobs', 'team', 'tools', 'user-account', 'schedule'];
+    const navTabs = ['home', 'week', 'chat', 'jobs', 'team'];
 
     // Toggle views
     allViews.forEach(t => {
@@ -2327,7 +2348,7 @@ function switchTab(tabName) {
             const label = btn.querySelector('span');
 
             if (t === tabName) {
-                btn.classList.remove('text-slate-400', 'hover:text-white');
+                btn.classList.remove('text-white/80', 'hover:text-white', 'text-slate-400');
                 btn.classList.add('text-brand-lime');
                 btn.setAttribute('aria-selected', 'true');
 
@@ -2343,7 +2364,7 @@ function switchTab(tabName) {
                 }
             } else {
                 btn.classList.remove('text-brand-lime');
-                btn.classList.add('text-slate-400', 'hover:text-white');
+                btn.classList.add('text-white/80', 'hover:text-white');
                 btn.setAttribute('aria-selected', 'false');
                 if (icon) icon.classList.remove('icon-burst');
                 if (label) label.classList.remove('label-burst');
@@ -2380,6 +2401,9 @@ function setStatusBarThemeColor(color, isDark = false) {
     }
 }
 
+let drawerStageTimer = null;
+let modalStageTimer = null;
+
 function openSideDrawer() {
     triggerHaptic('light');
     const container = document.getElementById('app-container');
@@ -2388,11 +2412,16 @@ function openSideDrawer() {
     const stage = document.getElementById('app-main-stage');
     if (!container) return;
 
+    if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
+    if (modalStageTimer) { clearTimeout(modalStageTimer); modalStageTimer = null; }
+
+    container.classList.remove('modal-active');
     // Reset any lingering inline style overrides from sheet modals so 3D transform aligns with left-center
     if (stage) {
         stage.style.transform = '';
         stage.style.transformOrigin = '';
         stage.style.borderRadius = '';
+        stage.style.boxShadow = '';
         stage.style.filter = '';
         stage.style.transition = '';
     }
@@ -2406,12 +2435,13 @@ function openSideDrawer() {
 }
 
 function closeSideDrawer() {
-    triggerHaptic('light');
     const container = document.getElementById('app-container');
+    if (!container || !container.classList.contains('drawer-open')) return;
+
+    triggerHaptic('light');
     const hamburger = document.getElementById('btn-hamburger');
     const drawer = document.getElementById('app-side-drawer');
     const stage = document.getElementById('app-main-stage');
-    if (!container) return;
 
     container.classList.remove('drawer-open');
     document.documentElement.classList.remove('drawer-open');
@@ -2420,12 +2450,16 @@ function closeSideDrawer() {
     if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
     if (drawer) drawer.setAttribute('aria-hidden', 'true');
 
+    if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
+
     if (stage) {
-        setTimeout(() => {
-            if (!container.classList.contains('drawer-open')) {
+        drawerStageTimer = setTimeout(() => {
+            drawerStageTimer = null;
+            if (!container.classList.contains('drawer-open') && !container.classList.contains('modal-active')) {
                 stage.style.transform = '';
                 stage.style.transformOrigin = '';
                 stage.style.borderRadius = '';
+                stage.style.boxShadow = '';
                 stage.style.filter = '';
                 stage.style.transition = '';
             }
@@ -2485,27 +2519,112 @@ function drawerNavigate(target) {
         }
     });
 
-    // Touch swipe on scaled stage dismisses drawer
+    // ================= MOBILE ZOOM LOCK =================
+    // Block pinch-to-zoom gestures on WebKit/iOS Safari
+    document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+    document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+    document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
+    // Block 2+ finger pinch touch initiation
+    document.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length > 1) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+    // Block trackpad pinch-zoom on Mac/desktop
+    document.addEventListener('wheel', (e) => {
+        if (e.ctrlKey) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    // ================= 3D DRAWER RIGHT-EDGE SWIPE TO OPEN & DISMISS =================
+    const container = document.getElementById('app-container');
     const stage = document.getElementById('app-main-stage');
+    const drawer = document.getElementById('app-side-drawer');
+    
     let touchStartX = 0;
     let touchStartY = 0;
-    if (stage) {
-        stage.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        }, { passive: true });
+    let isSwipeToOpenArmed = false;
+    let drawerSwipeHandled = false;
 
-        stage.addEventListener('touchend', (e) => {
-            const container = document.getElementById('app-container');
-            if (!container || !container.classList.contains('drawer-open')) return;
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
-            if (Math.abs(diffX) > 30 && Math.abs(diffX) > Math.abs(diffY)) {
+    function onDrawerTouchStart(e) {
+        if (!container || (e.touches && e.touches.length > 1)) return;
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        drawerSwipeHandled = false;
+
+        const isDrawerOpen = container.classList.contains('drawer-open');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const isModalOpen = modalOverlay && !modalOverlay.classList.contains('opacity-0');
+
+        if (!isDrawerOpen && !isModalOpen) {
+            // Check if touch started on the right side of the screen/container
+            const rect = container.getBoundingClientRect();
+            const rightEdgeThreshold = Math.max(rect.right - 90, rect.left + rect.width * 0.72);
+            const notInHorizontalScroller = !e.target.closest('.overflow-x-auto, input, textarea, select');
+            isSwipeToOpenArmed = (touch.clientX >= rightEdgeThreshold) && notInHorizontalScroller;
+        } else {
+            isSwipeToOpenArmed = false;
+        }
+    }
+
+    function onDrawerTouchMove(e) {
+        if (drawerSwipeHandled || !container) return;
+        const touch = e.touches[0];
+        const diffX = touch.clientX - touchStartX;
+        const diffY = touch.clientY - touchStartY;
+        const isDrawerOpen = container.classList.contains('drawer-open');
+
+        // Case 1: Drawer is closed -> sliding from right edge towards left opens drawer
+        if (isSwipeToOpenArmed && !isDrawerOpen) {
+            if (diffX < -32 && Math.abs(diffX) > Math.abs(diffY) * 1.1) {
+                drawerSwipeHandled = true;
+                isSwipeToOpenArmed = false;
+                openSideDrawer();
+            }
+        }
+        // Case 2: Drawer is open -> sliding rightwards closes drawer
+        else if (isDrawerOpen) {
+            if (diffX > 32 && Math.abs(diffX) > Math.abs(diffY) * 1.1) {
+                drawerSwipeHandled = true;
                 closeSideDrawer();
             }
-        }, { passive: true });
+        }
+    }
+
+    function onDrawerTouchEnd(e) {
+        if (!container || drawerSwipeHandled) return;
+        const touch = e.changedTouches ? e.changedTouches[0] : null;
+        if (!touch) return;
+        const diffX = touch.clientX - touchStartX;
+        const diffY = touch.clientY - touchStartY;
+        const isDrawerOpen = container.classList.contains('drawer-open');
+
+        if (isSwipeToOpenArmed && !isDrawerOpen) {
+            // Quick flick from the right side towards left
+            if (diffX < -25 && Math.abs(diffX) > Math.abs(diffY)) {
+                drawerSwipeHandled = true;
+                openSideDrawer();
+            }
+        } else if (isDrawerOpen) {
+            // Swipe right or tap on stage closes drawer
+            if (diffX > 25 && Math.abs(diffX) > Math.abs(diffY)) {
+                closeSideDrawer();
+            }
+        }
+        isSwipeToOpenArmed = false;
+    }
+
+    if (stage) {
+        stage.addEventListener('touchstart', onDrawerTouchStart, { passive: true });
+        stage.addEventListener('touchmove', onDrawerTouchMove, { passive: true });
+        stage.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
+    }
+    if (drawer) {
+        drawer.addEventListener('touchstart', onDrawerTouchStart, { passive: true });
+        drawer.addEventListener('touchmove', onDrawerTouchMove, { passive: true });
+        drawer.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
     }
 });
 
@@ -2540,6 +2659,12 @@ window.addEventListener('resize', () => {
             document.getElementById('modal-body').innerHTML = htmlContent;
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
+            const appContainer = document.getElementById('app-container');
+            const stage = document.getElementById('app-main-stage');
+
+            // Cancel any pending close timers so the stage stays locked in recessed depth
+            if (modalStageTimer) { clearTimeout(modalStageTimer); modalStageTimer = null; }
+            if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
 
             // Clear any leftover drag offset so the sheet always rises from fully closed
             content.classList.remove('is-dragging');
@@ -2547,15 +2672,16 @@ window.addEventListener('resize', () => {
             content.style.transition = '';
             const bodyScroller = document.getElementById('modal-body');
             if (bodyScroller) bodyScroller.scrollTop = 0;
-            
-            // True iOS sheet receding depth effect on the whole app stage
-            const stage = document.getElementById('app-main-stage');
+
+            // Apple iOS Sheet Receding Card Depth Animation (hardware-accelerated, composite-only)
+            if (appContainer) appContainer.classList.add('modal-active');
+            setStatusBarThemeColor('#000000', true);
             if (stage) {
-                stage.style.transition = 'transform 0.42s var(--ease-drawer), border-radius 0.42s var(--ease-drawer), filter 0.42s ease';
+                stage.style.transition = 'transform 0.42s var(--ease-drawer), border-radius 0.42s var(--ease-drawer), box-shadow 0.42s ease';
                 stage.style.transformOrigin = 'center top';
-                stage.style.transform = 'scale(0.93) translateY(-8px)';
-                stage.style.borderRadius = '36px';
-                stage.style.filter = 'brightness(0.72) contrast(1.04)';
+                stage.style.transform = 'scale(0.93) translateY(-4px)';
+                stage.style.borderRadius = '32px';
+                stage.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.55)';
             }
 
             overlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -2567,20 +2693,28 @@ window.addEventListener('resize', () => {
             triggerHaptic('light');
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
-            
-            // Restore the whole app stage smoothly
+            const appContainer = document.getElementById('app-container');
             const stage = document.getElementById('app-main-stage');
+
+            setStatusBarThemeColor('#F3F4F6', false);
+            if (modalStageTimer) { clearTimeout(modalStageTimer); modalStageTimer = null; }
+
+            // Restore the whole app stage smoothly with Apple spring settle
             if (stage) {
-                stage.style.transition = 'transform 0.3s var(--ease-out), border-radius 0.3s var(--ease-out), filter 0.3s ease';
+                stage.style.transition = 'transform 0.35s var(--ease-drawer), border-radius 0.35s var(--ease-drawer), box-shadow 0.35s ease';
                 stage.style.transform = '';
-                stage.style.transformOrigin = '';
                 stage.style.borderRadius = '';
-                stage.style.filter = '';
-                setTimeout(() => {
+                stage.style.boxShadow = '';
+                modalStageTimer = setTimeout(() => {
+                    modalStageTimer = null;
                     if (stage && (!overlay || overlay.classList.contains('opacity-0'))) {
+                        stage.style.transformOrigin = '';
                         stage.style.transition = '';
+                        if (appContainer) appContainer.classList.remove('modal-active');
                     }
-                }, 320);
+                }, 360);
+            } else if (appContainer) {
+                appContainer.classList.remove('modal-active');
             }
 
             // Animate from wherever the sheet is right now (mid-drag included) down to closed
@@ -2670,15 +2804,13 @@ window.addEventListener('resize', () => {
                         : rubberband(offset, content.offsetHeight);
                     content.style.transform = `translate3d(0, ${translate}px, 0)`;
 
-                    // Real-time physical stage recovery tracking the finger pull
+                    // Real-time physical stage recovery tracking the finger pull (1:1 with sheet drag)
                     const stage = document.getElementById('app-main-stage');
                     if (stage && offset > 0) {
                         const progress = Math.min(1, offset / (content.offsetHeight * 0.7));
                         const currentScale = 0.93 + (0.07 * progress);
-                        const currentBrightness = 0.72 + (0.28 * progress);
                         stage.style.transition = 'none';
-                        stage.style.transform = `scale(${currentScale}) translateY(${-8 * (1 - progress)}px)`;
-                        stage.style.filter = `brightness(${currentBrightness}) contrast(${1.04 - (0.04 * progress)})`;
+                        stage.style.transform = `scale(${currentScale}) translateY(${-4 * (1 - progress)}px)`;
                     }
                 }, { passive: false });
 
@@ -2701,9 +2833,8 @@ window.addEventListener('resize', () => {
                         content.style.transform = '';
                         const stage = document.getElementById('app-main-stage');
                         if (stage) {
-                            stage.style.transition = 'transform 0.4s var(--ease-drawer), filter 0.4s ease';
-                            stage.style.transform = 'scale(0.93) translateY(-8px)';
-                            stage.style.filter = 'brightness(0.72) contrast(1.04)';
+                            stage.style.transition = 'transform 0.4s var(--ease-drawer)';
+                            stage.style.transform = 'scale(0.93) translateY(-4px)';
                         }
                         setTimeout(() => { if (!dragging) content.style.transition = ''; }, 420);
                     }
@@ -3661,26 +3792,7 @@ function openTimesheetsModal() {
             if (navBar) navBar.classList.remove('is-holding');
         }
 
-        // Enhanced floating nav scroll behavior
-        document.addEventListener('DOMContentLoaded', () => {
-            const navBar = document.getElementById('floating-nav');
-            if (!navBar) return;
 
-            let lastScrollTop = 0;
-            document.querySelectorAll('.view-section').forEach(section => {
-                section.addEventListener('scroll', function () {
-                    let scrollTop = section.scrollTop;
-                    if (scrollTop > lastScrollTop && scrollTop > 25) {
-                        // Shrink and dim smoothly when scrolling down
-                        navBar.classList.add('shrunk');
-                    } else {
-                        // Expand instantly when scrolling back up
-                        navBar.classList.remove('shrunk');
-                    }
-                    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-                });
-            });
-        });
 
         function openPoppyBotChat() {
             openModal("Poppy Bot AI", `
