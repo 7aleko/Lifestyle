@@ -1362,25 +1362,6 @@
             </button>
         </div>
 
-        <!-- Apple Liquid Glass Rain Alert Capsule -->
-        <div onclick="toggleCardWeatherMode('card-fri')" role="button" tabindex="0" class="shrink-0 rounded-[20px] py-2.5 px-3.5 flex items-center justify-between gap-2.5 overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-slate-900/95 via-slate-900/90 to-blue-950/95 border border-white/15 shadow-[0_12px_28px_rgba(0,0,0,0.26),inset_0_1px_1px_rgba(255,255,255,0.25)] cursor-pointer active:scale-[0.99] transition-all group">
-            <!-- Left: Icon & High-Contrast Text -->
-            <div class="relative z-10 flex items-center gap-3 min-w-0">
-                <div class="w-9 h-9 shrink-0 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-400/35 flex items-center justify-center backdrop-blur-md shadow-[0_0_14px_rgba(59,130,246,0.22)]">
-                    <i class="fa-solid fa-cloud-showers-heavy text-[15px] leading-none"></i>
-                </div>
-                <div class="min-w-0">
-                    <h4 class="text-[13px] font-black text-white tracking-tight leading-tight">Rain Risk Forecasted</h4>
-                    <p class="text-[11px] text-blue-200/85 font-semibold truncate">Tap rain icon on day to switch site</p>
-                </div>
-            </div>
-            
-            <!-- Right: Clean iOS Badge -->
-            <span id="global-prep-pill" class="relative z-10 px-3 py-1 rounded-full bg-blue-500/25 border border-blue-400/40 text-[10px] font-black tracking-wider text-blue-200 uppercase shrink-0 backdrop-blur-md shadow-sm transition-all">
-                Prep Active
-            </span>
-        </div>
-
         <!-- Fluid Full-Height Cards Stack (Fills Viewport, Zero Scroll) -->
         <div id="roster-cards-stack" class="relative flex-1 min-h-0 flex flex-col gap-2.5">
             <!-- Continuous Vertical Luminous Timeline Rail behind Date Tiles -->
@@ -3184,11 +3165,11 @@ function openTimesheetsModal() {
 
         function getExpandedFlexGrow(cardId) {
             const config = ROSTER_CONFIG[cardId];
-            if (!config) return '2.8';
+            if (!config) return '3.1';
             const mode = rosterCardStates[cardId] || 'normal';
-            if (config.isRainRisk && mode === 'rain') return '3.75';
-            if (config.team && config.team.length >= 3) return '3.15';
-            return '2.65';
+            if (config.isRainRisk && mode === 'rain') return '4.2';
+            if (config.team && config.team.length >= 3) return '3.55';
+            return '3.0';
         }
 
         function toggleCardWeatherMode(cardId) {
@@ -3200,15 +3181,6 @@ function openTimesheetsModal() {
 
         function setCardWeatherMode(cardId, mode) {
             rosterCardStates[cardId] = mode;
-
-            const prepPill = document.getElementById('global-prep-pill');
-            if (prepPill) {
-                const anyRainActive = Object.values(rosterCardStates).some(m => m === 'rain');
-                prepPill.textContent = anyRainActive ? 'Rain Site On' : 'Prep Active';
-                prepPill.className = anyRainActive
-                    ? 'relative z-10 px-3 py-1 rounded-full bg-blue-500 border border-blue-300 text-[10px] font-black tracking-wider text-white uppercase shrink-0 shadow-[0_0_12px_rgba(59,130,246,0.5)] transition-all'
-                    : 'relative z-10 px-3 py-1 rounded-full bg-blue-500/25 border border-blue-400/40 text-[10px] font-black tracking-wider text-blue-200 uppercase shrink-0 backdrop-blur-md shadow-sm transition-all';
-            }
 
             // Update cards in place while preserving zero-scroll fluid flex layout
             renderRosterCards();
@@ -3337,7 +3309,7 @@ function openTimesheetsModal() {
                                 <div onclick="toggleRosterCardExpand('${cardId}')" role="button" tabindex="0" class="relative z-10 flex-1 min-h-[48px] pl-4 pr-3 flex items-center justify-between cursor-pointer select-none active:scale-[0.99] transition-transform gap-2">
                                     <!-- Pure Bold Site Name (Full Glance) -->
                                     <div class="min-w-0 flex-1">
-                                        <h3 class="site-title text-xl sm:text-[22px] font-black tracking-tight leading-none truncate ${isDarkSurface ? 'text-white' : 'text-slate-900'}">
+                                        <h3 class="site-title text-xl sm:text-[22px] font-black tracking-tight leading-snug truncate ${isDarkSurface ? 'text-white' : 'text-slate-900'}">
                                             ${activeSite.title}
                                         </h3>
                                     </div>
