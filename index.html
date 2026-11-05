@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950">
+<html lang="en" class="h-full bg-appBg sm:bg-slate-950">
 <head>
     <meta charset="UTF-8">
     <!-- viewport-fit=cover makes env(safe-area-inset-*) real values (they're 0px without it). Zoom stays enabled for accessibility; input zoom is fixed via 16px inputs instead. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-    <meta name="theme-color" content="#F3F4F6">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F4F6">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#F3F4F6">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Lifestyle Dashboard & Roster - Apple-esque UI</title>
@@ -76,9 +78,13 @@
 
         /* ================= MOBILE-NATIVE BASELINE ================= */
         html {
+            background-color: #F3F4F6;        /* match header at y=0 before Tailwind CDN runs so iOS status bar stays seamless */
             -webkit-tap-highlight-color: transparent;
             -webkit-text-size-adjust: 100%;   /* no font inflation in landscape */
             overscroll-behavior: none;        /* app shell: no page bounce / pull-to-refresh hijack */
+        }
+        @media (min-width: 640px) {
+            html { background-color: #020617; }
         }
         * {
             -webkit-tap-highlight-color: transparent;
@@ -609,7 +615,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 text-gray-900 h-full flex justify-center items-center font-sans antialiased selection:bg-brand-lime selection:text-black">
+<body class="bg-appBg sm:bg-slate-950 text-gray-900 h-full sm:flex sm:justify-center sm:items-center font-sans antialiased selection:bg-brand-lime selection:text-black">
     
     <!-- PRELOADER -->
     <div id="preloader" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out">
@@ -620,7 +626,7 @@
     </div>
 
 <!-- Mobile Container Wrapper with Forest Green Background for 3D Drawer Effect -->
-<div id="app-container" class="w-full h-[100dvh] sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 flex flex-col overflow-hidden relative border-0 sm:border border-slate-800/50 select-none">
+<div id="app-container" class="fixed inset-0 sm:relative sm:inset-auto sm:w-full sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 flex flex-col overflow-hidden border-0 sm:border border-slate-800/50 select-none">
 
     <!-- 3D Off-Canvas Side Navigation Drawer (Apple / Reference Design) -->
     <aside id="app-side-drawer" 
@@ -721,16 +727,11 @@
     <div id="drawer-layer-card" class="absolute inset-0 bg-emerald-500/[0.12] backdrop-blur-2xl rounded-[32px] border border-emerald-400/30 shadow-2xl pointer-events-none z-10 opacity-0" style="transform: translate3d(0,0,0) scale(1);"></div>
 
     <!-- Main Screen Content Stage (Transforms in 3D when drawer opens) -->
-    <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-
-
-    
-
+    <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30 pt-[env(safe-area-inset-top,0px)] sm:pt-6 pb-[env(safe-area-inset-bottom,0px)]">
 
         <!-- iOS Top Bar -->
-        <div class="bg-appBg pt-3 px-6 pb-2 shrink-0 z-20">
-            <div class="flex justify-between items-center my-1 h-10" style="height: max(0.5rem, calc(2.5rem - env(safe-area-inset-top, 0px)));"></div>
-            <div class="flex justify-between items-center mt-3 mb-2">
+        <div class="bg-appBg pt-2 px-6 pb-2 shrink-0 z-20">
+            <div class="flex justify-between items-center py-1">
                 <div class="flex items-center gap-0.5">
                     <span class="text-2xl font-black tracking-tight text-slate-900">lifestyle</span>
                     <span class="w-2 h-2 rounded-full bg-limeAccent inline-block ml-[2px] translate-y-2"></span>
@@ -2333,6 +2334,12 @@ function switchTab(tabName) {
 }
 
 // ================= 3D OFF-CANVAS SIDE DRAWER CONTROLS =================
+function setStatusBarThemeColor(color) {
+    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
+        meta.setAttribute('content', color);
+    });
+}
+
 function openSideDrawer() {
     triggerHaptic('light');
     const container = document.getElementById('app-container');
@@ -2340,6 +2347,7 @@ function openSideDrawer() {
     const drawer = document.getElementById('app-side-drawer');
     if (!container) return;
     container.classList.add('drawer-open');
+    setStatusBarThemeColor('#061e14');
     if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
     if (drawer) drawer.setAttribute('aria-hidden', 'false');
 }
@@ -2351,6 +2359,7 @@ function closeSideDrawer() {
     const drawer = document.getElementById('app-side-drawer');
     if (!container) return;
     container.classList.remove('drawer-open');
+    setStatusBarThemeColor('#F3F4F6');
     if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
     if (drawer) drawer.setAttribute('aria-hidden', 'true');
 }
