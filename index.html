@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <!-- viewport-fit=cover makes env(safe-area-inset-*) real values (they're 0px without it). Zoom stays enabled for accessibility; input zoom is fixed via 16px inputs instead. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="theme-color" content="#F3F4F6">
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F4F6">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#F3F4F6">
     <meta name="mobile-web-app-capable" content="yes">
@@ -82,9 +83,13 @@
             -webkit-tap-highlight-color: transparent;
             -webkit-text-size-adjust: 100%;   /* no font inflation in landscape */
             overscroll-behavior: none;        /* app shell: no page bounce / pull-to-refresh hijack */
+            transition: background-color 0.35s ease;
         }
         @media (min-width: 640px) {
             html { background-color: #020617; }
+        }
+        html.drawer-open, body.drawer-open {
+            background-color: #061e14 !important;
         }
         * {
             -webkit-tap-highlight-color: transparent;
@@ -95,6 +100,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
+            transition: background-color 0.35s ease;
         }
         /* Controls aren't content: long-press shouldn't select labels or pop the callout */
         button, [role="button"], [role="tab"], .nav-btn {
@@ -232,98 +238,96 @@
                         transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Ultra-Authentic Apple Liquid Glass Roster Materials */
+        /* Ultra-Authentic Apple Liquid Glass Roster Materials (Tuned for 120Hz Mobile Safari) */
         .glass-tile-apple {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.58) 100%);
-            backdrop-filter: blur(32px) saturate(190%);
-            -webkit-backdrop-filter: blur(32px) saturate(190%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.78) 100%);
+            backdrop-filter: blur(14px) saturate(180%);
+            -webkit-backdrop-filter: blur(14px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.95);
             box-shadow: 
                 inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
                 inset 0 -1px 1px 0 rgba(0, 0, 0, 0.04),
-                0 10px 25px -4px rgba(15, 23, 42, 0.07),
+                0 10px 24px -4px rgba(15, 23, 42, 0.07),
                 0 4px 8px -2px rgba(15, 23, 42, 0.04);
         }
 
+        /* 97% opaque dark surfaces skip invisible backdrop-filter so Safari doesn't re-blur on expand */
         .glass-tile-today {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.96) 0%, rgba(2, 6, 23, 0.98) 100%);
-            backdrop-filter: blur(35px) saturate(200%);
-            -webkit-backdrop-filter: blur(35px) saturate(200%);
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.97) 0%, rgba(2, 6, 23, 0.99) 100%);
             border: 1px solid rgba(163, 230, 53, 0.5);
             box-shadow: 
                 inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.3),
-                0 14px 30px -4px rgba(0, 0, 0, 0.5),
-                0 0 20px -2px rgba(163, 230, 53, 0.35);
+                0 14px 30px -4px rgba(0, 0, 0, 0.45),
+                0 0 20px -2px rgba(163, 230, 53, 0.32);
         }
 
         .glass-card-apple {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.6) 100%);
-            backdrop-filter: blur(32px) saturate(190%);
-            -webkit-backdrop-filter: blur(32px) saturate(190%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.78) 100%);
+            backdrop-filter: blur(14px) saturate(180%);
+            -webkit-backdrop-filter: blur(14px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.95);
             box-shadow: 
                 inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95),
                 inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03),
-                0 16px 36px -8px rgba(15, 23, 42, 0.08),
+                0 14px 32px -8px rgba(15, 23, 42, 0.08),
                 0 4px 12px -2px rgba(15, 23, 42, 0.04);
         }
 
         .glass-card-today {
-            background: linear-gradient(145deg, rgba(2, 35, 22, 0.95) 0%, rgba(6, 30, 20, 0.96) 50%, rgba(2, 6, 23, 0.98) 100%);
-            backdrop-filter: blur(35px) saturate(200%);
-            -webkit-backdrop-filter: blur(35px) saturate(200%);
+            background: linear-gradient(145deg, rgba(2, 35, 22, 0.97) 0%, rgba(6, 30, 20, 0.98) 50%, rgba(2, 6, 23, 0.99) 100%);
             border: 1px solid rgba(52, 211, 153, 0.4);
             box-shadow: 
                 inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.3),
-                0 20px 45px -8px rgba(0, 0, 0, 0.6),
-                0 0 30px -4px rgba(16, 185, 129, 0.25);
+                0 18px 40px -8px rgba(0, 0, 0, 0.55),
+                0 0 28px -4px rgba(16, 185, 129, 0.25);
         }
 
         .glass-card-rain {
-            background: linear-gradient(145deg, rgba(11, 26, 56, 0.95) 0%, rgba(12, 22, 45, 0.96) 50%, rgba(6, 11, 24, 0.98) 100%);
-            backdrop-filter: blur(35px) saturate(200%);
-            -webkit-backdrop-filter: blur(35px) saturate(200%);
+            background: linear-gradient(145deg, rgba(11, 26, 56, 0.97) 0%, rgba(12, 22, 45, 0.98) 50%, rgba(6, 11, 24, 0.99) 100%);
             border: 1px solid rgba(96, 165, 250, 0.45);
             box-shadow: 
                 inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.3),
-                0 20px 45px -8px rgba(0, 0, 0, 0.6),
-                0 0 30px -4px rgba(59, 130, 246, 0.3);
+                0 18px 40px -8px rgba(0, 0, 0, 0.55),
+                0 0 28px -4px rgba(59, 130, 246, 0.3);
         }
 
-        /* Fluid Apple Zero-Scroll Viewport Accordion */
-        .roster-day-row {
-            flex: 1 1 0%;
-            min-height: 48px;
-            transition: flex-grow 0.44s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: flex-grow;
-        }
-        .roster-date-tile {
+        /* Native Calendar Picker Full-Surface Hit Target */
+        .native-date-overlay::-webkit-calendar-picker-indicator {
+            position: absolute;
+            inset: 0;
+            width: 100%;
             height: 100%;
-            max-height: 112px;
-            transition: max-height 0.44s cubic-bezier(0.16, 1, 0.3, 1);
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            cursor: pointer;
         }
-        .roster-date-tile.is-row-expanded {
-            max-height: 68px;
+
+        /* Spacious Fixed-Height Roster Cards + Snappy Measured Accordion */
+        .roster-card-header {
+            transition: transform 140ms var(--ease-out);
+        }
+        .roster-card-header:active {
+            transform: scale(0.988);
         }
         .roster-expandable-drawer {
-            display: grid;
-            grid-template-rows: 0fr;
-            opacity: 0;
-            flex: 0 0 auto;
-            transition: grid-template-rows 0.44s cubic-bezier(0.16, 1, 0.3, 1), 
-                        opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .roster-expandable-drawer.is-expanded {
-            grid-template-rows: 1fr;
-            opacity: 1;
+            height: 0px;
+            overflow: hidden;
+            transition: height 240ms var(--ease-out);
         }
         .roster-drawer-inner {
-            overflow: hidden;
-            min-height: 0;
+            opacity: 0;
+            transform: translate3d(0, -6px, 0);
+            transition: opacity 200ms var(--ease-out), transform 220ms var(--ease-out);
+        }
+        .roster-expandable-drawer.is-expanded .roster-drawer-inner {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
         }
         .roster-chevron {
-            transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 240ms var(--ease-out);
         }
+        
 
         #preloader.fade-out {
             opacity: 0;
@@ -553,6 +557,13 @@
             #app-side-drawer, #drawer-layer-card, #app-main-stage {
                 transition-duration: 0.01ms !important;
             }
+            .roster-expandable-drawer, .roster-chevron, .roster-card-header {
+                transition-duration: 0.01ms !important;
+            }
+            .roster-drawer-inner {
+                transform: none !important;
+                transition: opacity 0.16s ease !important;
+            }
         }
 
         /* ================= 3D OFF-CANVAS SIDE DRAWER (APPLE PHYSICAL FEEL - RIGHT DRAWER) ================= */
@@ -606,7 +617,7 @@
 
         /* Frostier, near-solid surfaces when the user asks for less transparency */
         @media (prefers-reduced-transparency: reduce) {
-            .liquid-glass, .true-glass, .apple-inset-group, .apple-list-group, #modal-content {
+            .liquid-glass, .true-glass, .apple-inset-group, .apple-list-group, #modal-content, .glass-card-apple, .glass-tile-apple {
                 backdrop-filter: none !important;
                 -webkit-backdrop-filter: none !important;
                 background: #ffffff !important;
@@ -1330,49 +1341,53 @@
         </div>
     </div>
 </main>
-<!-- ================= VIEW 2: ROSTER TAB (ZERO-SCROLL FLUID VIEWPORT ACCORDION) ================= -->
-<main id="view-roster" class="view-section hidden flex-1 min-h-0 overflow-hidden px-5 pt-1.5 pb-[112px] relative max-w-full">
-    <!-- Atmospheric Multi-Layer Liquid Glass Glows -->
-    <div class="absolute -top-16 -left-12 w-80 h-80 bg-emerald-500/22 rounded-full blur-[95px] pointer-events-none"></div>
-    <div class="absolute top-44 -right-16 w-80 h-80 bg-blue-500/20 rounded-full blur-[105px] pointer-events-none"></div>
-    <div class="absolute top-[520px] -left-10 w-72 h-72 bg-cyan-400/15 rounded-full blur-[90px] pointer-events-none"></div>
-    <div class="absolute top-[820px] -right-10 w-72 h-72 bg-amber-500/15 rounded-full blur-[90px] pointer-events-none"></div>
+<!-- ================= VIEW 2: ROSTER TAB (SPACIOUS FIXED CARDS + 120HZ ACCORDION) ================= -->
+<main id="view-roster" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-5 py-4 space-y-4 pb-[220px] relative max-w-full">
+    <!-- Lightweight Ambient Background Glows (Matched with Active Sites) -->
+    <div class="absolute -top-10 left-6 w-40 h-40 bg-emerald-500/15 rounded-full blur-[60px] pointer-events-none"></div>
+    <div class="absolute top-48 right-4 w-40 h-40 bg-blue-500/15 rounded-full blur-[60px] pointer-events-none"></div>
 
-    <div class="relative z-10 h-full w-full flex flex-col gap-2.5">
-        <div class="shrink-0 flex items-center justify-between px-0.5">
-            <div>
-                <h2 class="text-2xl font-black text-slate-900 tracking-tight leading-tight">My Week</h2>
-                <p class="text-xs text-slate-600 font-semibold">Where you are each day</p>
-            </div>
-            <button aria-label="Refresh My Week Roster" class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-2xl shadow-apple border border-white/80 flex items-center justify-center text-blue-600 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0" onclick="triggerAppleRefresh(this, 'My Week', 'Roster synced with Procore')">
-                <i class="fa-solid fa-rotate text-sm text-blue-600"></i>
-            </button>
+    <!-- Apple Navigation Header -->
+    <div class="relative z-10 flex items-center justify-between px-1">
+        <div>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">My Week</h2>
+            <p class="text-sm text-slate-600 font-semibold mt-0.5">Where you are each day</p>
         </div>
+        <button aria-label="Refresh My Week Roster" class="w-12 h-12 rounded-full bg-white/90 backdrop-blur-2xl shadow-apple border border-white/80 flex items-center justify-center text-blue-600 cursor-pointer active:scale-90 transition-transform duration-150 hover:bg-white shrink-0" onclick="triggerAppleRefresh(this, 'My Week', 'Roster synced with Procore')">
+            <i class="fa-solid fa-rotate text-base text-blue-600"></i>
+        </button>
+    </div>
 
-        <!-- Apple Liquid Glass Week Navigation -->
-        <div class="shrink-0 bg-white/75 backdrop-blur-2xl rounded-2xl p-1.5 flex items-center justify-between border border-white/90 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.95)]">
-            <button aria-label="Previous week" class="w-9 h-9 rounded-xl bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-800 transition-all cursor-pointer">
-                <i class="ph-bold ph-caret-left text-sm"></i>
-            </button>
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-calendar-week text-slate-400 text-xs"></i>
-                <span class="text-sm font-black text-slate-900 tracking-tight">Mon 12 Oct – Fri 16 Oct</span>
-            </div>
-            <button aria-label="Next week" class="w-9 h-9 rounded-xl bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-800 transition-all cursor-pointer">
-                <i class="ph-bold ph-caret-right text-sm"></i>
-            </button>
+    <!-- Frosted Week Navigation Bar (Matched 1:1 with Active Sites + Native Calendar Picker) -->
+    <div class="relative z-10 bg-white/80 backdrop-blur-2xl rounded-2xl p-2 flex items-center justify-between border border-white/80 shadow-apple">
+        <button onclick="shiftRosterWeek(-1)" aria-label="Previous week" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-800 transition-transform duration-150 cursor-pointer shrink-0">
+            <i class="ph-bold ph-caret-left text-base"></i>
+        </button>
+        <div class="relative flex-1 mx-1.5 min-h-[44px] rounded-xl hover:bg-slate-100/80 active:scale-[0.98] transition-transform duration-150 flex items-center justify-center gap-2 px-2 cursor-pointer">
+            <i class="fa-regular fa-calendar text-slate-400 text-xs pointer-events-none"></i>
+            <span id="roster-week-label" class="text-sm font-extrabold text-slate-900 tracking-tight pointer-events-none">Mon 12 Oct – Fri 16 Oct, 2026</span>
+            <input type="date"
+                   id="roster-native-date-input"
+                   value="2026-10-14"
+                   aria-label="Choose date from calendar"
+                   onchange="handleRosterDatePick(this.value)"
+                   onclick="try { if (window.matchMedia('(pointer: fine)').matches && this.showPicker) this.showPicker(); } catch (e) {}"
+                   class="native-date-overlay absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
         </div>
+        <button onclick="shiftRosterWeek(1)" aria-label="Next week" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-800 transition-transform duration-150 cursor-pointer shrink-0">
+            <i class="ph-bold ph-caret-right text-base"></i>
+        </button>
+    </div>
 
-        <!-- Fluid Full-Height Cards Stack (Fills Viewport, Zero Scroll) -->
-        <div id="roster-cards-stack" class="relative flex-1 min-h-0 flex flex-col gap-2.5">
-            <!-- Continuous Vertical Luminous Timeline Rail behind Date Tiles -->
-            <div class="absolute left-[32px] top-5 bottom-5 w-[2px] bg-gradient-to-b from-slate-300/85 via-slate-300/50 to-slate-300/85 z-0 pointer-events-none"></div>
-            <div id="card-mon" class="roster-day-row"></div>
-            <div id="card-tue" class="roster-day-row"></div>
-            <div id="card-wed" class="roster-day-row"></div>
-            <div id="card-thu" class="roster-day-row"></div>
-            <div id="card-fri" class="roster-day-row"></div>
-        </div>
+    <!-- Spacious Fixed-Height Cards Stack -->
+    <div id="roster-cards-stack" class="relative z-10 space-y-3.5">
+        <!-- Continuous Vertical Timeline Rail behind Date Tiles -->
+        <div class="absolute left-[33px] top-7 bottom-7 w-[2px] bg-gradient-to-b from-slate-300/85 via-slate-300/50 to-slate-300/85 z-0 pointer-events-none"></div>
+        <div id="card-mon" class="roster-day-row"></div>
+        <div id="card-tue" class="roster-day-row"></div>
+        <div id="card-wed" class="roster-day-row"></div>
+        <div id="card-thu" class="roster-day-row"></div>
+        <div id="card-fri" class="roster-day-row"></div>
     </div>
 </main>
 
@@ -1678,11 +1693,21 @@
 
     <!-- Frosted Week Navigation Bar -->
     <div class="relative z-10 bg-white/80 backdrop-blur-2xl rounded-2xl p-2 flex items-center justify-between border border-white/80 shadow-apple">
-        <button onclick="shiftJobsWeek(-1)" aria-label="Previous week" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-800 transition-all cursor-pointer">
+        <button onclick="shiftJobsWeek(-1)" aria-label="Previous week" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-800 transition-transform duration-150 cursor-pointer shrink-0">
             <i class="ph-bold ph-caret-left text-base"></i>
         </button>
-        <span id="jobs-week-label" class="text-sm font-extrabold text-slate-900 tracking-tight">Mon 12 Oct – Sat 17 Oct, 2026</span>
-        <button onclick="shiftJobsWeek(1)" aria-label="Next week" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-800 transition-all cursor-pointer">
+        <div class="relative flex-1 mx-1.5 min-h-[44px] rounded-xl hover:bg-slate-100/80 active:scale-[0.98] transition-transform duration-150 flex items-center justify-center gap-2 px-2 cursor-pointer">
+            <i class="fa-regular fa-calendar text-slate-400 text-xs pointer-events-none"></i>
+            <span id="jobs-week-label" class="text-sm font-extrabold text-slate-900 tracking-tight pointer-events-none">Mon 12 Oct – Sat 17 Oct, 2026</span>
+            <input type="date"
+                   id="jobs-native-date-input"
+                   value="2026-10-14"
+                   aria-label="Choose date from calendar"
+                   onchange="handleJobsDatePick(this.value)"
+                   onclick="try { if (window.matchMedia('(pointer: fine)').matches && this.showPicker) this.showPicker(); } catch (e) {}"
+                   class="native-date-overlay absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
+        </div>
+        <button onclick="shiftJobsWeek(1)" aria-label="Next week" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-800 transition-transform duration-150 cursor-pointer shrink-0">
             <i class="ph-bold ph-caret-right text-base"></i>
         </button>
     </div>
@@ -1827,9 +1852,9 @@
      onpointerup="onNavPointerUp(event)" 
      onpointercancel="onNavPointerCancel(event)"
      onpointerleave="onNavPointerUp(event)"
-     style="bottom: max(2rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));"
-     class="nav-bar absolute bottom-8 left-4 right-4 bg-gradient-to-tr from-[#0a140f]/95 via-[#0e1713]/90 to-[#121c17]/95 backdrop-blur-2xl border border-white/15 rounded-3xl px-2 py-2 grid grid-cols-5 items-center shadow-[0_15px_35px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.2)] z-40 text-white select-none touch-none">            
-
+     style="bottom: max(0.75rem, calc(env(safe-area-inset-bottom, 0px) + 0.25rem));"
+     class="nav-bar absolute left-4 right-4 bg-gradient-to-tr from-[#0a140f]/95 via-[#0e1713]/90 to-[#121c17]/95 backdrop-blur-2xl border border-white/15 rounded-3xl px-2 py-2 grid grid-cols-5 items-center shadow-[0_15px_35px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.2)] z-40 text-white select-none touch-none">
+     
     <!-- Frosted Pill Element -->
     <div id="nav-pill" class="nav-pill-indicator opacity-0"></div>
 
@@ -2335,9 +2360,25 @@ function switchTab(tabName) {
 
 // ================= 3D OFF-CANVAS SIDE DRAWER CONTROLS =================
 function setStatusBarThemeColor(color) {
+function setStatusBarThemeColor(color, isDark = false) {
     document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
         meta.setAttribute('content', color);
     });
+    let defaultMeta = document.querySelector('meta[name="theme-color"]:not([media])');
+    if (!defaultMeta) {
+        defaultMeta = document.createElement('meta');
+        defaultMeta.name = 'theme-color';
+        document.head.appendChild(defaultMeta);
+    }
+    defaultMeta.setAttribute('content', color);
+
+    document.documentElement.style.backgroundColor = color;
+    document.body.style.backgroundColor = color;
+
+    const appleMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (appleMeta) {
+        appleMeta.setAttribute('content', isDark ? 'black-translucent' : 'default');
+    }
 }
 
 function openSideDrawer() {
@@ -2345,9 +2386,23 @@ function openSideDrawer() {
     const container = document.getElementById('app-container');
     const hamburger = document.getElementById('btn-hamburger');
     const drawer = document.getElementById('app-side-drawer');
+    const stage = document.getElementById('app-main-stage');
     if (!container) return;
+
+    // Reset any lingering inline style overrides from sheet modals so 3D transform aligns with left-center
+    if (stage) {
+        stage.style.transform = '';
+        stage.style.transformOrigin = '';
+        stage.style.borderRadius = '';
+        stage.style.filter = '';
+        stage.style.transition = '';
+    }
+
     container.classList.add('drawer-open');
     setStatusBarThemeColor('#061e14');
+    document.documentElement.classList.add('drawer-open');
+    document.body.classList.add('drawer-open');
+    setStatusBarThemeColor('#061e14', true);
     if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
     if (drawer) drawer.setAttribute('aria-hidden', 'false');
 }
@@ -2357,11 +2412,28 @@ function closeSideDrawer() {
     const container = document.getElementById('app-container');
     const hamburger = document.getElementById('btn-hamburger');
     const drawer = document.getElementById('app-side-drawer');
+    const stage = document.getElementById('app-main-stage');
     if (!container) return;
+
     container.classList.remove('drawer-open');
     setStatusBarThemeColor('#F3F4F6');
+    document.documentElement.classList.remove('drawer-open');
+    document.body.classList.remove('drawer-open');
+    setStatusBarThemeColor('#F3F4F6', false);
     if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
     if (drawer) drawer.setAttribute('aria-hidden', 'true');
+
+    if (stage) {
+        setTimeout(() => {
+            if (!container.classList.contains('drawer-open')) {
+                stage.style.transform = '';
+                stage.style.transformOrigin = '';
+                stage.style.borderRadius = '';
+                stage.style.filter = '';
+                stage.style.transition = '';
+            }
+        }, 420);
+    }
 }
 
 function toggleSideDrawer() {
@@ -2504,8 +2576,14 @@ window.addEventListener('resize', () => {
             if (stage) {
                 stage.style.transition = 'transform 0.3s var(--ease-out), border-radius 0.3s var(--ease-out), filter 0.3s ease';
                 stage.style.transform = '';
+                stage.style.transformOrigin = '';
                 stage.style.borderRadius = '';
                 stage.style.filter = '';
+                setTimeout(() => {
+                    if (stage && (!overlay || overlay.classList.contains('opacity-0'))) {
+                        stage.style.transition = '';
+                    }
+                }, 320);
             }
 
             // Animate from wherever the sheet is right now (mid-drag included) down to closed
@@ -3172,13 +3250,207 @@ function openTimesheetsModal() {
             `);
         }
 
-        function getExpandedFlexGrow(cardId) {
-            const config = ROSTER_CONFIG[cardId];
-            if (!config) return '3.1';
-            const mode = rosterCardStates[cardId] || 'normal';
-            if (config.isRainRisk && mode === 'rain') return '4.2';
-            if (config.team && config.team.length >= 3) return '3.55';
-            return '3.0';
+        let currentRosterMonday = new Date(2026, 9, 12); // Mon 12 Oct 2026
+        const ROSTER_SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const ROSTER_DAY_IDS = ['card-mon', 'card-tue', 'card-wed', 'card-thu', 'card-fri'];
+
+        function formatIsoDateLocal(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        function getMondayForDate(d) {
+            const dow = d.getDay();
+            const diff = (dow === 0) ? -6 : (1 - dow);
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
+        }
+
+        function applyRosterWeek(mondayDate, pickedDate = null) {
+            currentRosterMonday = new Date(mondayDate.getFullYear(), mondayDate.getMonth(), mondayDate.getDate());
+            const fridayDate = new Date(currentRosterMonday.getFullYear(), currentRosterMonday.getMonth(), currentRosterMonday.getDate() + 4);
+
+            const monStr = `Mon ${String(currentRosterMonday.getDate()).padStart(2, '0')} ${ROSTER_SHORT_MONTHS[currentRosterMonday.getMonth()]}`;
+            const friStr = `Fri ${String(fridayDate.getDate()).padStart(2, '0')} ${ROSTER_SHORT_MONTHS[fridayDate.getMonth()]}, ${fridayDate.getFullYear()}`;
+            const weekLabel = document.getElementById('roster-week-label');
+            if (weekLabel) {
+                weekLabel.textContent = `${monStr} – ${friStr}`;
+            }
+
+            const nativeInput = document.getElementById('roster-native-date-input');
+            if (nativeInput) {
+                nativeInput.value = formatIsoDateLocal(pickedDate || currentRosterMonday);
+            }
+
+            ROSTER_DAY_IDS.forEach((id, idx) => {
+                const dayDate = new Date(currentRosterMonday.getFullYear(), currentRosterMonday.getMonth(), currentRosterMonday.getDate() + idx);
+                if (ROSTER_CONFIG[id]) {
+                    ROSTER_CONFIG[id].dateNum = String(dayDate.getDate()).padStart(2, '0');
+                }
+            });
+
+            const isAnchorWeek = (
+                currentRosterMonday.getFullYear() === 2026 &&
+                currentRosterMonday.getMonth() === 9 &&
+                currentRosterMonday.getDate() === 12
+            );
+            activeTodayCardId = isAnchorWeek ? 'card-wed' : '';
+
+            if (pickedDate) {
+                const dow = pickedDate.getDay();
+                if (dow >= 1 && dow <= 5) {
+                    const pickedCardId = ROSTER_DAY_IDS[dow - 1];
+                    expandedRosterCards[pickedCardId] = true;
+                    setTimeout(() => {
+                        scrollRosterCardIntoView(pickedCardId);
+                    }, 60);
+                }
+            }
+
+            renderRosterCards();
+        }
+
+        function shiftRosterWeek(direction) {
+            triggerHaptic('light');
+            const nextMonday = new Date(
+                currentRosterMonday.getFullYear(),
+                currentRosterMonday.getMonth(),
+                currentRosterMonday.getDate() + direction * 7
+            );
+            applyRosterWeek(nextMonday);
+        }
+
+        function handleRosterDatePick(isoValue) {
+            if (!isoValue) return;
+            const parts = isoValue.split('-').map(Number);
+            if (parts.length !== 3 || parts.some(isNaN)) return;
+            triggerHaptic('light');
+            const picked = new Date(parts[0], parts[1] - 1, parts[2]);
+            applyRosterWeek(getMondayForDate(picked), picked);
+        }
+
+        function scrollRosterCardIntoView(cardId, drawerEl = null, animated = true) {
+            const container = document.getElementById('view-roster');
+            const rowEl = document.getElementById(cardId);
+            if (!container || !rowEl) return;
+
+            const drawer = drawerEl || rowEl.querySelector('.roster-expandable-drawer');
+            const inner = drawer ? drawer.querySelector('.roster-drawer-inner') : null;
+
+            // Expected drawer height when open
+            let drawerHeight = 0;
+            if (drawer) {
+                if (inner && expandedRosterCards[cardId]) {
+                    drawerHeight = inner.scrollHeight;
+                } else {
+                    drawerHeight = drawer.getBoundingClientRect().height;
+                }
+            }
+
+            const containerRect = container.getBoundingClientRect();
+            const rowRect = rowEl.getBoundingClientRect();
+            const navBar = document.getElementById('floating-nav');
+
+            // Bottom boundary to clear above floating island nav
+            let safeBottom = containerRect.bottom - 120;
+            if (navBar) {
+                const navRect = navBar.getBoundingClientRect();
+                safeBottom = navRect.top - 20; // 20px clearance above floating island
+            }
+
+            // Current top of card relative to container visible top
+            const rowTopInView = rowRect.top - containerRect.top;
+            const rowHeaderHeight = 72;
+            const projectedBottom = rowTopInView + rowHeaderHeight + drawerHeight;
+
+            let scrollDelta = 0;
+
+            if (projectedBottom > safeBottom) {
+                scrollDelta = projectedBottom - safeBottom;
+            } else if (rowTopInView < 12) {
+                scrollDelta = rowTopInView - 12;
+            }
+
+            if (Math.abs(scrollDelta) < 2) return;
+
+            const targetScrollTop = Math.max(0, container.scrollTop + scrollDelta);
+
+            if (!animated) {
+                container.scrollTop = targetScrollTop;
+                return;
+            }
+
+            // Smooth cubic ease-out scroll synchronized with drawer expansion
+            if (container._scrollRafId) {
+                cancelAnimationFrame(container._scrollRafId);
+                container._scrollRafId = null;
+            }
+
+            const startScroll = container.scrollTop;
+            const totalDiff = targetScrollTop - startScroll;
+            const duration = 240;
+            const startTime = performance.now();
+            let isCancelled = false;
+
+            const cancelHandler = () => { isCancelled = true; };
+            container.addEventListener('touchstart', cancelHandler, { passive: true, once: true });
+            container.addEventListener('wheel', cancelHandler, { passive: true, once: true });
+
+            function step(now) {
+                if (isCancelled) return;
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Apple-style cubic ease-out: matches var(--ease-out)
+                const ease = 1 - Math.pow(1 - progress, 3);
+
+                container.scrollTop = startScroll + (totalDiff * ease);
+
+                if (progress < 1) {
+                    container._scrollRafId = requestAnimationFrame(step);
+                } else {
+                    container._scrollRafId = null;
+                    container.removeEventListener('touchstart', cancelHandler);
+                    container.removeEventListener('wheel', cancelHandler);
+                }
+            }
+
+            container._scrollRafId = requestAnimationFrame(step);
+        }
+
+        function animateRosterDrawerHeight(cardId, drawer, shouldExpand, startHeightOverride = null) {
+            if (!drawer) return;
+            const inner = drawer.querySelector('.roster-drawer-inner');
+            if (!inner) return;
+
+            if (drawer._onTransitionEnd) {
+                drawer.removeEventListener('transitionend', drawer._onTransitionEnd);
+                drawer._onTransitionEnd = null;
+            }
+
+            const currentHeight = (startHeightOverride !== null)
+                ? startHeightOverride
+                : drawer.getBoundingClientRect().height;
+            const targetHeight = shouldExpand ? inner.scrollHeight : 0;
+
+            drawer.style.height = `${currentHeight}px`;
+            void drawer.offsetHeight;
+
+            drawer.classList.toggle('is-expanded', shouldExpand);
+            drawer.style.height = `${targetHeight}px`;
+
+            if (shouldExpand) {
+                const onEnd = (e) => {
+                    if (e.target !== drawer || e.propertyName !== 'height') return;
+                    drawer.removeEventListener('transitionend', onEnd);
+                    drawer._onTransitionEnd = null;
+                    if (expandedRosterCards[cardId]) {
+                        drawer.style.height = 'auto';
+                    }
+                };
+                drawer._onTransitionEnd = onEnd;
+                drawer.addEventListener('transitionend', onEnd);
+            }
         }
 
         function toggleCardWeatherMode(cardId) {
@@ -3189,36 +3461,41 @@ function openTimesheetsModal() {
         }
 
         function setCardWeatherMode(cardId, mode) {
-            rosterCardStates[cardId] = mode;
+            let prevOpenHeight = null;
+            if (expandedRosterCards[cardId]) {
+                const prevDrawer = document.getElementById(`drawer-${cardId}`);
+                if (prevDrawer) {
+                    prevOpenHeight = prevDrawer.getBoundingClientRect().height;
+                }
+            }
 
-            // Update cards in place while preserving zero-scroll fluid flex layout
+            rosterCardStates[cardId] = mode;
             renderRosterCards();
+
+            if (prevOpenHeight !== null && expandedRosterCards[cardId]) {
+                const nextDrawer = document.getElementById(`drawer-${cardId}`);
+                animateRosterDrawerHeight(cardId, nextDrawer, true, prevOpenHeight);
+                scrollRosterCardIntoView(cardId, nextDrawer);
+            }
         }
 
         function toggleRosterCardExpand(cardId) {
             triggerHaptic('light');
             const willExpand = !expandedRosterCards[cardId];
+            expandedRosterCards[cardId] = willExpand;
 
-            // Exclusive fluid accordion: auto-close other cards so all 5 days stay in view with zero scrolling
-            Object.keys(ROSTER_CONFIG).forEach(id => {
-                expandedRosterCards[id] = (id === cardId) ? willExpand : false;
-            });
+            const rowEl = document.getElementById(cardId);
+            if (!rowEl) return;
 
-            Object.keys(ROSTER_CONFIG).forEach(id => {
-                const rowEl = document.getElementById(id);
-                if (!rowEl) return;
+            const drawer = rowEl.querySelector('.roster-expandable-drawer');
+            const chevron = rowEl.querySelector('.roster-chevron');
 
-                const isRowExpanded = !!expandedRosterCards[id];
-                rowEl.style.flexGrow = isRowExpanded ? getExpandedFlexGrow(id) : '1';
+            if (chevron) chevron.classList.toggle('rotate-180', willExpand);
+            animateRosterDrawerHeight(cardId, drawer, willExpand);
 
-                const drawer = rowEl.querySelector('.roster-expandable-drawer');
-                const chevron = rowEl.querySelector('.roster-chevron');
-                const dateTile = rowEl.querySelector('.roster-date-tile');
-
-                if (drawer) drawer.classList.toggle('is-expanded', isRowExpanded);
-                if (chevron) chevron.classList.toggle('rotate-180', isRowExpanded);
-                if (dateTile) dateTile.classList.toggle('is-row-expanded', isRowExpanded);
-            });
+            if (willExpand) {
+                scrollRosterCardIntoView(cardId, drawer);
+            }
         }
 
         function openMapsForAddress(address) {
@@ -3249,7 +3526,6 @@ function openTimesheetsModal() {
                 if (config.isRainRisk) {
                     const isRainActive = (currentMode === 'rain');
 
-                    // Tactile Rain Icon Button matching "Rain Risk Forecasted" + corner swap affordance
                     rainToggleBtnHtml = `
                         <button type="button"
                                 onclick="event.stopPropagation(); toggleCardWeatherMode('${cardId}')" 
@@ -3257,7 +3533,7 @@ function openTimesheetsModal() {
                                 aria-checked="${isRainActive}"
                                 aria-label="${isRainActive ? 'Rain site active. Tap to switch back to normal site' : 'Rain risk forecasted. Tap to switch to rain site'}"
                                 title="${isRainActive ? 'Rain site active — tap to switch to normal site' : 'Rain risk — tap to switch to wet weather site'}"
-                                class="relative w-10 h-10 rounded-[14px] flex items-center justify-center cursor-pointer select-none active:scale-90 transition-all duration-200 ${isRainActive ? 'bg-blue-500 text-white border border-blue-300 shadow-[0_0_16px_rgba(59,130,246,0.65),inset_0_1px_1px_rgba(255,255,255,0.45)]' : 'bg-slate-900 text-blue-400 border border-blue-400/50 hover:bg-slate-800 shadow-[0_4px_12px_rgba(15,23,42,0.24),inset_0_1px_0_rgba(255,255,255,0.25)]'}">
+                                class="relative w-11 h-11 rounded-[15px] flex items-center justify-center cursor-pointer select-none active:scale-90 transition-transform duration-150 ${isRainActive ? 'bg-blue-500 text-white border border-blue-300 shadow-[0_0_16px_rgba(59,130,246,0.65),inset_0_1px_1px_rgba(255,255,255,0.45)]' : 'bg-slate-900 text-blue-400 border border-blue-400/50 hover:bg-slate-800 shadow-[0_4px_12px_rgba(15,23,42,0.24),inset_0_1px_0_rgba(255,255,255,0.25)]'}">
                             <i class="fa-solid fa-cloud-showers-heavy text-base leading-none"></i>
                             <span class="absolute -top-1 -right-1 w-[18px] h-[18px] rounded-full flex items-center justify-center shadow-sm transition-colors ${isRainActive ? 'bg-white text-blue-600 border border-blue-200' : 'bg-blue-500 text-white border border-white'}">
                                 <i class="ph-bold ph-arrows-left-right text-[9px] leading-none"></i>
@@ -3266,22 +3542,21 @@ function openTimesheetsModal() {
 
                     if (isRainActive) {
                         rainParticlesHtml = `
-                            <div class="rain-particles absolute inset-0 pointer-events-none overflow-hidden z-0 rounded-[22px]">
+                            <div class="rain-particles absolute inset-0 pointer-events-none overflow-hidden z-0 rounded-[24px]">
                                 <div class="absolute inset-0 bg-gradient-to-b from-blue-900/10 via-indigo-950/20 to-blue-900/30"></div>
                             </div>`;
 
                         rainBannerHtml = `
-                            <div class="rain-protocol-banner mt-2 py-1.5 px-3 rounded-xl bg-blue-950/85 border border-blue-400/30 backdrop-blur-md flex items-center justify-between gap-2 text-white">
-                                <span class="flex items-center gap-1.5 text-[11px] font-black text-blue-200 truncate">
-                                    <i class="fa-solid fa-umbrella text-blue-400 text-[11px]"></i>
+                            <div class="rain-protocol-banner mt-2.5 py-2 px-3 rounded-xl bg-blue-950/90 border border-blue-400/30 flex items-center justify-between gap-2 text-white">
+                                <span class="flex items-center gap-1.5 text-xs font-black text-blue-200 truncate">
+                                    <i class="fa-solid fa-umbrella text-blue-400 text-xs"></i>
                                     Rain Protocol • Under cover at ${activeSite.title}
                                 </span>
-                                <span class="text-[9px] text-blue-200 bg-blue-500/25 px-2 py-0.5 rounded-full border border-blue-400/25 font-bold uppercase tracking-wider shrink-0">Backup</span>
+                                <span class="text-[10px] text-blue-200 bg-blue-500/25 px-2 py-0.5 rounded-full border border-blue-400/25 font-bold uppercase tracking-wider shrink-0">Backup</span>
                             </div>`;
                     }
                 }
 
-                // Surface styling using authentic iOS Liquid Glass classes with original colour palette
                 let cardSurfaceClass = "";
                 let isDarkSurface = false;
                 if (isToday) {
@@ -3296,64 +3571,57 @@ function openTimesheetsModal() {
                 }
 
                 card.className = "roster-day-row relative z-10";
-                card.style.flexGrow = isExpanded ? getExpandedFlexGrow(cardId) : '1';
                 card.innerHTML = `
-                    <div class="relative flex items-start gap-3 h-full">
-                        <!-- Left: Apple Liquid Glass Date Tile (1:1 Full Height Match with Collapsed Card, NO pulsing dot) -->
-                        <div class="roster-date-tile ${isExpanded ? 'is-row-expanded' : ''} w-[66px] min-w-[66px] shrink-0 rounded-[22px] flex flex-col items-center justify-center select-none z-10 ${isToday ? 'glass-tile-today' : 'glass-tile-apple'}">
+                    <div class="relative flex items-start gap-3.5">
+                        <!-- Left: Fixed-Size Apple Liquid Glass Date Tile (Never shrinks or shifts) -->
+                        <div class="roster-date-tile w-[68px] min-w-[68px] h-[72px] shrink-0 rounded-[24px] flex flex-col items-center justify-center select-none z-10 ${isToday ? 'glass-tile-today' : 'glass-tile-apple'}">
                             <span class="text-[11px] font-black uppercase tracking-widest leading-none ${isToday ? 'text-brand-lime' : 'text-slate-400'}">
                                 ${config.day}
                             </span>
-                            <span class="text-2xl font-black tracking-tight leading-none ${isToday ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-slate-800'} mt-1">
+                            <span class="text-2xl font-black tracking-tight leading-none ${isToday ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-slate-800'} mt-1.5">
                                 ${config.dateNum}
                             </span>
                         </div>
 
-                        <!-- Right: Fluid Expandable Apple Liquid Glass Card -->
-                        <div class="flex-1 min-w-0 h-full z-10">
-                            <div class="relative h-full flex flex-col ${cardSurfaceClass} rounded-[22px] overflow-hidden transition-colors duration-300">
+                        <!-- Right: Fixed-Header Card that Smoothly Expands Downward -->
+                        <div class="flex-1 min-w-0 z-10">
+                            <div class="relative flex flex-col ${cardSurfaceClass} rounded-[24px] overflow-hidden transition-colors duration-200">
                                 ${rainParticlesHtml}
                                 
-                                <!-- Clickable Header: Automatically Centers across Full Card Height when Closed, Glides Up when Open -->
-                                <div onclick="toggleRosterCardExpand('${cardId}')" role="button" tabindex="0" class="relative z-10 flex-1 min-h-[48px] pl-4 pr-3 flex items-center justify-between cursor-pointer select-none active:scale-[0.99] transition-transform gap-2">
-                                    <!-- Pure Bold Site Name (Full Glance) -->
+                                <!-- Fixed 72px Header (1:1 height match with Date Tile when closed) -->
+                                <div onclick="toggleRosterCardExpand('${cardId}')" role="button" tabindex="0" aria-expanded="${isExpanded}" class="roster-card-header relative z-10 h-[72px] pl-4.5 pl-[18px] pr-3.5 flex items-center justify-between cursor-pointer select-none gap-2.5">
                                     <div class="min-w-0 flex-1">
                                         <h3 class="site-title text-xl sm:text-[22px] font-black tracking-tight leading-snug truncate ${isDarkSurface ? 'text-white' : 'text-slate-900'}">
                                             ${activeSite.title}
                                         </h3>
                                     </div>
 
-                                    <!-- Right: Tactile Rain Toggle Button & Larger Dropdown Caret -->
                                     <div class="flex items-center gap-2 shrink-0">
                                         ${rainToggleBtnHtml}
                                         <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isDarkSurface ? 'text-slate-200 bg-white/10 hover:bg-white/20 border border-white/15' : 'text-slate-600 bg-slate-900/[0.05] hover:bg-slate-900/[0.10] border border-slate-900/10'}">
-                                            <i class="ph-bold ph-caret-down roster-chevron text-xl leading-none ${isExpanded ? 'rotate-180' : ''}"></i>
+                                            <i class="ph-bold ph-caret-down roster-chevron text-lg leading-none ${isExpanded ? 'rotate-180' : ''}"></i>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Smooth Apple Spring Expandable Drawer (Original Layout Structure) -->
-                                <div class="relative z-10 roster-expandable-drawer ${isExpanded ? 'is-expanded' : ''}" id="drawer-${cardId}">
+                                <!-- Measured 240ms Accordion Drawer (Pushes lower cards down cleanly) -->
+                                <div class="relative z-10 roster-expandable-drawer ${isExpanded ? 'is-expanded' : ''}" id="drawer-${cardId}" style="height: ${isExpanded ? 'auto' : '0px'};">
                                     <div class="roster-drawer-inner">
-                                        <div class="px-4 pb-3.5 pt-0">
-                                            <!-- 1. Address directly below Site Name -->
+                                        <div class="px-[18px] pb-4 pt-0.5">
                                             <div>
-                                                <a href="https://maps.apple.com/?q=${encodeURIComponent(activeSite.address)}" target="_blank" onclick="event.stopPropagation()" class="site-address inline-flex items-center gap-1.5 text-xs sm:text-[13px] font-semibold ${isToday ? 'text-slate-200 hover:text-white' : (currentMode === 'rain' ? 'text-blue-300 hover:text-white' : 'text-emerald-600 hover:text-emerald-800')} transition-colors">
+                                                <a href="https://maps.apple.com/?q=${encodeURIComponent(activeSite.address)}" target="_blank" onclick="event.stopPropagation()" class="site-address inline-flex items-center gap-1.5 text-[13px] font-semibold ${isToday ? 'text-slate-200 hover:text-white' : (currentMode === 'rain' ? 'text-blue-300 hover:text-white' : 'text-emerald-600 hover:text-emerald-800')} transition-colors">
                                                     <span>${activeSite.address}</span>
                                                     <i class="ph-bold ph-arrow-up-right text-xs"></i>
                                                 </a>
                                             </div>
 
-                                            <!-- Rain Protocol Banner if active -->
                                             ${rainBannerHtml}
 
-                                            <!-- 2. Clean Line Divider -->
-                                            <div class="pt-2.5 mt-2.5 border-t ${isToday ? 'border-white/10' : (currentMode === 'rain' ? 'border-slate-800' : 'border-slate-100')}">
-                                                <!-- 3. With: People listed in original colors -->
-                                                <span class="text-[11px] font-black uppercase tracking-wider ${isToday ? 'text-emerald-300/80' : (currentMode === 'rain' ? 'text-slate-300' : 'text-slate-500')} block mb-1.5">With:</span>
+                                            <div class="pt-3 mt-3 border-t ${isToday ? 'border-white/10' : (currentMode === 'rain' ? 'border-slate-800' : 'border-slate-100')}">
+                                                <span class="text-[11px] font-black uppercase tracking-wider ${isToday ? 'text-emerald-300/80' : (currentMode === 'rain' ? 'text-slate-300' : 'text-slate-500')} block mb-2">With:</span>
                                                 <div class="flex flex-wrap gap-1.5">
                                                     ${config.team.map(member => `
-                                                        <span class="px-3 py-1 rounded-full ${isToday ? 'bg-black/40 backdrop-blur-xl text-slate-200 border border-white/10 font-bold text-xs shadow-inner' : (currentMode === 'rain' ? 'bg-slate-800 text-white border border-slate-700 font-bold text-xs' : 'bg-slate-100 text-slate-800 border border-slate-200/50 font-bold text-xs')}">${member}</span>
+                                                        <span class="px-3 py-1 rounded-full ${isToday ? 'bg-black/45 text-slate-200 border border-white/10 font-bold text-xs shadow-inner' : (currentMode === 'rain' ? 'bg-slate-800 text-white border border-slate-700 font-bold text-xs' : 'bg-slate-100 text-slate-800 border border-slate-200/50 font-bold text-xs')}">${member}</span>
                                                     `).join('')}
                                                 </div>
                                             </div>
@@ -3368,7 +3636,7 @@ function openTimesheetsModal() {
                 if (currentMode === 'rain') {
                     const particleContainer = card.querySelector('.rain-particles');
                     if (particleContainer) {
-                        for (let i = 0; i < 20; i++) {
+                        for (let i = 0; i < 16; i++) {
                             const drop = document.createElement('div');
                             drop.className = 'rain-drop';
                             drop.style.left = `${Math.random() * 100}%`;
@@ -3537,7 +3805,7 @@ function openTimesheetsModal() {
 ];
 
         let currentJobsGlobalDay = 'wed'; // Default to Wednesday (Today)
-        let currentJobsWeekOffset = 0;
+        let currentJobsMonday = new Date(2026, 9, 12); // Mon 12 Oct 2026
 
         function setJobsGlobalDay(dayKey) {
             triggerHaptic('light');
@@ -3551,14 +3819,28 @@ function openTimesheetsModal() {
             const summaryContainer = document.getElementById('jobs-daily-summary-container');
             if (!listContainer) return;
 
-            const daysList = [
-                { key: 'mon', label: 'MON', date: '12' },
-                { key: 'tue', label: 'TUE', date: '13' },
-                { key: 'wed', label: 'WED', date: '14', isToday: true },
-                { key: 'thu', label: 'THU', date: '15' },
-                { key: 'fri', label: 'FRI', date: '16' },
-                { key: 'sat', label: 'SAT', date: '17' }
+            const isAnchorWeek = (
+                currentJobsMonday.getFullYear() === 2026 &&
+                currentJobsMonday.getMonth() === 9 &&
+                currentJobsMonday.getDate() === 12
+            );
+            const dayKeys = [
+                { key: 'mon', label: 'MON' },
+                { key: 'tue', label: 'TUE' },
+                { key: 'wed', label: 'WED' },
+                { key: 'thu', label: 'THU' },
+                { key: 'fri', label: 'FRI' },
+                { key: 'sat', label: 'SAT' }
             ];
+            const daysList = dayKeys.map((d, idx) => {
+                const dt = new Date(currentJobsMonday.getFullYear(), currentJobsMonday.getMonth(), currentJobsMonday.getDate() + idx);
+                return {
+                    key: d.key,
+                    label: d.label,
+                    date: String(dt.getDate()).padStart(2, '0'),
+                    isToday: isAnchorWeek && d.key === 'wed'
+                };
+            });
 
             // 1. Render Master Day Selector Ribbon
             if (dayRibbonContainer) {
@@ -3747,16 +4029,50 @@ function openTimesheetsModal() {
             }).join('');
         }
 
-        function shiftJobsWeek(direction) {
-            currentJobsWeekOffset += direction;
+        function applyJobsWeek(mondayDate, pickedDate = null) {
+            currentJobsMonday = new Date(mondayDate.getFullYear(), mondayDate.getMonth(), mondayDate.getDate());
+            const saturdayDate = new Date(currentJobsMonday.getFullYear(), currentJobsMonday.getMonth(), currentJobsMonday.getDate() + 5);
+
+            const monStr = `Mon ${String(currentJobsMonday.getDate()).padStart(2, '0')} ${ROSTER_SHORT_MONTHS[currentJobsMonday.getMonth()]}`;
+            const satStr = `Sat ${String(saturdayDate.getDate()).padStart(2, '0')} ${ROSTER_SHORT_MONTHS[saturdayDate.getMonth()]}, ${saturdayDate.getFullYear()}`;
             const weekLabel = document.getElementById('jobs-week-label');
             if (weekLabel) {
-                if (currentJobsWeekOffset === 0) weekLabel.textContent = "Mon 12 Oct – Sat 17 Oct, 2026";
-                else if (currentJobsWeekOffset > 0) weekLabel.textContent = "Mon 19 Oct – Sat 24 Oct, 2026 (Projected)";
-                else weekLabel.textContent = "Mon 05 Oct – Sat 10 Oct, 2026 (Archived)";
+                weekLabel.textContent = `${monStr} – ${satStr}`;
             }
+
+            const nativeInput = document.getElementById('jobs-native-date-input');
+            if (nativeInput) {
+                nativeInput.value = formatIsoDateLocal(pickedDate || currentJobsMonday);
+            }
+
+            if (pickedDate) {
+                const dow = pickedDate.getDay(); // 1..6 = Mon..Sat
+                const map = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+                if (dow >= 1 && dow <= 6) {
+                    currentJobsGlobalDay = map[dow - 1];
+                }
+            }
+
             renderJobsView();
-            showToast('Schedule', 'Switched week view');
+        }
+
+        function shiftJobsWeek(direction) {
+            triggerHaptic('light');
+            const nextMonday = new Date(
+                currentJobsMonday.getFullYear(),
+                currentJobsMonday.getMonth(),
+                currentJobsMonday.getDate() + direction * 7
+            );
+            applyJobsWeek(nextMonday);
+        }
+
+        function handleJobsDatePick(isoValue) {
+            if (!isoValue) return;
+            const parts = isoValue.split('-').map(Number);
+            if (parts.length !== 3 || parts.some(isNaN)) return;
+            triggerHaptic('light');
+            const picked = new Date(parts[0], parts[1] - 1, parts[2]);
+            applyJobsWeek(getMondayForDate(picked), picked);
         }
 // Open Whiteboard Task Modal (What's Happening)
 function openTaskModal(taskName, dateRange, colorTheme, crewAssigned, notes) {
