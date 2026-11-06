@@ -629,6 +629,141 @@
             transform: scale(0.97) !important;
         }
 
+        /* ================= APPLE CONTROL CENTRE ATTENDANCE MODULE ================= */
+        #site-signin-btn {
+            border-color: rgba(204, 255, 0, 0.9);
+            box-shadow: 0 0 20px rgba(204, 255, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.25);
+            transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1),
+                        border-color 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+                        box-shadow 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            will-change: transform, box-shadow, border-color;
+        }
+
+        #site-signin-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Apple Control Centre Full Label Vertical Blur-Roll Engine */
+        .apple-control-label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            will-change: transform, opacity, filter;
+            transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1),
+                        opacity 0.26s cubic-bezier(0.32, 0.72, 0, 1),
+                        filter 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        /* Resting State: NOT SIGNED IN ("Sign In" centered at exact left: 0) */
+        #site-label-signin {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+            filter: blur(0px);
+        }
+        #site-label-signout {
+            transform: translate3d(0, -16px, 0);
+            opacity: 0;
+            filter: blur(6px);
+            pointer-events: none;
+        }
+
+        /* Synchronized Icon Roll & Blur */
+        #site-icon-signin {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform, opacity, filter;
+            transition: transform 0.36s cubic-bezier(0.32, 0.72, 0, 1),
+                        opacity 0.24s cubic-bezier(0.32, 0.72, 0, 1),
+                        filter 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+            transform: translate3d(0, 0, 0) scale(1);
+            opacity: 1;
+            filter: blur(0px);
+        }
+
+        #site-icon-signout {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform, opacity, filter;
+            transition: transform 0.36s cubic-bezier(0.32, 0.72, 0, 1),
+                        opacity 0.24s cubic-bezier(0.32, 0.72, 0, 1),
+                        filter 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+            transform: translate3d(0, -12px, 0) scale(0.85);
+            opacity: 0;
+            filter: blur(4px);
+            pointer-events: none;
+        }
+
+        /* STATE: SIGNED IN (Apple Control Centre active translucent glass mode) */
+        #site-signin-btn.is-signed-in {
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+        }
+
+        #site-signin-btn.is-signed-in #site-btn-color-layer {
+            opacity: 0; /* Color smoothly fades away to translucent frosted Apple glass */
+        }
+
+        #site-signin-btn.is-signed-in #site-btn-icon-box {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35);
+        }
+
+        @media (hover: hover) {
+            #site-signin-btn.is-signed-in:hover {
+                border-color: rgba(244, 63, 94, 0.4);
+                box-shadow: 0 8px 28px -4px rgba(244, 63, 94, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+            }
+            #site-signin-btn.is-signed-in:hover #site-btn-icon-box {
+                background-color: rgba(244, 63, 94, 0.25);
+                color: #fda4af;
+            }
+        }
+
+        /*
+         * Apple Control Centre DND motion rules:
+         * Both labels are anchored to the exact same left: 0 position.
+         * 1. Clicking Sign In: "Sign In" goes DOWN, blurs, and fades away.
+         *    "Sign Out" enters from above into the exact same position.
+         * 2. Clicking Sign Out: "Sign Out" goes UP, blurs, and fades away.
+         *    "Sign In" enters from below into the exact same position.
+         */
+        #site-signin-btn.is-signed-in #site-label-signin {
+            transform: translate3d(0, 16px, 0);
+            opacity: 0;
+            filter: blur(6px);
+            pointer-events: none;
+        }
+        #site-signin-btn.is-signed-in #site-label-signout {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+            filter: blur(0px);
+            pointer-events: auto;
+        }
+
+        #site-signin-btn.is-signed-in #site-icon-signin {
+            transform: translate3d(0, 12px, 0) scale(0.85);
+            opacity: 0;
+            filter: blur(4px);
+            pointer-events: none;
+        }
+        #site-signin-btn.is-signed-in #site-icon-signout {
+            transform: translate3d(0, 0, 0) scale(1);
+            opacity: 1;
+            filter: blur(0px);
+            pointer-events: auto;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .apple-control-label, #site-icon-signin, #site-icon-signout {
+                transform: none !important;
+                filter: none !important;
+                transition: opacity 0.2s ease !important;
+            }
+        }
+
         /* Frostier, near-solid surfaces when the user asks for less transparency */
         @media (prefers-reduced-transparency: reduce) {
             .liquid-glass, .true-glass, .apple-inset-group, .apple-list-group, #modal-content, .glass-card-apple, .glass-tile-apple {
@@ -762,6 +897,17 @@
                     <span class="w-2 h-2 rounded-full bg-limeAccent inline-block ml-[2px] translate-y-2"></span>
                 </div>
                 <div class="flex items-center gap-2">
+                    <!-- Notifications Button (Solid Lime Green Bell Icon) -->
+                    <button id="btn-notifications" 
+                            onclick="openNotificationsView()" 
+                            aria-label="Activity and Notifications" 
+                            title="Notifications" 
+                            class="relative w-10 h-10 rounded-full bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
+                        <i id="notif-top-icon" class="fa-solid fa-bell text-sm text-brand-lime transition-transform group-hover:scale-110"></i>
+                        <!-- Red Unread Indicator Dot -->
+                        <span id="notif-badge-dot" class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-rose-500 border-2 border-slate-900 shadow-xs animate-pulse"></span>
+                    </button>
+
                     <!-- Hamburger Menu Button -->
                     <button id="btn-hamburger" 
                             onclick="toggleSideDrawer()" 
@@ -1063,9 +1209,9 @@
                 <!-- Card Content Container -->
                 <div class="relative z-10 space-y-4">
                     
-                    <!-- Top Row: Site Info (Left) & Unified Attendance Capsule (Right) -->
+                    <!-- Top Row: Site Info (Left) & Control Module (Right) -->
                     <div class="flex items-start justify-between gap-3">
-                        <div class="space-y-1 min-w-0 pr-2">
+                        <div class="space-y-1 min-w-0 flex-1">
                             <!-- Status Kicker (Bolder Apple Typography) -->
                             <div id="site-status-kicker" class="flex items-center gap-2 text-xs font-black tracking-wider text-amber-400 uppercase">
                                 <span class="relative flex h-2 w-2">
@@ -1081,16 +1227,45 @@
                             </h2>
 
                             <!-- Clean Address Detail with Location Pin -->
-                            <p class="text-sm text-slate-300 font-medium tracking-wide flex items-center gap-1.5 pt-0.5">
-                                <i class="fa-solid fa-location-dot text-cyan-300 text-xs"></i>
+                            <p class="text-sm text-slate-300 font-medium tracking-wide flex items-center gap-1.5 pt-0.5 whitespace-nowrap">
+                                <i class="fa-solid fa-location-dot text-cyan-300 text-xs shrink-0"></i>
                                 <span>935 Forest Road</span>
                             </p>
                         </div>
 
-                        <!-- Top-Right Action Capsule (App Store Style CTA when not signed in, Frosted Glass when signed in) -->
-                        <button id="site-signin-btn" onclick="toggleSiteSignIn(event)" title="Tap to toggle attendance" class="px-5 py-2 rounded-full bg-brand-lime hover:bg-brand-limeHover text-slate-950 font-black text-xs tracking-wider uppercase shadow-[0_0_20px_rgba(204,255,0,0.4)] active:scale-95 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer min-h-[38px]">
-                            <i class="fa-solid fa-signature text-xs"></i>
-                            <span>Sign In</span>
+                        <!-- Top-Right Action Control Module (Apple Control Centre Focus/DND Architecture) -->
+                        <button id="site-signin-btn" 
+                                onclick="toggleSiteSignIn(event)" 
+                                title="Tap to Sign In" 
+                                aria-label="Site attendance: Not Signed In. Tap to Sign In." 
+                                class="relative h-[52px] w-[130px] rounded-[22px] overflow-hidden select-none cursor-pointer active:scale-95 transition-all duration-300 ease-out shrink-0 p-0 flex items-center border border-brand-lime shadow-[0_0_20px_rgba(204,255,0,0.35)] whitespace-nowrap">
+                            <!-- Apple Control Centre Glass Base Layer -->
+                            <div class="absolute inset-0 bg-white/[0.08] backdrop-blur-2xl pointer-events-none transition-colors duration-400"></div>
+
+                            <!-- Apple Vibrant Color Bloom Layer (Smoothly fades in/out without layout shifts) -->
+                            <div id="site-btn-color-layer" class="absolute inset-0 bg-brand-lime transition-opacity duration-400 pointer-events-none opacity-100"></div>
+
+                            <!-- Delicate Apple Top-Edge Light Reflection -->
+                            <div class="absolute inset-0 rounded-[22px] pointer-events-none shadow-[inset_0_1px_1px_rgba(255,255,255,0.45)]"></div>
+
+                            <!-- Foreground Content Row (Strict Single Line: Icon Badge + Vertical Blur-Roll Slot) -->
+                            <div class="relative z-10 w-full h-full px-2.5 flex items-center gap-2.5 whitespace-nowrap">
+                                <!-- Apple Control Circular Icon Capsule -->
+                                <div id="site-btn-icon-box" class="w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0 relative overflow-hidden transition-all duration-400 shadow-xs bg-slate-950 text-brand-lime">
+                                    <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <i id="site-icon-signin" class="fa-solid fa-signature text-xs"></i>
+                                    </span>
+                                    <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <i id="site-icon-signout" class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+                                    </span>
+                                </div>
+
+                                <!-- Apple Control Centre Vertical Blur-Rolling Label Slot (Single Line Guaranteed) -->
+                                <div class="relative flex-1 h-[22px] overflow-hidden whitespace-nowrap min-w-0">
+                                    <span id="site-label-signin" class="apple-control-label absolute inset-0 flex items-center justify-start font-black text-[13px] tracking-tight leading-none text-slate-950 whitespace-nowrap select-none">Sign In</span>
+                                    <span id="site-label-signout" class="apple-control-label absolute inset-0 flex items-center justify-start font-extrabold text-[13px] tracking-[-0.015em] leading-none text-white/95 whitespace-nowrap select-none">Sign Out</span>
+                                </div>
+                            </div>
                         </button>
                     </div>
 
@@ -1856,6 +2031,50 @@
             </div>
         </main>
 
+        <!-- ================= VIEW 10: NOTIFICATIONS & ACTIVITY (INSTAGRAM STYLE) ================= -->
+        <main id="view-notifications" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-4 sm:px-5 py-4 space-y-4 pb-28 relative max-w-full">
+            
+            <!-- Atmospheric Ambient Glow Orbs -->
+            <div class="absolute -top-10 -left-6 w-48 h-48 bg-rose-500/10 rounded-full blur-[65px] pointer-events-none"></div>
+            <div class="absolute top-48 -right-6 w-48 h-48 bg-emerald-500/10 rounded-full blur-[65px] pointer-events-none"></div>
+            <div class="absolute bottom-24 left-8 w-44 h-44 bg-cyan-500/10 rounded-full blur-[65px] pointer-events-none"></div>
+
+            <!-- Instagram Navigation Header -->
+            <div class="relative z-10 flex items-center justify-between px-1">
+                <div class="flex items-center gap-3">
+                    <button onclick="closeNotificationsView()" aria-label="Go Back" class="w-11 h-11 rounded-2xl bg-white/85 backdrop-blur-xl shadow-apple border border-white/60 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
+                        <i class="fa-solid fa-arrow-left text-base"></i>
+                    </button>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Notifications</h2>
+                            <span id="notif-count-pill" class="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black tracking-wide shadow-xs">3 New</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Site movements, safety & alerts</p>
+                    </div>
+                </div>
+
+                <!-- Mark All Read Utility -->
+                <button onclick="markAllNotificationsRead()" class="px-3 py-1.5 rounded-xl bg-white/85 hover:bg-white active:scale-95 text-xs font-bold text-slate-700 hover:text-slate-900 border border-black/[0.06] shadow-xs transition-all cursor-pointer flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-check-double text-[11px] text-emerald-600"></i>
+                    <span>Mark read</span>
+                </button>
+            </div>
+
+            <!-- Instagram Category Filter Chips -->
+            <div class="relative z-10 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5">
+                <button onclick="filterNotifications('all')" id="notif-filter-all" class="notif-filter-chip shrink-0 px-4 py-2 text-xs font-black rounded-xl bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer min-h-[38px]">All</button>
+                <button onclick="filterNotifications('shifts')" id="notif-filter-shifts" class="notif-filter-chip shrink-0 px-4 py-2 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[38px]">Sites & Shifts</button>
+                <button onclick="filterNotifications('tools')" id="notif-filter-tools" class="notif-filter-chip shrink-0 px-4 py-2 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[38px]">Tools</button>
+                <button onclick="filterNotifications('safety')" id="notif-filter-safety" class="notif-filter-chip shrink-0 px-4 py-2 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[38px]">Safety</button>
+            </div>
+
+            <!-- Notifications Feed Container (Grouped by Today, Yesterday, Earlier) -->
+            <div id="notifications-feed-list" class="relative z-10 space-y-4">
+                <!-- Injected via JavaScript -->
+            </div>
+        </main>
+
 <!-- Apple Fitness & Glisse Inspired Floating Liquid Glass Toolbar -->
 <nav id="floating-nav" 
      role="navigation"
@@ -2027,6 +2246,9 @@
             renderTeamDirectory(TEAM_DIRECTORY_DATA);
             renderToolsDirectory(TOOLS_DIRECTORY_DATA);
             updateSiteAttendanceUI();
+            if (typeof renderNotificationsFeed === 'function') {
+                renderNotificationsFeed('all');
+            }
         });
 
         window.addEventListener('load', () => {
@@ -2113,10 +2335,10 @@
                 kicker.className = "flex items-center gap-2 text-xs font-black tracking-wider text-brand-lime uppercase";
                 kicker.innerHTML = `<span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-brand-lime shadow-[0_0_6px_rgba(204,255,0,0.8)]"></span></span><span>Signed In</span>`;
 
-                // Button says "Sign Out" to sign out
-                btn.className = "px-4 py-2 rounded-full bg-white/10 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-white/20 hover:border-rose-400/30 font-bold text-xs backdrop-blur-md active:scale-95 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer min-h-[38px]";
+                // Apple Control Centre transition: activate signed-in state
+                btn.classList.add('is-signed-in');
                 btn.title = "Tap to Sign Out";
-                btn.innerHTML = `<i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i><span>Sign Out</span>`;
+                btn.setAttribute('aria-label', "Site attendance: Signed In. Tap to Sign Out.");
 
                 if (shiftTrack) {
                     shiftTrack.style.width = "65%";
@@ -2133,10 +2355,10 @@
                     <span>Not Signed In</span>
                 `;
 
-                // Button says "Sign In"
-                btn.className = "px-5 py-2 rounded-full bg-brand-lime hover:bg-brand-limeHover text-slate-950 font-black text-xs tracking-wider uppercase shadow-[0_0_20px_rgba(204,255,0,0.4)] active:scale-95 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer min-h-[38px]";
+                // Apple Control Centre transition: return to resting / sign-in state
+                btn.classList.remove('is-signed-in');
                 btn.title = "Tap to Sign In";
-                btn.innerHTML = `<i class="fa-solid fa-signature text-xs"></i><span>Sign In</span>`;
+                btn.setAttribute('aria-label', "Site attendance: Not Signed In. Tap to Sign In.");
 
                 if (ambientProgress) {
                     ambientProgress.style.opacity = "0.15";
@@ -2146,6 +2368,10 @@
                     shiftTrack.style.width = "0%";
                     shiftTrack.style.opacity = "0.3";
                 }
+            }
+
+            if (typeof renderNotificationsFeed === 'function') {
+                renderNotificationsFeed(currentActiveNotifFilter);
             }
         }
 
@@ -2320,8 +2546,14 @@ function switchTab(tabName) {
         navBar.classList.add('nav-pop-active');
     }
 
-    const allViews = ['home', 'week', 'sitehub', 'chat', 'jobs', 'team', 'tools', 'user-account', 'schedule'];
+    const allViews = ['home', 'week', 'sitehub', 'chat', 'jobs', 'team', 'tools', 'user-account', 'schedule', 'notifications'];
     const navTabs = ['home', 'week', 'chat', 'jobs', 'team'];
+
+    // De-highlight notifications button if switching to another view
+    const notifBtn = document.getElementById('btn-notifications');
+    if (tabName !== 'notifications' && notifBtn) {
+        notifBtn.classList.remove('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
+    }
 
     // Toggle views
     allViews.forEach(t => {
@@ -5145,6 +5377,312 @@ const TEAM_DIRECTORY_DATA = [
             </div>
         `;
     }).join('');
+}
+
+// =========================================================================
+// INSTAGRAM-STYLE NOTIFICATIONS & ACTIVITY ENGINE
+// =========================================================================
+let currentActiveNotifFilter = 'all';
+let viewBeforeNotifications = 'home';
+
+const NOTIFICATIONS_DATA = [
+    {
+        id: 'notif-signin',
+        category: 'shifts',
+        timeGroup: 'Today',
+        icon: 'fa-solid fa-location-dot',
+        iconBg: 'bg-emerald-950 text-brand-lime border border-brand-lime/30',
+        title: "You're at Lugarno today",
+        message: "Sign in when you get there to log your shift hours.",
+        meta: "935 Forest Rd • 7:00 AM - 3:30 PM",
+        time: "10m ago",
+        read: false,
+        actionType: 'signin'
+    },
+    {
+        id: 'notif-tool',
+        category: 'tools',
+        timeGroup: 'Today',
+        icon: 'fa-solid fa-screwdriver-wrench',
+        iconBg: 'bg-amber-950 text-amber-400 border border-amber-500/30',
+        title: "Tool moved",
+        message: "DeWalt 54V FlexVolt Table Saw moved from Lugarno to Sutherland Depot by Dave M.",
+        meta: "Asset #DW-8492 • Checked out",
+        time: "28m ago",
+        read: false,
+        actionType: 'tool'
+    },
+    {
+        id: 'notif-knockoff',
+        category: 'shifts',
+        timeGroup: 'Today',
+        icon: 'fa-solid fa-arrow-right-from-bracket',
+        iconBg: 'bg-rose-950 text-rose-400 border border-rose-500/30',
+        title: "Knock off check",
+        message: "Sign out before you leave site so your timesheet tracks accurately.",
+        meta: "Shift completion • 3:30 PM finish",
+        time: "2h ago",
+        read: false,
+        actionType: 'signout'
+    },
+    {
+        id: 'notif-safety',
+        category: 'safety',
+        timeGroup: 'Yesterday',
+        icon: 'fa-solid fa-cloud-bolt',
+        iconBg: 'bg-cyan-950 text-cyan-400 border border-cyan-500/30',
+        title: "Wet Weather Protocol Active",
+        message: "Slippery conditions on outdoor concrete slabs. High-traction boots and eye protection mandatory.",
+        meta: "Lugarno Site Safety Broadcast",
+        time: "Yesterday • 7:15 AM",
+        read: true,
+        actionType: null
+    },
+    {
+        id: 'notif-delivery',
+        category: 'shifts',
+        timeGroup: 'Yesterday',
+        icon: 'fa-solid fa-truck-ramp-box',
+        iconBg: 'bg-indigo-950 text-indigo-400 border border-indigo-500/30',
+        title: "Timber delivery confirmed",
+        message: "F-17 Hardwood structural pack unloaded at Forest Rd gate entrance.",
+        meta: "Order #LF-8924 • Signed by Dave",
+        time: "Yesterday • 11:20 AM",
+        read: true,
+        actionType: 'docket'
+    },
+    {
+        id: 'notif-roster',
+        category: 'shifts',
+        timeGroup: 'Earlier',
+        icon: 'fa-solid fa-calendar-check',
+        iconBg: 'bg-slate-900 text-brand-lime border border-brand-lime/40',
+        title: "Next week roster posted",
+        message: "Assigned to Cronulla Point project starting Monday 7:00 AM.",
+        meta: "Week 42 Schedule",
+        time: "3d ago",
+        read: true,
+        actionType: 'roster'
+    }
+];
+
+function openNotificationsView() {
+    triggerHaptic('light');
+    const activeNavTab = getActiveNavTab() || 'home';
+    if (activeNavTab !== 'notifications') {
+        viewBeforeNotifications = activeNavTab;
+    }
+    switchTab('notifications');
+    renderNotificationsFeed(currentActiveNotifFilter);
+
+    const notifBtn = document.getElementById('btn-notifications');
+    if (notifBtn) {
+        notifBtn.classList.add('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
+    }
+}
+
+function closeNotificationsView() {
+    triggerHaptic('light');
+    const notifBtn = document.getElementById('btn-notifications');
+    if (notifBtn) {
+        notifBtn.classList.remove('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
+    }
+    switchTab(viewBeforeNotifications || 'home');
+}
+
+function filterNotifications(category) {
+    triggerHaptic('light');
+    currentActiveNotifFilter = category;
+
+    // Update filter chip styling
+    const filterButtons = document.querySelectorAll('.notif-filter-chip');
+    filterButtons.forEach(btn => {
+        const isCurrent = btn.id === `notif-filter-${category}`;
+        if (isCurrent) {
+            btn.className = 'notif-filter-chip shrink-0 px-4 py-2 text-xs font-black rounded-xl bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer min-h-[38px]';
+        } else {
+            btn.className = 'notif-filter-chip shrink-0 px-4 py-2 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[38px]';
+        }
+    });
+
+    renderNotificationsFeed(category);
+}
+
+function markNotificationAsRead(id) {
+    const item = NOTIFICATIONS_DATA.find(n => n.id === id);
+    if (item && !item.read) {
+        item.read = true;
+        updateNotificationBadges();
+        renderNotificationsFeed(currentActiveNotifFilter);
+    }
+}
+
+function markAllNotificationsRead() {
+    triggerHaptic('success');
+    NOTIFICATIONS_DATA.forEach(n => n.read = true);
+    updateNotificationBadges();
+    renderNotificationsFeed(currentActiveNotifFilter);
+    showToast('Notifications', 'All caught up!');
+}
+
+function updateNotificationBadges() {
+    const unreadCount = NOTIFICATIONS_DATA.filter(n => !n.read).length;
+    const badgeDot = document.getElementById('notif-badge-dot');
+    const countPill = document.getElementById('notif-count-pill');
+
+    if (badgeDot) {
+        badgeDot.style.display = unreadCount > 0 ? 'block' : 'none';
+    }
+    if (countPill) {
+        if (unreadCount > 0) {
+            countPill.textContent = `${unreadCount} New`;
+            countPill.className = 'px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black tracking-wide shadow-xs';
+        } else {
+            countPill.textContent = 'All caught up';
+            countPill.className = 'px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 text-[10px] font-black tracking-wide border border-emerald-500/30';
+        }
+    }
+}
+
+function handleNotificationAction(e, id, actionType) {
+    if (e) e.stopPropagation();
+    markNotificationAsRead(id);
+
+    if (actionType === 'signin') {
+        toggleSiteSignIn(e);
+        renderNotificationsFeed(currentActiveNotifFilter);
+    } else if (actionType === 'signout') {
+        if (isSiteSignedIn) {
+            toggleSiteSignIn(e);
+            renderNotificationsFeed(currentActiveNotifFilter);
+        } else {
+            showToast('Site Status', 'You are already signed out.');
+        }
+    } else if (actionType === 'tool') {
+        closeNotificationsView();
+        switchTab('tools');
+        showToast('Tools & Gear', 'Viewing DeWalt 54V Table Saw movement');
+    } else if (actionType === 'roster') {
+        closeNotificationsView();
+        switchTab('week');
+    } else if (actionType === 'docket') {
+        triggerHaptic('medium');
+        showToast('Delivery Docket', 'Viewing delivery #LF-8924: 935 Forest Rd');
+    }
+}
+
+function renderNotificationsFeed(filter = 'all') {
+    const container = document.getElementById('notifications-feed-list');
+    if (!container) return;
+
+    updateNotificationBadges();
+
+    const filtered = filter === 'all' 
+        ? NOTIFICATIONS_DATA 
+        : NOTIFICATIONS_DATA.filter(n => n.category === filter);
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="py-16 text-center text-slate-400 space-y-2">
+                <div class="w-14 h-14 rounded-full bg-white/70 backdrop-blur-xl border border-white/80 shadow-apple flex items-center justify-center mx-auto text-slate-300">
+                    <i class="fa-regular fa-bell-slash text-xl"></i>
+                </div>
+                <h3 class="text-sm font-bold text-slate-700">No Notifications</h3>
+                <p class="text-xs text-slate-500">There are no updates in this category right now.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const groups = ['Today', 'Yesterday', 'Earlier'];
+    let html = '';
+
+    groups.forEach(groupName => {
+        const groupItems = filtered.filter(n => n.timeGroup === groupName);
+        if (groupItems.length === 0) return;
+
+        html += `
+            <div class="space-y-2.5">
+                <div class="flex items-center justify-between px-1">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-400">${groupName}</h3>
+                    <span class="text-[10px] font-bold text-slate-400">${groupItems.length} update${groupItems.length > 1 ? 's' : ''}</span>
+                </div>
+                <div class="space-y-2">
+                    ${groupItems.map(item => {
+                        let actionButtonHtml = '';
+                        if (item.actionType === 'signin') {
+                            if (isSiteSignedIn) {
+                                actionButtonHtml = `
+                                    <button onclick="handleNotificationAction(event, '${item.id}', 'signin')" class="shrink-0 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 text-xs font-black shadow-xs hover:bg-emerald-500/25 active:scale-95 transition-all">
+                                        Signed In ✓
+                                    </button>
+                                `;
+                            } else {
+                                actionButtonHtml = `
+                                    <button onclick="handleNotificationAction(event, '${item.id}', 'signin')" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-brand-lime hover:bg-brand-limeHover border border-brand-lime text-slate-950 text-xs font-black shadow-[0_0_12px_rgba(204,255,0,0.35)] active:scale-95 transition-all">
+                                        Sign In
+                                    </button>
+                                `;
+                            }
+                        } else if (item.actionType === 'signout') {
+                            actionButtonHtml = `
+                                <button onclick="handleNotificationAction(event, '${item.id}', 'signout')" class="shrink-0 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-rose-300 border border-rose-500/30 text-xs font-black active:scale-95 transition-all shadow-xs">
+                                    Sign Out
+                                </button>
+                            `;
+                        } else if (item.actionType === 'tool') {
+                            actionButtonHtml = `
+                                <button onclick="handleNotificationAction(event, '${item.id}', 'tool')" class="shrink-0 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-brand-lime text-xs font-black active:scale-95 transition-all shadow-xs">
+                                    Locate
+                                </button>
+                            `;
+                        } else if (item.actionType === 'roster') {
+                            actionButtonHtml = `
+                                <button onclick="handleNotificationAction(event, '${item.id}', 'roster')" class="shrink-0 px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-slate-800 border border-slate-200 text-xs font-black active:scale-95 transition-all shadow-xs">
+                                    View
+                                </button>
+                            `;
+                        } else if (item.actionType === 'docket') {
+                            actionButtonHtml = `
+                                <button onclick="handleNotificationAction(event, '${item.id}', 'docket')" class="shrink-0 px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-slate-800 border border-slate-200 text-xs font-black active:scale-95 transition-all shadow-xs">
+                                    Docket
+                                </button>
+                            `;
+                        }
+
+                        return `
+                            <div onclick="markNotificationAsRead('${item.id}')" 
+                                 class="relative rounded-2xl p-3.5 ${item.read ? 'bg-white/70 hover:bg-white/90' : 'bg-white/95 hover:bg-white border-l-4 border-l-rose-500'} backdrop-blur-xl border border-white/90 shadow-apple flex items-center justify-between gap-3 transition-all cursor-pointer group active:scale-[0.99] overflow-hidden">
+                                
+                                <div class="flex items-start gap-3 min-w-0 flex-1">
+                                    <!-- Instagram/Apple Circular Badge Icon -->
+                                    <div class="w-10 h-10 rounded-full ${item.iconBg} flex items-center justify-center shrink-0 shadow-xs relative mt-0.5">
+                                        <i class="${item.icon} text-sm"></i>
+                                        ${!item.read ? '<span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white shadow-xs animate-pulse"></span>' : ''}
+                                    </div>
+
+                                    <!-- Content -->
+                                    <div class="min-w-0 flex-1 pr-1">
+                                        <div class="flex items-center justify-between gap-1">
+                                            <h4 class="text-xs font-black ${item.read ? 'text-slate-800' : 'text-slate-950'} tracking-tight leading-tight truncate">${item.title}</h4>
+                                            <span class="text-[10px] font-bold text-slate-400 shrink-0">${item.time}</span>
+                                        </div>
+                                        <p class="text-xs text-slate-600 font-medium leading-relaxed mt-0.5">${item.message}</p>
+                                        <p class="text-[10px] font-semibold text-slate-400 mt-1 truncate">${item.meta}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Action Button on Right -->
+                                ${actionButtonHtml ? `<div class="shrink-0">${actionButtonHtml}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
 }
     </script>
 </body>
