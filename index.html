@@ -620,17 +620,6 @@
             display: block !important;
         }
 
-        /* ================= APPLE SHEET RECEDING STAGE (VAUL / IOS FLUID DEPTH) ================= */
-        #app-container.modal-active {
-            background: #000000 !important;
-        }
-        #app-container.modal-active #app-side-drawer,
-        #app-container.modal-active #drawer-layer-card {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
-        }
-
         .drawer-nav-item {
             transition: background-color 0.2s ease, transform 0.2s var(--ease-spring), color 0.2s ease;
         }
@@ -2402,7 +2391,6 @@ function setStatusBarThemeColor(color, isDark = false) {
 }
 
 let drawerStageTimer = null;
-let modalStageTimer = null;
 
 function openSideDrawer() {
     triggerHaptic('light');
@@ -2413,18 +2401,6 @@ function openSideDrawer() {
     if (!container) return;
 
     if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
-    if (modalStageTimer) { clearTimeout(modalStageTimer); modalStageTimer = null; }
-
-    container.classList.remove('modal-active');
-    // Reset any lingering inline style overrides from sheet modals so 3D transform aligns with left-center
-    if (stage) {
-        stage.style.transform = '';
-        stage.style.transformOrigin = '';
-        stage.style.borderRadius = '';
-        stage.style.boxShadow = '';
-        stage.style.filter = '';
-        stage.style.transition = '';
-    }
 
     container.classList.add('drawer-open');
     document.documentElement.classList.add('drawer-open');
@@ -2455,7 +2431,7 @@ function closeSideDrawer() {
     if (stage) {
         drawerStageTimer = setTimeout(() => {
             drawerStageTimer = null;
-            if (!container.classList.contains('drawer-open') && !container.classList.contains('modal-active')) {
+            if (!container.classList.contains('drawer-open')) {
                 stage.style.transform = '';
                 stage.style.transformOrigin = '';
                 stage.style.borderRadius = '';
@@ -2537,94 +2513,265 @@ function drawerNavigate(target) {
         }
     }, { passive: false });
 
-    // ================= 3D DRAWER RIGHT-EDGE SWIPE TO OPEN & DISMISS =================
+    // ================= 3D DRAWER 1:1 INTERACTIVE IOS SWIPE & DRAG =================
     const container = document.getElementById('app-container');
     const stage = document.getElementById('app-main-stage');
     const drawer = document.getElementById('app-side-drawer');
-    
+    const layerCard = document.getElementById('drawer-layer-card');
+    const hamburger = document.getElementById('btn-hamburger');
+
     let touchStartX = 0;
     let touchStartY = 0;
-    let isSwipeToOpenArmed = false;
-    let drawerSwipeHandled = false;
+    let lastTouchX = 0;
+    let lastTouchT = 0;
+    let velocity = 0;
+    let isArmed = false;
+    let isDragging = false;
+    let gestureMode = null; // 'open' | 'close'
+    let currentProgress = 0;
+
+    function renderDrawerProgress(p) {
+        currentProgress = p;
+        if (!stage || !layerCard || !drawer) return;
+
+        // Stage 3D Perspective (0% to -74%, scale 1.0 to 0.85, radius 0 to 36px)
+        stage.style.transformOrigin = 'left center';
+        stage.style.transform = `translate3d(${-74 * p}%, 0, 0) scale(${1 - 0.15 * p})`;
+        stage.style.borderRadius = `${36 * p}px`;
+        stage.style.boxShadow = `20px 15px 50px rgba(0, 0, 0, ${0.45 * p}), 0 25px 50px rgba(0, 0, 0, ${0.25 * p})`;
+        stage.style.filter = `brightness(${1 - 0.04 * p})`;
+
+        // Intermediate Layer Card (0% to -54%, scale 1.0 to 0.82, opacity 0 to 0.8)
+        layerCard.style.transformOrigin = 'left center';
+        layerCard.style.transform = `translate3d(${-54 * p}%, 0, 0) scale(${1 - 0.18 * p})`;
+        layerCard.style.opacity = `${0.8 * p}`;
+        layerCard.style.boxShadow = `16px 12px 40px rgba(0, 0, 0, ${0.35 * p}), 0 10px 25px rgba(0, 0, 0, ${0.2 * p})`;
+
+        // Side Drawer (shifts from 12px to 0px, opacity 0 to 1)
+        drawer.style.transform = `translate3d(${12 * (1 - p)}px, 0, 0)`;
+        drawer.style.opacity = `${p}`;
+        drawer.style.pointerEvents = p > 0.6 ? 'auto' : 'none';
+
+        if (p > 0.35) {
+            setStatusBarThemeColor('#061e14', true);
+            document.documentElement.classList.add('drawer-open');
+            document.body.classList.add('drawer-open');
+        } else {
+            setStatusBarThemeColor('#F3F4F6', false);
+            document.documentElement.classList.remove('drawer-open');
+            document.body.classList.remove('drawer-open');
+        }
+    }
+
+    function animateDrawerTo(targetProgress, onComplete) {
+        if (!stage || !layerCard || !drawer) return;
+        const easeCurve = 'transform 0.38s var(--ease-drawer), border-radius 0.38s var(--ease-drawer), box-shadow 0.38s var(--ease-drawer), opacity 0.35s ease, filter 0.35s ease';
+        stage.style.transition = easeCurve;
+        layerCard.style.transition = easeCurve;
+        drawer.style.transition = easeCurve;
+
+        renderDrawerProgress(targetProgress);
+
+        setTimeout(() => {
+            if (stage) stage.style.transition = '';
+            if (layerCard) layerCard.style.transition = '';
+            if (drawer) drawer.style.transition = '';
+            if (onComplete) onComplete();
+        }, 390);
+    }
 
     function onDrawerTouchStart(e) {
         if (!container || (e.touches && e.touches.length > 1)) return;
         const touch = e.touches[0];
-        touchStartX = touch.clientX;
+        touchStartX = lastTouchX = touch.clientX;
         touchStartY = touch.clientY;
-        drawerSwipeHandled = false;
+        lastTouchT = performance.now();
+        velocity = 0;
+        isDragging = false;
+        isArmed = false;
 
         const isDrawerOpen = container.classList.contains('drawer-open');
         const modalOverlay = document.getElementById('modal-overlay');
         const isModalOpen = modalOverlay && !modalOverlay.classList.contains('opacity-0');
 
-        if (!isDrawerOpen && !isModalOpen) {
-            // Check if touch started on the right side of the screen/container
-            const rect = container.getBoundingClientRect();
-            const rightEdgeThreshold = Math.max(rect.right - 90, rect.left + rect.width * 0.72);
-            const notInHorizontalScroller = !e.target.closest('.overflow-x-auto, input, textarea, select');
-            isSwipeToOpenArmed = (touch.clientX >= rightEdgeThreshold) && notInHorizontalScroller;
+        if (isModalOpen) return;
+
+        if (isDrawerOpen) {
+            // Anywhere on container or stage can drag rightwards to close
+            isArmed = true;
+            gestureMode = 'close';
+            currentProgress = 1;
         } else {
-            isSwipeToOpenArmed = false;
+            // Check if touch started on the right edge of container
+            const rect = container.getBoundingClientRect();
+            const rightEdgeThreshold = Math.max(rect.right - 80, rect.left + rect.width * 0.75);
+            const notInHorizontalScroller = !e.target.closest('.overflow-x-auto, input, textarea, select');
+            if (touch.clientX >= rightEdgeThreshold && notInHorizontalScroller) {
+                isArmed = true;
+                gestureMode = 'open';
+                currentProgress = 0;
+            }
         }
     }
 
     function onDrawerTouchMove(e) {
-        if (drawerSwipeHandled || !container) return;
+        if (!isArmed || !container) return;
         const touch = e.touches[0];
         const diffX = touch.clientX - touchStartX;
         const diffY = touch.clientY - touchStartY;
-        const isDrawerOpen = container.classList.contains('drawer-open');
 
-        // Case 1: Drawer is closed -> sliding from right edge towards left opens drawer
-        if (isSwipeToOpenArmed && !isDrawerOpen) {
-            if (diffX < -32 && Math.abs(diffX) > Math.abs(diffY) * 1.1) {
-                drawerSwipeHandled = true;
-                isSwipeToOpenArmed = false;
-                openSideDrawer();
+        if (!isDragging) {
+            const isHorizontal = Math.abs(diffX) > Math.abs(diffY) * 1.1;
+            if (gestureMode === 'open' && diffX < -6 && isHorizontal) {
+                isDragging = true;
+                if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
+            } else if (gestureMode === 'close' && diffX > 6 && isHorizontal) {
+                isDragging = true;
+                if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
+            } else if (Math.abs(diffY) > 8) {
+                isArmed = false; // scrolling vertically
+                return;
             }
         }
-        // Case 2: Drawer is open -> sliding rightwards closes drawer
-        else if (isDrawerOpen) {
-            if (diffX > 32 && Math.abs(diffX) > Math.abs(diffY) * 1.1) {
-                drawerSwipeHandled = true;
-                closeSideDrawer();
+
+        if (isDragging) {
+            if (e.cancelable) e.preventDefault();
+
+            const maxDist = Math.max(1, container.offsetWidth * 0.74);
+            let p;
+            if (gestureMode === 'open') {
+                p = Math.max(0, Math.min(1.04, (-diffX) / maxDist));
+            } else {
+                p = Math.max(-0.04, Math.min(1, 1 - (diffX / maxDist)));
             }
+
+            const now = performance.now();
+            const dt = Math.max(1, now - lastTouchT);
+            velocity = 0.8 * ((touch.clientX - lastTouchX) / dt) + 0.2 * velocity;
+            lastTouchX = touch.clientX;
+            lastTouchT = now;
+
+            stage.style.transition = 'none';
+            layerCard.style.transition = 'none';
+            drawer.style.transition = 'none';
+            renderDrawerProgress(p);
         }
     }
 
     function onDrawerTouchEnd(e) {
-        if (!container || drawerSwipeHandled) return;
-        const touch = e.changedTouches ? e.changedTouches[0] : null;
-        if (!touch) return;
-        const diffX = touch.clientX - touchStartX;
-        const diffY = touch.clientY - touchStartY;
-        const isDrawerOpen = container.classList.contains('drawer-open');
+        if (!isArmed) return;
+        isArmed = false;
 
-        if (isSwipeToOpenArmed && !isDrawerOpen) {
-            // Quick flick from the right side towards left
-            if (diffX < -25 && Math.abs(diffX) > Math.abs(diffY)) {
-                drawerSwipeHandled = true;
-                openSideDrawer();
-            }
-        } else if (isDrawerOpen) {
-            // Swipe right or tap on stage closes drawer
-            if (diffX > 25 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (!isDragging) {
+            // Tapped on stage/overlay while drawer is open -> close it
+            if (gestureMode === 'close') {
                 closeSideDrawer();
             }
+            return;
         }
-        isSwipeToOpenArmed = false;
+
+        isDragging = false;
+        const p = currentProgress;
+
+        if (gestureMode === 'open') {
+            // Opening threshold: needs to drag past 30% or flick with left velocity
+            const shouldOpen = (p > 0.30) || (velocity < -0.32);
+            if (shouldOpen) {
+                animateDrawerTo(1, () => {
+                    container.classList.add('drawer-open');
+                    document.documentElement.classList.add('drawer-open');
+                    document.body.classList.add('drawer-open');
+                    setStatusBarThemeColor('#061e14', true);
+                    if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+                    if (drawer) drawer.setAttribute('aria-hidden', 'false');
+                    // Clear overrides to let CSS class hold state
+                    stage.style.transform = '';
+                    stage.style.transformOrigin = '';
+                    stage.style.borderRadius = '';
+                    stage.style.boxShadow = '';
+                    stage.style.filter = '';
+                    layerCard.style.transform = '';
+                    layerCard.style.opacity = '';
+                    layerCard.style.boxShadow = '';
+                    drawer.style.transform = '';
+                    drawer.style.opacity = '';
+                    drawer.style.pointerEvents = '';
+                });
+            } else {
+                // Didn't drag enough -> cancel and snap back closed
+                animateDrawerTo(0, () => {
+                    container.classList.remove('drawer-open');
+                    document.documentElement.classList.remove('drawer-open');
+                    document.body.classList.remove('drawer-open');
+                    setStatusBarThemeColor('#F3F4F6', false);
+                    if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+                    if (drawer) drawer.setAttribute('aria-hidden', 'true');
+                    stage.style.transform = '';
+                    stage.style.transformOrigin = '';
+                    stage.style.borderRadius = '';
+                    stage.style.boxShadow = '';
+                    stage.style.filter = '';
+                    layerCard.style.transform = '';
+                    layerCard.style.opacity = '';
+                    layerCard.style.boxShadow = '';
+                    drawer.style.transform = '';
+                    drawer.style.opacity = '';
+                    drawer.style.pointerEvents = '';
+                });
+            }
+        } else if (gestureMode === 'close') {
+            // Closing threshold: needs to drag rightwards past 30% (p < 0.70) or flick right
+            const shouldClose = (p < 0.70) || (velocity > 0.32);
+            if (shouldClose) {
+                animateDrawerTo(0, () => {
+                    container.classList.remove('drawer-open');
+                    document.documentElement.classList.remove('drawer-open');
+                    document.body.classList.remove('drawer-open');
+                    setStatusBarThemeColor('#F3F4F6', false);
+                    if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+                    if (drawer) drawer.setAttribute('aria-hidden', 'true');
+                    stage.style.transform = '';
+                    stage.style.transformOrigin = '';
+                    stage.style.borderRadius = '';
+                    stage.style.boxShadow = '';
+                    stage.style.filter = '';
+                    layerCard.style.transform = '';
+                    layerCard.style.opacity = '';
+                    layerCard.style.boxShadow = '';
+                    drawer.style.transform = '';
+                    drawer.style.opacity = '';
+                    drawer.style.pointerEvents = '';
+                });
+            } else {
+                // Didn't drag enough -> snap back open
+                animateDrawerTo(1, () => {
+                    container.classList.add('drawer-open');
+                    document.documentElement.classList.add('drawer-open');
+                    document.body.classList.add('drawer-open');
+                    setStatusBarThemeColor('#061e14', true);
+                    if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+                    if (drawer) drawer.setAttribute('aria-hidden', 'false');
+                    stage.style.transform = '';
+                    stage.style.transformOrigin = '';
+                    stage.style.borderRadius = '';
+                    stage.style.boxShadow = '';
+                    stage.style.filter = '';
+                    layerCard.style.transform = '';
+                    layerCard.style.opacity = '';
+                    layerCard.style.boxShadow = '';
+                    drawer.style.transform = '';
+                    drawer.style.opacity = '';
+                    drawer.style.pointerEvents = '';
+                });
+            }
+        }
     }
 
-    if (stage) {
-        stage.addEventListener('touchstart', onDrawerTouchStart, { passive: true });
-        stage.addEventListener('touchmove', onDrawerTouchMove, { passive: true });
-        stage.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
-    }
-    if (drawer) {
-        drawer.addEventListener('touchstart', onDrawerTouchStart, { passive: true });
-        drawer.addEventListener('touchmove', onDrawerTouchMove, { passive: true });
-        drawer.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
+    if (container) {
+        container.addEventListener('touchstart', onDrawerTouchStart, { passive: true });
+        container.addEventListener('touchmove', onDrawerTouchMove, { passive: false });
+        container.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
+        container.addEventListener('touchcancel', onDrawerTouchEnd, { passive: true });
     }
 });
 
@@ -2662,27 +2809,12 @@ window.addEventListener('resize', () => {
             const appContainer = document.getElementById('app-container');
             const stage = document.getElementById('app-main-stage');
 
-            // Cancel any pending close timers so the stage stays locked in recessed depth
-            if (modalStageTimer) { clearTimeout(modalStageTimer); modalStageTimer = null; }
-            if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
-
             // Clear any leftover drag offset so the sheet always rises from fully closed
             content.classList.remove('is-dragging');
             content.style.transform = '';
             content.style.transition = '';
             const bodyScroller = document.getElementById('modal-body');
             if (bodyScroller) bodyScroller.scrollTop = 0;
-
-            // Apple iOS Sheet Receding Card Depth Animation (hardware-accelerated, composite-only)
-            if (appContainer) appContainer.classList.add('modal-active');
-            setStatusBarThemeColor('#000000', true);
-            if (stage) {
-                stage.style.transition = 'transform 0.42s var(--ease-drawer), border-radius 0.42s var(--ease-drawer), box-shadow 0.42s ease';
-                stage.style.transformOrigin = 'center top';
-                stage.style.transform = 'scale(0.93) translateY(-4px)';
-                stage.style.borderRadius = '32px';
-                stage.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.55)';
-            }
 
             overlay.classList.remove('opacity-0', 'pointer-events-none');
             overlay.setAttribute('aria-hidden', 'false');
@@ -2693,29 +2825,6 @@ window.addEventListener('resize', () => {
             triggerHaptic('light');
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
-            const appContainer = document.getElementById('app-container');
-            const stage = document.getElementById('app-main-stage');
-
-            setStatusBarThemeColor('#F3F4F6', false);
-            if (modalStageTimer) { clearTimeout(modalStageTimer); modalStageTimer = null; }
-
-            // Restore the whole app stage smoothly with Apple spring settle
-            if (stage) {
-                stage.style.transition = 'transform 0.35s var(--ease-drawer), border-radius 0.35s var(--ease-drawer), box-shadow 0.35s ease';
-                stage.style.transform = '';
-                stage.style.borderRadius = '';
-                stage.style.boxShadow = '';
-                modalStageTimer = setTimeout(() => {
-                    modalStageTimer = null;
-                    if (stage && (!overlay || overlay.classList.contains('opacity-0'))) {
-                        stage.style.transformOrigin = '';
-                        stage.style.transition = '';
-                        if (appContainer) appContainer.classList.remove('modal-active');
-                    }
-                }, 360);
-            } else if (appContainer) {
-                appContainer.classList.remove('modal-active');
-            }
 
             // Animate from wherever the sheet is right now (mid-drag included) down to closed
             content.classList.remove('is-dragging');
@@ -2803,15 +2912,6 @@ window.addEventListener('resize', () => {
                         ? offset
                         : rubberband(offset, content.offsetHeight);
                     content.style.transform = `translate3d(0, ${translate}px, 0)`;
-
-                    // Real-time physical stage recovery tracking the finger pull (1:1 with sheet drag)
-                    const stage = document.getElementById('app-main-stage');
-                    if (stage && offset > 0) {
-                        const progress = Math.min(1, offset / (content.offsetHeight * 0.7));
-                        const currentScale = 0.93 + (0.07 * progress);
-                        stage.style.transition = 'none';
-                        stage.style.transform = `scale(${currentScale}) translateY(${-4 * (1 - progress)}px)`;
-                    }
                 }, { passive: false });
 
                 const release = () => {
@@ -2831,11 +2931,6 @@ window.addEventListener('resize', () => {
                         // Settle back with the Apple spring curve: critically damped, smooth settle
                         content.style.transition = 'transform 0.4s var(--ease-drawer)';
                         content.style.transform = '';
-                        const stage = document.getElementById('app-main-stage');
-                        if (stage) {
-                            stage.style.transition = 'transform 0.4s var(--ease-drawer)';
-                            stage.style.transform = 'scale(0.93) translateY(-4px)';
-                        }
                         setTimeout(() => { if (!dragging) content.style.transition = ''; }, 420);
                     }
                 };
