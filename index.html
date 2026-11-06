@@ -598,26 +598,28 @@
         }
 
         #app-container.drawer-open #app-side-drawer {
-            opacity: 1 !important;
-            pointer-events: auto !important;
-            transform: translate3d(0, 0, 0) !important;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate3d(0, 0, 0);
         }
 
         #app-container.drawer-open #drawer-layer-card {
-            opacity: 0.8 !important;
-            transform: translate3d(-54%, 0, 0) scale(0.82) !important;
-            box-shadow: 16px 12px 40px rgba(0, 0, 0, 0.35), 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+            opacity: 0.8;
+            pointer-events: auto;
+            cursor: pointer;
+            transform: translate3d(-54%, 0, 0) scale(0.82);
+            box-shadow: 16px 12px 40px rgba(0, 0, 0, 0.35), 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         #app-container.drawer-open #app-main-stage {
-            transform: translate3d(-74%, 0, 0) scale(0.85) !important;
-            border-radius: 36px !important;
-            box-shadow: 20px 15px 50px rgba(0, 0, 0, 0.45), 0 25px 50px rgba(0, 0, 0, 0.25) !important;
+            transform: translate3d(-74%, 0, 0) scale(0.85);
+            border-radius: 36px;
+            box-shadow: 20px 15px 50px rgba(0, 0, 0, 0.45), 0 25px 50px rgba(0, 0, 0, 0.25);
             filter: brightness(0.96);
         }
 
         #app-container.drawer-open #drawer-dismiss-overlay {
-            display: block !important;
+            display: block;
         }
 
         .drawer-nav-item {
@@ -747,7 +749,7 @@
     </aside>
 
     <!-- Intermediate 3D Layer Card (Physical Depth Effect as in Reference Image) -->
-    <div id="drawer-layer-card" class="absolute inset-0 bg-emerald-500/[0.12] backdrop-blur-2xl rounded-[32px] border border-emerald-400/30 shadow-2xl pointer-events-none z-10 opacity-0" style="transform: translate3d(0,0,0) scale(1);"></div>
+    <div id="drawer-layer-card" onclick="closeSideDrawer()" role="button" aria-label="Close navigation menu" class="absolute inset-0 bg-emerald-500/[0.12] backdrop-blur-2xl rounded-[32px] border border-emerald-400/30 shadow-2xl pointer-events-none z-10 opacity-0" style="transform: translate3d(0,0,0) scale(1);"></div>
 
     <!-- Main Screen Content Stage (Transforms in 3D when drawer opens) -->
     <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30 pb-[env(safe-area-inset-bottom,0px)]">
@@ -2527,6 +2529,7 @@ function drawerNavigate(target) {
     let velocity = 0;
     let isArmed = false;
     let isDragging = false;
+    let touchStartsOnCards = false;
     let gestureMode = null; // 'open' | 'close'
     let currentProgress = 0;
 
@@ -2597,11 +2600,14 @@ function drawerNavigate(target) {
         if (isModalOpen) return;
 
         if (isDrawerOpen) {
-            // Anywhere on container or stage can drag rightwards to close
+            // When drawer is open: grabbing the left depth card / main stage (left ~52%) commits instantly
+            const leftZoneThreshold = container.offsetWidth * 0.52;
+            touchStartsOnCards = touch.clientX <= leftZoneThreshold;
             isArmed = true;
             gestureMode = 'close';
             currentProgress = 1;
         } else {
+            touchStartsOnCards = false;
             // Check if touch started on the right edge of container
             const rect = container.getBoundingClientRect();
             const rightEdgeThreshold = Math.max(rect.right - 80, rect.left + rect.width * 0.75);
@@ -2625,11 +2631,12 @@ function drawerNavigate(target) {
             if (gestureMode === 'open' && diffX < -6 && isHorizontal) {
                 isDragging = true;
                 if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
-            } else if (gestureMode === 'close' && diffX > 6 && isHorizontal) {
+            } else if (gestureMode === 'close' && diffX > 4 && (isHorizontal || touchStartsOnCards)) {
+                // If touching on the left depth card / stage, commit immediately to dragging right!
                 isDragging = true;
                 if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
-            } else if (Math.abs(diffY) > 8) {
-                isArmed = false; // scrolling vertically
+            } else if (!touchStartsOnCards && Math.abs(diffY) > 8) {
+                isArmed = false; // scrolling vertically in drawer menu
                 return;
             }
         }
