@@ -327,6 +327,248 @@
         .roster-chevron {
             transition: transform 240ms var(--ease-out);
         }
+
+        /* ================= APPLE-ESQUE RAIN MODE MOTION ================= */
+        .roster-card-surface {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            transition: border-color 380ms var(--ease-out),
+                        box-shadow 380ms var(--ease-out),
+                        color 320ms var(--ease-out);
+            will-change: border-color, box-shadow;
+        }
+
+        .roster-card-surface.is-rain-mode {
+            border-color: rgba(96, 165, 250, 0.45) !important;
+            box-shadow: 
+                inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.3),
+                0 18px 40px -8px rgba(0, 0, 0, 0.55),
+                0 0 28px -4px rgba(59, 130, 246, 0.3) !important;
+        }
+
+        .roster-rain-backdrop {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: 24px;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 400ms cubic-bezier(0.23, 1, 0.32, 1);
+            background: linear-gradient(145deg, rgba(11, 26, 56, 0.97) 0%, rgba(12, 22, 45, 0.98) 50%, rgba(6, 11, 24, 0.99) 100%);
+            will-change: opacity;
+        }
+
+        .roster-card-surface.is-rain-mode .roster-rain-backdrop {
+            opacity: 1;
+        }
+
+        /* Rain site toggle button with Apple physics */
+        .roster-rain-btn {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 350ms var(--ease-out),
+                        color 350ms var(--ease-out),
+                        border-color 350ms var(--ease-out),
+                        box-shadow 350ms var(--ease-out),
+                        transform 150ms var(--ease-out);
+            will-change: transform, background-color, border-color, box-shadow;
+        }
+        .roster-rain-btn:active {
+            transform: scale(0.90) !important;
+        }
+
+        .roster-rain-btn.is-inactive {
+            background-color: #0f172a;
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.5);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+        .roster-rain-btn.is-inactive:hover {
+            background-color: #1e293b;
+            border-color: rgba(96, 165, 250, 0.7);
+        }
+
+        .roster-rain-btn.is-active {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: 1px solid #93c5fd;
+            box-shadow: 0 0 18px rgba(59, 130, 246, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+        }
+        .roster-rain-btn.is-active:hover {
+            background-color: #2563eb;
+        }
+
+        @keyframes appleToggleSpring {
+            0% { transform: scale(1); }
+            30% { transform: scale(0.76); }
+            60% { transform: scale(1.24); }
+            85% { transform: scale(0.96); }
+            100% { transform: scale(1); }
+        }
+
+        .roster-rain-icon {
+            display: inline-block;
+            transition: transform 200ms var(--ease-out);
+        }
+
+        .roster-rain-icon.spring-pop {
+            animation: appleToggleSpring 420ms var(--ease-spring);
+        }
+
+        .roster-rain-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+            transition: background-color 350ms var(--ease-out),
+                        color 350ms var(--ease-out),
+                        border-color 350ms var(--ease-out);
+        }
+
+        .roster-rain-badge.is-inactive {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: 1.5px solid #ffffff;
+        }
+
+        .roster-rain-badge.is-active {
+            background-color: #ffffff;
+            color: #2563eb;
+            border: 1.5px solid #bfdbfe;
+        }
+
+        .roster-rain-badge-icon {
+            font-size: 9px;
+            line-height: 1;
+            display: inline-block;
+            transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .roster-rain-btn.is-active .roster-rain-badge-icon {
+            transform: rotate(180deg);
+        }
+
+        .roster-rain-btn.is-inactive .roster-rain-badge-icon {
+            transform: rotate(0deg);
+        }
+
+        /* Chevron Container transitions */
+        .roster-chevron-btn {
+            transition: background-color 350ms var(--ease-out),
+                        border-color 350ms var(--ease-out),
+                        color 350ms var(--ease-out);
+        }
+        .roster-chevron-btn.is-dark {
+            color: #e2e8f0;
+            background-color: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .roster-chevron-btn.is-dark:hover {
+            background-color: rgba(255, 255, 255, 0.20);
+        }
+        .roster-chevron-btn.is-light {
+            color: #475569;
+            background-color: rgba(15, 23, 42, 0.05);
+            border: 1px solid rgba(15, 23, 42, 0.10);
+        }
+        .roster-chevron-btn.is-light:hover {
+            background-color: rgba(15, 23, 42, 0.10);
+        }
+
+        /* Title and Address text crossfade */
+        .site-title {
+            transition: opacity 180ms var(--ease-out),
+                        transform 180ms var(--ease-out),
+                        color 320ms var(--ease-out);
+        }
+        .site-address {
+            transition: color 320ms var(--ease-out);
+        }
+        .site-address-text {
+            display: inline-block;
+            transition: opacity 180ms var(--ease-out),
+                        transform 180ms var(--ease-out);
+        }
+
+        /* Team divider and chips */
+        .roster-team-divider {
+            transition: border-color 350ms var(--ease-out);
+        }
+        .roster-with-label {
+            transition: color 350ms var(--ease-out);
+        }
+        .roster-team-chip {
+            transition: background-color 350ms var(--ease-out),
+                        color 350ms var(--ease-out),
+                        border-color 350ms var(--ease-out);
+        }
+
+        /* Rain Protocol Pill Slot — Apple Dynamic Island style emergence & graceful collapse */
+        .rain-protocol-pill-slot {
+            display: grid;
+            grid-template-rows: 0fr;
+            margin-top: 0px;
+            opacity: 0;
+            pointer-events: none;
+            transition: grid-template-rows 360ms cubic-bezier(0.23, 1, 0.32, 1),
+                        margin-top 360ms cubic-bezier(0.23, 1, 0.32, 1),
+                        opacity 280ms var(--ease-out);
+            will-change: grid-template-rows, margin-top, opacity;
+        }
+
+        .rain-protocol-pill-slot.is-active {
+            grid-template-rows: 1fr;
+            margin-top: 10px;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .rain-protocol-pill-inner {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .rain-protocol-pill-content {
+            transform: scale(0.92) translateY(-8px);
+            opacity: 0;
+            transition: transform 380ms cubic-bezier(0.175, 0.885, 0.32, 1.2),
+                        opacity 300ms var(--ease-out);
+            will-change: transform, opacity;
+        }
+
+        .rain-protocol-pill-slot.is-active .rain-protocol-pill-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .rain-protocol-pill-slot:not(.is-active) .rain-protocol-pill-content {
+            transform: scale(0.94) translateY(-6px);
+            opacity: 0;
+            transition: transform 240ms var(--ease-out),
+                        opacity 200ms var(--ease-out);
+        }
+
+        .rain-pill-umbrella-icon {
+            display: inline-block;
+            transition: transform 380ms cubic-bezier(0.175, 0.885, 0.32, 1.25);
+        }
+        .rain-protocol-pill-slot.is-active .rain-pill-umbrella-icon {
+            transform: scale(1.15) rotate(-6deg);
+        }
         
 
         #preloader.fade-out {
@@ -559,7 +801,7 @@
                 animation-iteration-count: 1 !important;
                 scroll-behavior: auto !important;
             }
-            .rain-drop, .ai-star-glow, .animate-apple-bounce, .energy-bar-glow, .animate-pulse { animation: none !important; }
+            .rain-drop, .ai-star-glow, .animate-apple-bounce, .energy-bar-glow, .animate-pulse, .spring-pop { animation: none !important; }
             .nav-pill-indicator, .nav-bar, .nav-bar button, #modal-content {
                 transition-duration: 0.01ms !important;
             }
@@ -897,24 +1139,24 @@
                     <span class="w-2 h-2 rounded-full bg-limeAccent inline-block ml-[2px] translate-y-2"></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <!-- Notifications Button (Solid Lime Green Bell Icon) -->
+                    <!-- Notifications Button (Solid Lime Green Bell Icon - 48x48px matched to Drawer Close X) -->
                     <button id="btn-notifications" 
                             onclick="openNotificationsView()" 
                             aria-label="Activity and Notifications" 
                             title="Notifications" 
-                            class="relative w-10 h-10 rounded-full bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
-                        <i id="notif-top-icon" class="fa-solid fa-bell text-sm text-brand-lime transition-transform group-hover:scale-110"></i>
-                        <!-- Red Unread Indicator Dot -->
-                        <span id="notif-badge-dot" class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-rose-500 border-2 border-slate-900 shadow-xs animate-pulse"></span>
+                            class="relative w-12 h-12 min-w-[48px] min-h-[48px] rounded-full bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
+                        <i id="notif-top-icon" class="fa-solid fa-bell text-base text-brand-lime transition-transform group-hover:scale-110"></i>
+                        <!-- Apple-style Unread Notification Counter Badge -->
+                        <span id="notif-badge-count" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[11px] font-black leading-none flex items-center justify-center border-2 border-slate-900 shadow-sm pointer-events-none transition-transform duration-200">3</span>
                     </button>
 
-                    <!-- Hamburger Menu Button -->
+                    <!-- Hamburger Menu Button (48x48px matched to Drawer Close X) -->
                     <button id="btn-hamburger" 
                             onclick="toggleSideDrawer()" 
                             aria-label="Open Navigation Menu" 
                             aria-expanded="false" 
-                            class="w-10 h-10 rounded-full bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
-                        <i class="fa-solid fa-bars text-sm transition-transform group-hover:scale-110"></i>
+                            class="w-12 h-12 min-w-[48px] min-h-[48px] rounded-full bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
+                        <i class="fa-solid fa-bars text-base transition-transform group-hover:scale-110"></i>
                     </button>
                 </div>
             </div>
@@ -1808,7 +2050,7 @@
                 <div class="flex items-center gap-2 shrink-0 pl-2">
                     <div class="text-right">
                         <span class="text-xs text-slate-400 block mb-0.5 font-semibold">9:15 AM</span>
-                        <span class="w-4 h-4 rounded-full bg-brand-lime text-slate-950 font-black text-[11px] flex items-center justify-center ml-auto shadow-sm">1</span>
+                        <span id="dm-james-badge" class="w-4 h-4 rounded-full bg-brand-lime text-slate-950 font-black text-[11px] flex items-center justify-center ml-auto shadow-sm">1</span>
                     </div>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-slate-500 transition-colors"></i>
                 </div>
@@ -2031,34 +2273,25 @@
             </div>
         </main>
 
-        <!-- ================= VIEW 10: NOTIFICATIONS & ACTIVITY (INSTAGRAM STYLE) ================= -->
+        <!-- ================= VIEW 10: NOTIFICATIONS & ACTIVITY (APPLE STYLE) ================= -->
         <main id="view-notifications" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-4 sm:px-5 py-4 space-y-4 pb-28 relative max-w-full">
             
-            <!-- Atmospheric Ambient Glow Orbs -->
-            <div class="absolute -top-10 -left-6 w-48 h-48 bg-rose-500/10 rounded-full blur-[65px] pointer-events-none"></div>
-            <div class="absolute top-48 -right-6 w-48 h-48 bg-emerald-500/10 rounded-full blur-[65px] pointer-events-none"></div>
-            <div class="absolute bottom-24 left-8 w-44 h-44 bg-cyan-500/10 rounded-full blur-[65px] pointer-events-none"></div>
+            <!-- Atmospheric Ambient Glow Orbs (Emerald Green Theme) -->
+            <div class="absolute -top-10 left-6 w-44 h-44 bg-emerald-500/15 rounded-full blur-[60px] pointer-events-none"></div>
+            <div class="absolute top-48 right-4 w-44 h-44 bg-blue-500/15 rounded-full blur-[60px] pointer-events-none"></div>
+            <div class="absolute bottom-24 left-8 w-44 h-44 bg-emerald-500/10 rounded-full blur-[60px] pointer-events-none"></div>
 
-            <!-- Instagram Navigation Header -->
+            <!-- Apple Navigation Header -->
             <div class="relative z-10 flex items-center justify-between px-1">
                 <div class="flex items-center gap-3">
-                    <button onclick="closeNotificationsView()" aria-label="Go Back" class="w-11 h-11 rounded-2xl bg-white/85 backdrop-blur-xl shadow-apple border border-white/60 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
+                    <button onclick="closeNotificationsView()" aria-label="Go Back" class="w-12 h-12 rounded-2xl bg-white/85 backdrop-blur-xl shadow-apple border border-white/60 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
                         <i class="fa-solid fa-arrow-left text-base"></i>
                     </button>
                     <div>
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Notifications</h2>
-                            <span id="notif-count-pill" class="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black tracking-wide shadow-xs">3 New</span>
-                        </div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Notifications</h2>
                         <p class="text-xs text-slate-500 font-semibold mt-0.5">Site movements, safety & alerts</p>
                     </div>
                 </div>
-
-                <!-- Mark All Read Utility -->
-                <button onclick="markAllNotificationsRead()" class="px-3 py-1.5 rounded-xl bg-white/85 hover:bg-white active:scale-95 text-xs font-bold text-slate-700 hover:text-slate-900 border border-black/[0.06] shadow-xs transition-all cursor-pointer flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-check-double text-[11px] text-emerald-600"></i>
-                    <span>Mark read</span>
-                </button>
             </div>
 
             <!-- Instagram Category Filter Chips -->
@@ -2119,8 +2352,12 @@
             aria-selected="false"
             aria-label="Chat"
             class="relative z-10 nav-btn flex flex-col items-center justify-center h-[54px] rounded-full text-white/80 hover:text-white transition-colors duration-150 focus:outline-none">
-        <i class="fa-solid fa-comments text-[18px] mb-1" aria-hidden="true"></i>
-        <span class="text-[11px] font-bold leading-none tracking-tight">Chat</span>
+        <div class="relative inline-flex items-center justify-center">
+            <i class="fa-solid fa-comment text-[18px] mb-1" aria-hidden="true"></i>
+            <!-- Apple-style Unread Message Notification Counter Badge -->
+            <span id="chat-badge-count" class="absolute -top-1 -right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-black leading-none flex items-center justify-center shadow-sm border border-slate-900 pointer-events-none transition-transform duration-200">1</span>
+        </div>
+        <span class="nav-tab-label text-[11px] font-bold leading-none tracking-tight">Chat</span>
     </button>
 
     <!-- Tab 4: Jobs -->
@@ -2568,7 +2805,7 @@ function switchTab(tabName) {
         const btn = document.getElementById(`tab-${t}`);
         if (btn) {
             const icon = btn.querySelector('i');
-            const label = btn.querySelector('span');
+            const label = btn.querySelector('.nav-tab-label') || btn.querySelector('span:not([id*="badge"])') || btn.querySelector('span');
 
             if (t === tabName) {
                 btn.classList.remove('text-white/80', 'hover:text-white', 'text-slate-400');
@@ -3763,7 +4000,9 @@ function openTimesheetsModal() {
                 const dow = pickedDate.getDay();
                 if (dow >= 1 && dow <= 5) {
                     const pickedCardId = ROSTER_DAY_IDS[dow - 1];
-                    expandedRosterCards[pickedCardId] = true;
+                    ROSTER_DAY_IDS.forEach(id => {
+                        expandedRosterCards[id] = (id === pickedCardId);
+                    });
                     setTimeout(() => {
                         scrollRosterCardIntoView(pickedCardId);
                     }, 60);
@@ -3792,8 +4031,8 @@ function openTimesheetsModal() {
             applyRosterWeek(getMondayForDate(picked), picked);
         }
 
-        function scrollRosterCardIntoView(cardId, drawerEl = null, animated = true) {
-            const container = document.getElementById('view-roster');
+        function scrollRosterCardIntoView(cardId, drawerEl = null, animated = true, collapseOffsetAbove = 0) {
+            const container = document.getElementById('view-week');
             const rowEl = document.getElementById(cardId);
             if (!container || !rowEl) return;
 
@@ -3815,28 +4054,34 @@ function openTimesheetsModal() {
             const navBar = document.getElementById('floating-nav');
 
             // Bottom boundary to clear above floating island nav
-            let safeBottom = containerRect.bottom - 120;
+            let safeBottom = containerRect.bottom - 16;
             if (navBar) {
                 const navRect = navBar.getBoundingClientRect();
-                safeBottom = navRect.top - 20; // 20px clearance above floating island
+                safeBottom = navRect.top - 16; // 16px clearance above floating island
             }
 
-            // Current top of card relative to container visible top
-            const rowTopInView = rowRect.top - containerRect.top;
+            const safeTop = containerRect.top + 12;
+
+            // Projected row top and bottom in viewport coordinates
+            const projectedRowTop = rowRect.top - collapseOffsetAbove;
             const rowHeaderHeight = 72;
-            const projectedBottom = rowTopInView + rowHeaderHeight + drawerHeight;
+            const projectedBottom = projectedRowTop + rowHeaderHeight + drawerHeight;
 
             let scrollDelta = 0;
 
             if (projectedBottom > safeBottom) {
                 scrollDelta = projectedBottom - safeBottom;
-            } else if (rowTopInView < 12) {
-                scrollDelta = rowTopInView - 12;
+            }
+
+            // Ensure the top header doesn't get pushed above the safe top area
+            if (projectedRowTop - scrollDelta < safeTop) {
+                scrollDelta = projectedRowTop - safeTop;
             }
 
             if (Math.abs(scrollDelta) < 2) return;
 
-            const targetScrollTop = Math.max(0, container.scrollTop + scrollDelta);
+            const maxScroll = Math.max(0, container.scrollHeight - container.clientHeight);
+            const targetScrollTop = Math.max(0, Math.min(maxScroll, container.scrollTop + scrollDelta));
 
             if (!animated) {
                 container.scrollTop = targetScrollTop;
@@ -3851,6 +4096,8 @@ function openTimesheetsModal() {
 
             const startScroll = container.scrollTop;
             const totalDiff = targetScrollTop - startScroll;
+            if (Math.abs(totalDiff) < 1) return;
+
             const duration = 240;
             const startTime = performance.now();
             let isCancelled = false;
@@ -3923,31 +4170,178 @@ function openTimesheetsModal() {
         }
 
         function setCardWeatherMode(cardId, mode) {
-            let prevOpenHeight = null;
-            if (expandedRosterCards[cardId]) {
-                const prevDrawer = document.getElementById(`drawer-${cardId}`);
-                if (prevDrawer) {
-                    prevOpenHeight = prevDrawer.getBoundingClientRect().height;
-                }
+            const config = ROSTER_CONFIG[cardId];
+            const card = document.getElementById(cardId);
+            if (!config || !card) {
+                rosterCardStates[cardId] = mode;
+                renderRosterCards();
+                return;
+            }
+
+            const surfaceEl = card.querySelector('.roster-card-surface');
+            if (!surfaceEl) {
+                rosterCardStates[cardId] = mode;
+                renderRosterCards();
+                return;
             }
 
             rosterCardStates[cardId] = mode;
-            renderRosterCards();
+            const isRain = (mode === 'rain');
+            const isToday = (cardId === activeTodayCardId);
+            const targetSite = isRain ? config.rainSite : config.normalSite;
 
-            if (prevOpenHeight !== null && expandedRosterCards[cardId]) {
-                const nextDrawer = document.getElementById(`drawer-${cardId}`);
-                animateRosterDrawerHeight(cardId, nextDrawer, true, prevOpenHeight);
-                scrollRosterCardIntoView(cardId, nextDrawer);
+            // 1. Smoothly update card surface styling
+            surfaceEl.classList.toggle('is-rain-mode', isRain);
+
+            // 2. Smoothly update rain toggle button
+            const toggleBtn = surfaceEl.querySelector('.roster-rain-btn');
+            if (toggleBtn) {
+                toggleBtn.setAttribute('aria-checked', isRain);
+                toggleBtn.setAttribute('aria-label', isRain ? 'Rain site active. Tap to switch back to normal site' : 'Rain risk forecasted. Tap to switch to rain site');
+                toggleBtn.setAttribute('title', isRain ? 'Rain site active — tap to switch to normal site' : 'Rain risk — tap to switch to wet weather site');
+                toggleBtn.classList.toggle('is-active', isRain);
+                toggleBtn.classList.toggle('is-inactive', !isRain);
+
+                // Apple spring pop on the icon
+                const icon = toggleBtn.querySelector('.roster-rain-icon');
+                if (icon) {
+                    icon.classList.remove('spring-pop');
+                    void icon.offsetWidth; // restart keyframe animation
+                    icon.classList.add('spring-pop');
+                }
+
+                // Corner badge toggle
+                const badge = toggleBtn.querySelector('.roster-rain-badge');
+                if (badge) {
+                    badge.classList.toggle('is-active', isRain);
+                    badge.classList.toggle('is-inactive', !isRain);
+                }
+            }
+
+            // 3. Update chevron container dark/light style
+            const chevronBtn = surfaceEl.querySelector('.roster-chevron-btn');
+            if (chevronBtn && !isToday) {
+                chevronBtn.classList.toggle('is-dark', isRain);
+                chevronBtn.classList.toggle('is-light', !isRain);
+            }
+
+            // 4. Smooth Apple text morph / crossfade for site title and address
+            const titleEl = surfaceEl.querySelector('.site-title');
+            const addressLink = surfaceEl.querySelector('.site-address');
+            const addressText = surfaceEl.querySelector('.site-address-text');
+
+            if (card._titleCrossfadeTimer) {
+                clearTimeout(card._titleCrossfadeTimer);
+            }
+
+            if (titleEl) {
+                titleEl.style.opacity = '0';
+                titleEl.style.transform = 'translateY(-3px)';
+            }
+            if (addressText) {
+                addressText.style.opacity = '0';
+                addressText.style.transform = 'translateY(-3px)';
+            }
+
+            card._titleCrossfadeTimer = setTimeout(() => {
+                if (titleEl) {
+                    titleEl.textContent = targetSite.title;
+                    if (!isToday) {
+                        titleEl.classList.toggle('text-white', isRain);
+                        titleEl.classList.toggle('text-slate-900', !isRain);
+                    }
+                    titleEl.style.opacity = '1';
+                    titleEl.style.transform = 'translateY(0)';
+                }
+                if (addressLink) {
+                    addressLink.href = `https://maps.apple.com/?q=${encodeURIComponent(targetSite.address)}`;
+                    if (!isToday) {
+                        addressLink.className = `site-address inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors duration-300 ${isRain ? 'text-blue-300 hover:text-white' : 'text-emerald-600 hover:text-emerald-800'}`;
+                    }
+                }
+                if (addressText) {
+                    addressText.textContent = targetSite.address;
+                    addressText.style.opacity = '1';
+                    addressText.style.transform = 'translateY(0)';
+                }
+                card._titleCrossfadeTimer = null;
+            }, 90);
+
+            // 5. Apple Rain Protocol Pill appearance/disappearance animation
+            const pillSlot = surfaceEl.querySelector('.rain-protocol-pill-slot');
+            if (pillSlot) {
+                pillSlot.classList.toggle('is-active', isRain);
+                const pillTitle = pillSlot.querySelector('.rain-protocol-title-text');
+                if (pillTitle) {
+                    pillTitle.textContent = `Rain Protocol • Under cover at ${config.rainSite.title}`;
+                }
+            }
+
+            // 6. Smooth team chips & divider update
+            if (!isToday) {
+                const divider = surfaceEl.querySelector('.roster-team-divider');
+                if (divider) {
+                    divider.classList.toggle('border-slate-800', isRain);
+                    divider.classList.toggle('border-slate-100', !isRain);
+                }
+                const withLabel = surfaceEl.querySelector('.roster-with-label');
+                if (withLabel) {
+                    withLabel.classList.toggle('text-slate-300', isRain);
+                    withLabel.classList.toggle('text-slate-500', !isRain);
+                }
+                surfaceEl.querySelectorAll('.roster-team-chip').forEach(chip => {
+                    chip.classList.toggle('bg-slate-800', isRain);
+                    chip.classList.toggle('text-white', isRain);
+                    chip.classList.toggle('border-slate-700', isRain);
+                    chip.classList.toggle('bg-slate-100', !isRain);
+                    chip.classList.toggle('text-slate-800', !isRain);
+                    chip.classList.toggle('border-slate-200/50', !isRain);
+                });
+            }
+
+            // 7. If drawer is currently expanded, ensure seamless sizing & visibility
+            if (expandedRosterCards[cardId]) {
+                const drawer = document.getElementById(`drawer-${cardId}`);
+                if (drawer) {
+                    drawer.style.height = 'auto';
+                    setTimeout(() => {
+                        scrollRosterCardIntoView(cardId, drawer);
+                    }, 120);
+                }
             }
         }
 
         function toggleRosterCardExpand(cardId) {
             triggerHaptic('light');
             const willExpand = !expandedRosterCards[cardId];
-            expandedRosterCards[cardId] = willExpand;
-
             const rowEl = document.getElementById(cardId);
             if (!rowEl) return;
+
+            let collapseOffsetAbove = 0;
+
+            if (willExpand) {
+                const thisIdx = ROSTER_DAY_IDS.indexOf(cardId);
+                // Accordion behavior: smoothly collapse any other currently expanded card
+                ROSTER_DAY_IDS.forEach((otherId, otherIdx) => {
+                    if (otherId !== cardId && expandedRosterCards[otherId]) {
+                        expandedRosterCards[otherId] = false;
+                        const otherRow = document.getElementById(otherId);
+                        if (otherRow) {
+                            const otherChevron = otherRow.querySelector('.roster-chevron');
+                            if (otherChevron) otherChevron.classList.remove('rotate-180');
+                            const otherDrawer = otherRow.querySelector('.roster-expandable-drawer');
+                            if (otherDrawer) {
+                                if (otherIdx < thisIdx) {
+                                    collapseOffsetAbove += otherDrawer.getBoundingClientRect().height;
+                                }
+                                animateRosterDrawerHeight(otherId, otherDrawer, false);
+                            }
+                        }
+                    }
+                });
+            }
+
+            expandedRosterCards[cardId] = willExpand;
 
             const drawer = rowEl.querySelector('.roster-expandable-drawer');
             const chevron = rowEl.querySelector('.roster-chevron');
@@ -3956,7 +4350,7 @@ function openTimesheetsModal() {
             animateRosterDrawerHeight(cardId, drawer, willExpand);
 
             if (willExpand) {
-                scrollRosterCardIntoView(cardId, drawer);
+                scrollRosterCardIntoView(cardId, drawer, true, collapseOffsetAbove);
             }
         }
 
@@ -3979,15 +4373,15 @@ function openTimesheetsModal() {
                 const isToday = (cardId === activeTodayCardId);
                 const isExpanded = !!expandedRosterCards[cardId];
                 const currentMode = rosterCardStates[cardId] || 'normal';
-                const activeSite = currentMode === 'rain' ? config.rainSite : config.normalSite;
+                const isRainActive = (currentMode === 'rain');
+                const activeSite = (isRainActive && config.isRainRisk) ? config.rainSite : config.normalSite;
+                const isDarkSurface = isToday || (isRainActive && config.isRainRisk);
 
                 let rainToggleBtnHtml = '';
-                let rainParticlesHtml = '';
-                let rainBannerHtml = '';
+                let rainBackdropHtml = '';
+                let rainPillHtml = '';
 
                 if (config.isRainRisk) {
-                    const isRainActive = (currentMode === 'rain');
-
                     rainToggleBtnHtml = `
                         <button type="button"
                                 onclick="event.stopPropagation(); toggleCardWeatherMode('${cardId}')" 
@@ -3995,42 +4389,34 @@ function openTimesheetsModal() {
                                 aria-checked="${isRainActive}"
                                 aria-label="${isRainActive ? 'Rain site active. Tap to switch back to normal site' : 'Rain risk forecasted. Tap to switch to rain site'}"
                                 title="${isRainActive ? 'Rain site active — tap to switch to normal site' : 'Rain risk — tap to switch to wet weather site'}"
-                                class="relative w-11 h-11 rounded-[15px] flex items-center justify-center cursor-pointer select-none active:scale-90 transition-transform duration-150 ${isRainActive ? 'bg-blue-500 text-white border border-blue-300 shadow-[0_0_16px_rgba(59,130,246,0.65),inset_0_1px_1px_rgba(255,255,255,0.45)]' : 'bg-slate-900 text-blue-400 border border-blue-400/50 hover:bg-slate-800 shadow-[0_4px_12px_rgba(15,23,42,0.24),inset_0_1px_0_rgba(255,255,255,0.25)]'}">
-                            <i class="fa-solid fa-cloud-showers-heavy text-base leading-none"></i>
-                            <span class="absolute -top-1 -right-1 w-[18px] h-[18px] rounded-full flex items-center justify-center shadow-sm transition-colors ${isRainActive ? 'bg-white text-blue-600 border border-blue-200' : 'bg-blue-500 text-white border border-white'}">
-                                <i class="ph-bold ph-arrows-left-right text-[9px] leading-none"></i>
+                                class="roster-rain-btn ${isRainActive ? 'is-active' : 'is-inactive'}">
+                            <i class="fa-solid fa-cloud-showers-heavy text-base leading-none roster-rain-icon"></i>
+                            <span class="roster-rain-badge ${isRainActive ? 'is-active' : 'is-inactive'}">
+                                <i class="ph-bold ph-arrows-left-right roster-rain-badge-icon"></i>
                             </span>
                         </button>`;
 
-                    if (isRainActive) {
-                        rainParticlesHtml = `
-                            <div class="rain-particles absolute inset-0 pointer-events-none overflow-hidden z-0 rounded-[24px]">
-                                <div class="absolute inset-0 bg-gradient-to-b from-blue-900/10 via-indigo-950/20 to-blue-900/30"></div>
-                            </div>`;
+                    rainBackdropHtml = `
+                        <div class="roster-rain-backdrop">
+                            <div class="rain-particles absolute inset-0 overflow-hidden pointer-events-none"></div>
+                        </div>`;
 
-                        rainBannerHtml = `
-                            <div class="rain-protocol-banner mt-2.5 py-2 px-3 rounded-xl bg-blue-950/90 border border-blue-400/30 flex items-center justify-between gap-2 text-white">
-                                <span class="flex items-center gap-1.5 text-xs font-black text-blue-200 truncate">
-                                    <i class="fa-solid fa-umbrella text-blue-400 text-xs"></i>
-                                    Rain Protocol • Under cover at ${activeSite.title}
-                                </span>
-                                <span class="text-[10px] text-blue-200 bg-blue-500/25 px-2 py-0.5 rounded-full border border-blue-400/25 font-bold uppercase tracking-wider shrink-0">Backup</span>
-                            </div>`;
-                    }
+                    rainPillHtml = `
+                        <div class="rain-protocol-pill-slot ${isRainActive ? 'is-active' : ''}" id="rain-pill-${cardId}">
+                            <div class="rain-protocol-pill-inner">
+                                <div class="rain-protocol-pill-content py-2 px-3 rounded-xl bg-blue-950/90 border border-blue-400/30 flex items-center justify-between gap-2 text-white shadow-[0_4px_16px_rgba(30,58,138,0.35)] backdrop-blur-md">
+                                    <span class="flex items-center gap-1.5 text-xs font-black text-blue-200 truncate">
+                                        <i class="fa-solid fa-umbrella text-blue-400 text-xs rain-pill-umbrella-icon"></i>
+                                        <span class="rain-protocol-title-text truncate">Rain Protocol • Under cover at ${config.rainSite.title}</span>
+                                    </span>
+                                    <span class="text-[10px] text-blue-200 bg-blue-500/25 px-2 py-0.5 rounded-full border border-blue-400/25 font-bold uppercase tracking-wider shrink-0 shadow-xs">Backup</span>
+                                </div>
+                            </div>
+                        </div>`;
                 }
 
-                let cardSurfaceClass = "";
-                let isDarkSurface = false;
-                if (isToday) {
-                    cardSurfaceClass = "glass-card-today text-white";
-                    isDarkSurface = true;
-                } else if (currentMode === 'rain') {
-                    cardSurfaceClass = "glass-card-rain text-white";
-                    isDarkSurface = true;
-                } else {
-                    cardSurfaceClass = "glass-card-apple text-slate-900";
-                    isDarkSurface = false;
-                }
+                let cardSurfaceBaseClass = isToday ? 'glass-card-today text-white' : 'glass-card-apple text-slate-900';
+                let cardRainClass = (config.isRainRisk && isRainActive) ? 'is-rain-mode' : '';
 
                 card.className = "roster-day-row relative z-10";
                 card.innerHTML = `
@@ -4047,11 +4433,11 @@ function openTimesheetsModal() {
 
                         <!-- Right: Fixed-Header Card that Smoothly Expands Downward -->
                         <div class="flex-1 min-w-0 z-10">
-                            <div class="relative flex flex-col ${cardSurfaceClass} rounded-[24px] overflow-hidden transition-colors duration-200">
-                                ${rainParticlesHtml}
+                            <div class="roster-card-surface relative flex flex-col ${cardSurfaceBaseClass} ${cardRainClass} rounded-[24px] overflow-hidden">
+                                ${rainBackdropHtml}
                                 
                                 <!-- Fixed 72px Header (1:1 height match with Date Tile when closed) -->
-                                <div onclick="toggleRosterCardExpand('${cardId}')" role="button" tabindex="0" aria-expanded="${isExpanded}" class="roster-card-header relative z-10 h-[72px] pl-4.5 pl-[18px] pr-3.5 flex items-center justify-between cursor-pointer select-none gap-2.5">
+                                <div onclick="toggleRosterCardExpand('${cardId}')" role="button" tabindex="0" aria-expanded="${isExpanded}" class="roster-card-header relative z-10 h-[72px] pl-[18px] pr-3.5 flex items-center justify-between cursor-pointer select-none gap-2.5">
                                     <div class="min-w-0 flex-1">
                                         <h3 class="site-title text-xl sm:text-[22px] font-black tracking-tight leading-snug truncate ${isDarkSurface ? 'text-white' : 'text-slate-900'}">
                                             ${activeSite.title}
@@ -4060,7 +4446,7 @@ function openTimesheetsModal() {
 
                                     <div class="flex items-center gap-2 shrink-0">
                                         ${rainToggleBtnHtml}
-                                        <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isDarkSurface ? 'text-slate-200 bg-white/10 hover:bg-white/20 border border-white/15' : 'text-slate-600 bg-slate-900/[0.05] hover:bg-slate-900/[0.10] border border-slate-900/10'}">
+                                        <div class="roster-chevron-btn w-10 h-10 rounded-full flex items-center justify-center ${isDarkSurface ? 'is-dark' : 'is-light'}">
                                             <i class="ph-bold ph-caret-down roster-chevron text-lg leading-none ${isExpanded ? 'rotate-180' : ''}"></i>
                                         </div>
                                     </div>
@@ -4071,19 +4457,19 @@ function openTimesheetsModal() {
                                     <div class="roster-drawer-inner">
                                         <div class="px-[18px] pb-4 pt-0.5">
                                             <div>
-                                                <a href="https://maps.apple.com/?q=${encodeURIComponent(activeSite.address)}" target="_blank" onclick="event.stopPropagation()" class="site-address inline-flex items-center gap-1.5 text-[13px] font-semibold ${isToday ? 'text-slate-200 hover:text-white' : (currentMode === 'rain' ? 'text-blue-300 hover:text-white' : 'text-emerald-600 hover:text-emerald-800')} transition-colors">
-                                                    <span>${activeSite.address}</span>
+                                                <a href="https://maps.apple.com/?q=${encodeURIComponent(activeSite.address)}" target="_blank" onclick="event.stopPropagation()" class="site-address inline-flex items-center gap-1.5 text-[13px] font-semibold ${isToday ? 'text-slate-200 hover:text-white' : (isRainActive ? 'text-blue-300 hover:text-white' : 'text-emerald-600 hover:text-emerald-800')} transition-colors">
+                                                    <span class="site-address-text">${activeSite.address}</span>
                                                     <i class="ph-bold ph-arrow-up-right text-xs"></i>
                                                 </a>
                                             </div>
 
-                                            ${rainBannerHtml}
+                                            ${rainPillHtml}
 
-                                            <div class="pt-3 mt-3 border-t ${isToday ? 'border-white/10' : (currentMode === 'rain' ? 'border-slate-800' : 'border-slate-100')}">
-                                                <span class="text-[11px] font-black uppercase tracking-wider ${isToday ? 'text-emerald-300/80' : (currentMode === 'rain' ? 'text-slate-300' : 'text-slate-500')} block mb-2">With:</span>
+                                            <div class="roster-team-divider pt-3 mt-3 border-t ${isToday ? 'border-white/10' : (isRainActive ? 'border-slate-800' : 'border-slate-100')}">
+                                                <span class="roster-with-label text-[11px] font-black uppercase tracking-wider ${isToday ? 'text-emerald-300/80' : (isRainActive ? 'text-slate-300' : 'text-slate-500')} block mb-2">With:</span>
                                                 <div class="flex flex-wrap gap-1.5">
                                                     ${config.team.map(member => `
-                                                        <span class="px-3 py-1 rounded-full ${isToday ? 'bg-black/45 text-slate-200 border border-white/10 font-bold text-xs shadow-inner' : (currentMode === 'rain' ? 'bg-slate-800 text-white border border-slate-700 font-bold text-xs' : 'bg-slate-100 text-slate-800 border border-slate-200/50 font-bold text-xs')}">${member}</span>
+                                                        <span class="roster-team-chip px-3 py-1 rounded-full ${isToday ? 'bg-black/45 text-slate-200 border border-white/10 font-bold text-xs shadow-inner' : (isRainActive ? 'bg-slate-800 text-white border border-slate-700 font-bold text-xs' : 'bg-slate-100 text-slate-800 border border-slate-200/50 font-bold text-xs')}">${member}</span>
                                                     `).join('')}
                                                 </div>
                                             </div>
@@ -4095,9 +4481,9 @@ function openTimesheetsModal() {
                     </div>
                 `;
 
-                if (currentMode === 'rain') {
+                if (config.isRainRisk) {
                     const particleContainer = card.querySelector('.rain-particles');
-                    if (particleContainer) {
+                    if (particleContainer && particleContainer.children.length === 0) {
                         for (let i = 0; i < 16; i++) {
                             const drop = document.createElement('div');
                             drop.className = 'rain-drop';
@@ -4178,6 +4564,12 @@ function openTimesheetsModal() {
         }
 
         function openDirectMessage(name) {
+            if (name === 'James Beggs') {
+                const jbBadge = document.getElementById('dm-james-badge');
+                if (jbBadge) jbBadge.style.display = 'none';
+                const chatBadge = document.getElementById('chat-badge-count');
+                if (chatBadge) chatBadge.style.display = 'none';
+            }
             openModal(`Chat with ${name}`, `
                 <div class="space-y-3 py-1 text-xs">
                     <div class="max-h-[260px] overflow-y-auto space-y-3 pr-1">
@@ -5163,7 +5555,7 @@ const TEAM_DIRECTORY_DATA = [
                         <!-- Action 3: In-App Chat -->
                         <button onclick="closeModal(); openDirectMessage('${member.name}');" aria-label="Direct message ${member.name}" class="flex flex-col items-center justify-center py-3.5 px-2 rounded-2xl bg-slate-900 hover:bg-black active:scale-95 transition-all cursor-pointer border border-slate-800 shadow-md group">
                             <div class="w-10 h-10 rounded-xl bg-white/10 text-brand-lime flex items-center justify-center text-lg mb-1 group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-comments"></i>
+                                <i class="fa-solid fa-comment"></i>
                             </div>
                             <span class="text-xs font-bold text-white tracking-tight">Chat</span>
                         </button>
@@ -5218,7 +5610,7 @@ const TEAM_DIRECTORY_DATA = [
 
                     <!-- In-App Direct Message Action (Primary CTA) -->
                     <button onclick="closeModal(); openDirectMessage('${member.name}');" class="w-full py-4 bg-slate-900 hover:bg-black text-brand-lime rounded-2xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer shadow-apple active:scale-[0.98] flex items-center justify-center gap-2.5 min-h-[52px]">
-                        <i class="fa-solid fa-comments text-brand-lime text-base"></i>
+                        <i class="fa-solid fa-comment text-brand-lime text-base"></i>
                         <span>Start Conversation</span>
                     </button>
                 </div>
@@ -5527,9 +5919,18 @@ function markAllNotificationsRead() {
 
 function updateNotificationBadges() {
     const unreadCount = NOTIFICATIONS_DATA.filter(n => !n.read).length;
+    const badgeCount = document.getElementById('notif-badge-count');
     const badgeDot = document.getElementById('notif-badge-dot');
     const countPill = document.getElementById('notif-count-pill');
 
+    if (badgeCount) {
+        if (unreadCount > 0) {
+            badgeCount.textContent = unreadCount > 99 ? '99+' : unreadCount;
+            badgeCount.style.display = 'flex';
+        } else {
+            badgeCount.style.display = 'none';
+        }
+    }
     if (badgeDot) {
         badgeDot.style.display = unreadCount > 0 ? 'block' : 'none';
     }
@@ -5607,44 +6008,44 @@ function renderNotificationsFeed(filter = 'all') {
                     <h3 class="text-xs font-black uppercase tracking-wider text-slate-400">${groupName}</h3>
                     <span class="text-[10px] font-bold text-slate-400">${groupItems.length} update${groupItems.length > 1 ? 's' : ''}</span>
                 </div>
-                <div class="space-y-2">
+                <div class="space-y-2.5">
                     ${groupItems.map(item => {
                         let actionButtonHtml = '';
                         if (item.actionType === 'signin') {
                             if (isSiteSignedIn) {
                                 actionButtonHtml = `
-                                    <button onclick="handleNotificationAction(event, '${item.id}', 'signin')" class="shrink-0 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 text-xs font-black shadow-xs hover:bg-emerald-500/25 active:scale-95 transition-all">
+                                    <button onclick="handleNotificationAction(event, '${item.id}', 'signin')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 text-xs font-bold shadow-xs hover:bg-emerald-500/25 active:scale-95 transition-all">
                                         Signed In ✓
                                     </button>
                                 `;
                             } else {
                                 actionButtonHtml = `
-                                    <button onclick="handleNotificationAction(event, '${item.id}', 'signin')" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-brand-lime hover:bg-brand-limeHover border border-brand-lime text-slate-950 text-xs font-black shadow-[0_0_12px_rgba(204,255,0,0.35)] active:scale-95 transition-all">
+                                    <button onclick="handleNotificationAction(event, '${item.id}', 'signin')" class="shrink-0 px-4 py-1.5 rounded-full bg-brand-lime hover:bg-brand-limeHover border border-brand-lime text-slate-950 text-xs font-black shadow-[0_0_12px_rgba(204,255,0,0.35)] active:scale-95 transition-all">
                                         Sign In
                                     </button>
                                 `;
                             }
                         } else if (item.actionType === 'signout') {
                             actionButtonHtml = `
-                                <button onclick="handleNotificationAction(event, '${item.id}', 'signout')" class="shrink-0 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-rose-300 border border-rose-500/30 text-xs font-black active:scale-95 transition-all shadow-xs">
+                                <button onclick="handleNotificationAction(event, '${item.id}', 'signout')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-rose-300 border border-rose-500/30 text-xs font-bold active:scale-95 transition-all shadow-xs">
                                     Sign Out
                                 </button>
                             `;
                         } else if (item.actionType === 'tool') {
                             actionButtonHtml = `
-                                <button onclick="handleNotificationAction(event, '${item.id}', 'tool')" class="shrink-0 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-brand-lime text-xs font-black active:scale-95 transition-all shadow-xs">
+                                <button onclick="handleNotificationAction(event, '${item.id}', 'tool')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-brand-lime text-xs font-bold active:scale-95 transition-all shadow-xs">
                                     Locate
                                 </button>
                             `;
                         } else if (item.actionType === 'roster') {
                             actionButtonHtml = `
-                                <button onclick="handleNotificationAction(event, '${item.id}', 'roster')" class="shrink-0 px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-slate-800 border border-slate-200 text-xs font-black active:scale-95 transition-all shadow-xs">
+                                <button onclick="handleNotificationAction(event, '${item.id}', 'roster')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200 text-xs font-bold active:scale-95 transition-all shadow-xs">
                                     View
                                 </button>
                             `;
                         } else if (item.actionType === 'docket') {
                             actionButtonHtml = `
-                                <button onclick="handleNotificationAction(event, '${item.id}', 'docket')" class="shrink-0 px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-slate-800 border border-slate-200 text-xs font-black active:scale-95 transition-all shadow-xs">
+                                <button onclick="handleNotificationAction(event, '${item.id}', 'docket')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200 text-xs font-bold active:scale-95 transition-all shadow-xs">
                                     Docket
                                 </button>
                             `;
@@ -5652,28 +6053,29 @@ function renderNotificationsFeed(filter = 'all') {
 
                         return `
                             <div onclick="markNotificationAsRead('${item.id}')" 
-                                 class="relative rounded-2xl p-3.5 ${item.read ? 'bg-white/70 hover:bg-white/90' : 'bg-white/95 hover:bg-white border-l-4 border-l-rose-500'} backdrop-blur-xl border border-white/90 shadow-apple flex items-center justify-between gap-3 transition-all cursor-pointer group active:scale-[0.99] overflow-hidden">
+                                 class="relative rounded-[22px] p-4 ${item.read ? 'bg-white/75 hover:bg-white/90 border-white/80' : 'bg-white/95 hover:bg-white border-white/90 ring-1 ring-emerald-500/25'} backdrop-blur-2xl border shadow-apple flex items-center justify-between gap-3.5 transition-all cursor-pointer group active:scale-[0.99] overflow-hidden">
                                 
-                                <div class="flex items-start gap-3 min-w-0 flex-1">
-                                    <!-- Instagram/Apple Circular Badge Icon -->
-                                    <div class="w-10 h-10 rounded-full ${item.iconBg} flex items-center justify-center shrink-0 shadow-xs relative mt-0.5">
-                                        <i class="${item.icon} text-sm"></i>
-                                        ${!item.read ? '<span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white shadow-xs animate-pulse"></span>' : ''}
+                                <div class="flex items-start gap-3.5 min-w-0 flex-1">
+                                    <!-- Apple App Icon Squircle -->
+                                    <div class="w-11 h-11 rounded-[14px] ${item.iconBg} flex items-center justify-center shrink-0 shadow-xs relative mt-0.5">
+                                        <i class="${item.icon} text-base"></i>
                                     </div>
 
                                     <!-- Content -->
-                                    <div class="min-w-0 flex-1 pr-1">
-                                        <div class="flex items-center justify-between gap-1">
-                                            <h4 class="text-xs font-black ${item.read ? 'text-slate-800' : 'text-slate-950'} tracking-tight leading-tight truncate">${item.title}</h4>
-                                            <span class="text-[10px] font-bold text-slate-400 shrink-0">${item.time}</span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-1.5">
+                                            <h4 class="text-[15px] sm:text-base font-black ${item.read ? 'text-slate-900' : 'text-slate-950'} tracking-tight leading-snug">${item.title}</h4>
+                                            ${!item.read ? '<span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0" title="Unread"></span>' : ''}
                                         </div>
-                                        <p class="text-xs text-slate-600 font-medium leading-relaxed mt-0.5">${item.message}</p>
-                                        <p class="text-[10px] font-semibold text-slate-400 mt-1 truncate">${item.meta}</p>
+                                        <p class="text-[13px] text-slate-600 font-normal leading-relaxed mt-1">${item.message}</p>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <span class="text-[11px] font-semibold text-slate-400 tracking-wide">${item.time}</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Action Button on Right -->
-                                ${actionButtonHtml ? `<div class="shrink-0">${actionButtonHtml}</div>` : ''}
+                                ${actionButtonHtml ? `<div class="shrink-0 self-center pl-1">${actionButtonHtml}</div>` : ''}
                             </div>
                         `;
                     }).join('')}
@@ -5684,6 +6086,9 @@ function renderNotificationsFeed(filter = 'all') {
 
     container.innerHTML = html;
 }
+
+// Initial sync of notification counter badge
+updateNotificationBadges();
     </script>
 </body>
 </html>
