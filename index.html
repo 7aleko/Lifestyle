@@ -1323,7 +1323,7 @@
     <div id="drawer-layer-card" onclick="handleDrawerDismissOverlayClick(event)" role="button" aria-label="Close navigation menu" class="absolute inset-0 bg-emerald-500/[0.12] backdrop-blur-2xl rounded-[32px] border border-emerald-400/30 shadow-2xl pointer-events-none z-10 opacity-0" style="transform: translate3d(0,0,0) scale(1);"></div>
 
     <!-- Main Screen Content Stage (Transforms in 3D when drawer opens) -->
-    <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30 pb-[env(safe-area-inset-bottom,0px)]">
+    <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30"></div>
 
         <!-- iOS Native Navigation Top Bar (Edge-to-edge under status bar with frosted glass) -->
         <header id="app-top-bar" class="w-full bg-appBg/90 backdrop-blur-xl shrink-0 z-20 pt-[max(0.65rem,calc(env(safe-area-inset-top,0px)+0.3rem))] sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all">
@@ -2555,7 +2555,7 @@
      onpointerup="onNavPointerUp(event)" 
      onpointercancel="onNavPointerCancel(event)"
      onpointerleave="onNavPointerUp(event)"
-     style="bottom: max(0.85rem, calc(env(safe-area-inset-bottom, 0px) + 0.35rem));"
+     style="bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));"
      class="nav-bar absolute left-3.5 right-3.5 rounded-full px-1.5 py-1.5 grid grid-cols-5 items-center z-40 text-white select-none touch-none">
      
     <!-- Optical Specular Pill Indicator -->
