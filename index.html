@@ -7,7 +7,7 @@
     <meta id="app-theme-color" name="theme-color" content="#020617">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Lifestyle Dashboard & Roster - Apple-esque UI</title>
     
     <!-- Tailwind CSS CDN -->
@@ -572,7 +572,6 @@
         #preloader.fade-out {
             opacity: 0;
             pointer-events: none;
-            clip-path: inset(max(54px, env(safe-area-inset-top, 0px)) 0 0 0);
         }
 
         .rain-drop {
@@ -833,6 +832,15 @@
             transition: opacity 0.35s var(--ease-drawer), transform 0.4s var(--ease-drawer);
             will-change: transform, opacity;
             transform: translate3d(12px, 0, 0);
+        }
+        
+        #app-side-drawer::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 95% 70% at 85% 0%, rgba(16, 185, 129, 0.4) 0%, rgba(2, 44, 34, 0.8) 55%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         #drawer-layer-card {
@@ -1223,7 +1231,8 @@
            class="absolute inset-y-0 right-0 left-auto w-[78%] z-20 flex flex-col justify-between pl-6 pr-[max(1.5rem,calc(env(safe-area-inset-right,0px)+1.25rem))] pt-[max(1.25rem,calc(env(safe-area-inset-top,0px)+1rem))] pb-[max(1.75rem,calc(env(safe-area-inset-bottom,0px)+1.5rem))] text-white pointer-events-none opacity-0 select-none">
 
         <!-- Ambient Glow Orbs (Matching Hero Card Palette) -->
-        <div class="absolute -top-16 -right-16 w-56 h-56 bg-emerald-500/25 rounded-full blur-[75px] pointer-events-none"></div>
+<!-- Ambient Glow Orbs (Matching Hero Card Palette) -->
+<div class="absolute -top-16 -right-16 w-56 h-56 bg-emerald-500/25 rounded-full blur-[75px] pointer-events-none"></div>
         <div class="absolute bottom-12 -right-8 w-52 h-52 bg-blue-600/20 rounded-full blur-[70px] pointer-events-none"></div>
 
         <!-- Drawer Top Bar: Close X Button (Accessible 48x48px target, safe from notch/island) -->
@@ -2880,22 +2889,20 @@
             }
         });
 
-        window.addEventListener('load', () => {
+window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
             if (preloader) {
                 setTimeout(() => {
-                    // Synchronously transition status bar and root background to white as preloader fades
-                    setStatusBarThemeColor('#F3F4F6', false);
                     preloader.classList.add('fade-out');
+                    setStatusBarThemeColor('#F3F4F6', false);
                     setTimeout(() => {
                         preloader.remove();
                         
-                        // Start progress animation AFTER preloader is completely gone
                         const heroProgress = document.querySelector('.hero-ambient-progress');
                         if (heroProgress) {
                             heroProgress.classList.add('animate-progress');
                         }
-                    }, 500); // matches the 500ms fade-out transition duration
+                    }, 500);
                 }, 400);
             } else {
                 setStatusBarThemeColor('#F3F4F6', false);
