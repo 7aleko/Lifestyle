@@ -834,9 +834,10 @@
         }
 
         #app-main-stage {
-            transition: transform 0.42s var(--ease-drawer), border-radius 0.42s var(--ease-drawer), box-shadow 0.42s var(--ease-drawer), filter 0.35s var(--ease-drawer);
-            will-change: transform, border-radius;
+            transition: transform 0.42s var(--ease-drawer), border-radius 0.42s var(--ease-drawer), box-shadow 0.42s var(--ease-drawer);
             transform-origin: left center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         #app-container.drawer-open #app-side-drawer {
@@ -857,11 +858,22 @@
             transform: translate3d(-74%, 0, 0) scale(0.85);
             border-radius: 36px;
             box-shadow: 20px 15px 50px rgba(0, 0, 0, 0.45), 0 25px 50px rgba(0, 0, 0, 0.25);
-            filter: brightness(0.96);
+        }
+
+        #drawer-dismiss-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s var(--ease-drawer);
         }
 
         #app-container.drawer-open #drawer-dismiss-overlay {
-            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer-nav-item, #app-side-drawer button {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .drawer-nav-item {
@@ -1044,7 +1056,8 @@
 
         <!-- Drawer Top Bar: Close X Button (Accessible 48x48px target, safe from notch/island) -->
         <div class="relative z-10 flex items-center justify-end mb-6">
-            <button onclick="closeSideDrawer()" 
+            <button type="button" 
+                    onclick="closeSideDrawer()" 
                     aria-label="Close navigation menu" 
                     class="w-12 h-12 min-w-[48px] min-h-[48px] rounded-full bg-white/10 hover:bg-white/20 active:scale-90 border border-white/15 flex items-center justify-center text-white text-lg shadow-sm transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-lime">
                 <i class="fa-solid fa-xmark"></i>
@@ -1054,7 +1067,7 @@
         <!-- Drawer Navigation List -->
         <nav class="relative z-10 flex-1 space-y-2">
             <!-- Item 1: Accounts & Profile -->
-            <button onclick="drawerNavigate('user-account')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
+            <button type="button" onclick="drawerNavigate('user-account')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
                 <div class="w-11 h-11 rounded-2xl bg-white/10 border border-white/15 group-hover:bg-brand-lime group-hover:text-slate-950 flex items-center justify-center text-white text-lg transition-all shrink-0 shadow-sm">
                     <i class="fa-regular fa-id-badge"></i>
                 </div>
@@ -1062,7 +1075,7 @@
             </button>
 
             <!-- Item 2: Site Hub -->
-            <button onclick="drawerNavigate('sitehub')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
+            <button type="button" onclick="drawerNavigate('sitehub')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
                 <div class="w-11 h-11 rounded-2xl bg-white/10 border border-white/15 group-hover:bg-brand-lime group-hover:text-slate-950 flex items-center justify-center text-white text-lg transition-all shrink-0 shadow-sm">
                     <i class="fa-solid fa-helmet-safety"></i>
                 </div>
@@ -1070,7 +1083,7 @@
             </button>
 
             <!-- Item 3: Timesheets -->
-            <button onclick="drawerNavigate('timesheets')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
+            <button type="button" onclick="drawerNavigate('timesheets')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
                 <div class="w-11 h-11 rounded-2xl bg-white/10 border border-white/15 group-hover:bg-brand-lime group-hover:text-slate-950 flex items-center justify-center text-white text-lg transition-all shrink-0 shadow-sm relative">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-amber-400 text-slate-950 rounded-full text-[10px] font-black flex items-center justify-center ring-2 ring-[#061e14]">4</span>
@@ -1082,7 +1095,7 @@
             </button>
 
             <!-- Item 4: Leave Requests -->
-            <button onclick="drawerNavigate('leave')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
+            <button type="button" onclick="drawerNavigate('leave')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
                 <div class="w-11 h-11 rounded-2xl bg-white/10 border border-white/15 group-hover:bg-brand-lime group-hover:text-slate-950 flex items-center justify-center text-white text-lg transition-all shrink-0 shadow-sm">
                     <i class="fa-solid fa-calendar-minus"></i>
                 </div>
@@ -1093,7 +1106,7 @@
             </button>
 
             <!-- Item 5: Workwear -->
-            <button onclick="drawerNavigate('workwear')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
+            <button type="button" onclick="drawerNavigate('workwear')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
                 <div class="w-11 h-11 rounded-2xl bg-white/10 border border-white/15 group-hover:bg-brand-lime group-hover:text-slate-950 flex items-center justify-center text-white text-lg transition-all shrink-0 shadow-sm relative">
                     <i class="fa-solid fa-shirt"></i>
                     <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white rounded-full text-[10px] font-black flex items-center justify-center ring-2 ring-[#061e14]">2</span>
@@ -1105,7 +1118,7 @@
             </button>
 
             <!-- Item 6: Tools -->
-            <button onclick="drawerNavigate('tools')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
+            <button type="button" onclick="drawerNavigate('tools')" class="drawer-nav-item w-full flex items-center gap-3.5 px-3 py-3 rounded-2xl text-left hover:bg-white/10 active:scale-[0.98] transition-all group cursor-pointer">
                 <div class="w-11 h-11 rounded-2xl bg-white/10 border border-white/15 group-hover:bg-brand-lime group-hover:text-slate-950 flex items-center justify-center text-white text-lg transition-all shrink-0 shadow-sm">
                     <i class="fa-solid fa-hammer"></i>
                 </div>
@@ -1115,7 +1128,7 @@
 
         <!-- Drawer Footer Section -->
         <div class="relative z-10 pt-4 border-t border-white/15 space-y-1">
-            <button onclick="drawerNavigate('logout')" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-emerald-200/80 hover:text-white hover:bg-white/10 transition-all group cursor-pointer">
+            <button type="button" onclick="drawerNavigate('logout')" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-emerald-200/80 hover:text-white hover:bg-white/10 transition-all group cursor-pointer">
                 <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
                 <span class="text-xs font-black">Sign Out</span>
             </button>
@@ -2383,8 +2396,8 @@
     </button>
 </nav>
 
-        <!-- Click-to-Dismiss Overlay for 3D Drawer (Active when drawer is open) -->
-        <div id="drawer-dismiss-overlay" onclick="closeSideDrawer()" class="absolute inset-0 z-50 cursor-pointer hidden bg-black/5 backdrop-blur-[0.5px]"></div>
+        <!-- Click-to-Dismiss Scrim Overlay for 3D Drawer (Active when drawer is open, zero blur to keep home stage razor sharp) -->
+        <div id="drawer-dismiss-overlay" onclick="closeSideDrawer()" class="absolute inset-0 z-50 cursor-pointer pointer-events-none opacity-0 bg-slate-950/20"></div>
     </div> <!-- /#app-main-stage -->
 
         <!-- Universal Modal Overlay with Apple Bottom Sheet -->
@@ -2873,6 +2886,34 @@ function openSideDrawer() {
 
     if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
 
+    // Clear overrides so CSS class takes full effect cleanly
+    if (stage) {
+        stage.style.transform = '';
+        stage.style.transformOrigin = '';
+        stage.style.borderRadius = '';
+        stage.style.boxShadow = '';
+        stage.style.transition = '';
+        stage.style.willChange = '';
+    }
+    const layerCard = document.getElementById('drawer-layer-card');
+    if (layerCard) {
+        layerCard.style.transform = '';
+        layerCard.style.opacity = '';
+        layerCard.style.boxShadow = '';
+        layerCard.style.transition = '';
+    }
+    if (drawer) {
+        drawer.style.transform = '';
+        drawer.style.opacity = '';
+        drawer.style.pointerEvents = '';
+        drawer.style.transition = '';
+    }
+    const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+    if (dismissOverlay) {
+        dismissOverlay.style.opacity = '';
+        dismissOverlay.style.pointerEvents = '';
+    }
+
     container.classList.add('drawer-open');
     document.documentElement.classList.add('drawer-open');
     document.body.classList.add('drawer-open');
@@ -2899,6 +2940,12 @@ function closeSideDrawer() {
 
     if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
 
+    const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+    if (dismissOverlay) {
+        dismissOverlay.style.opacity = '';
+        dismissOverlay.style.pointerEvents = '';
+    }
+
     if (stage) {
         drawerStageTimer = setTimeout(() => {
             drawerStageTimer = null;
@@ -2907,8 +2954,8 @@ function closeSideDrawer() {
                 stage.style.transformOrigin = '';
                 stage.style.borderRadius = '';
                 stage.style.boxShadow = '';
-                stage.style.filter = '';
                 stage.style.transition = '';
+                stage.style.willChange = '';
             }
         }, 420);
     }
@@ -2999,6 +3046,7 @@ function drawerNavigate(target) {
     let isArmed = false;
     let isDragging = false;
     let touchStartsOnCards = false;
+    let touchStartsOnDrawer = false;
     let gestureMode = null; // 'open' | 'close'
     let currentProgress = 0;
 
@@ -3011,7 +3059,6 @@ function drawerNavigate(target) {
         stage.style.transform = `translate3d(${-74 * p}%, 0, 0) scale(${1 - 0.15 * p})`;
         stage.style.borderRadius = `${36 * p}px`;
         stage.style.boxShadow = `20px 15px 50px rgba(0, 0, 0, ${0.45 * p}), 0 25px 50px rgba(0, 0, 0, ${0.25 * p})`;
-        stage.style.filter = `brightness(${1 - 0.04 * p})`;
 
         // Intermediate Layer Card (0% to -54%, scale 1.0 to 0.82, opacity 0 to 0.8)
         layerCard.style.transformOrigin = 'left center';
@@ -3023,6 +3070,13 @@ function drawerNavigate(target) {
         drawer.style.transform = `translate3d(${12 * (1 - p)}px, 0, 0)`;
         drawer.style.opacity = `${p}`;
         drawer.style.pointerEvents = p > 0.6 ? 'auto' : 'none';
+
+        // Stage Scrim: fade smoothly with p, keeping stage razor-sharp (zero blur)
+        const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+        if (dismissOverlay) {
+            dismissOverlay.style.opacity = `${p}`;
+            dismissOverlay.style.pointerEvents = p > 0.1 ? 'auto' : 'none';
+        }
 
         if (p > 0.35) {
             setStatusBarThemeColor('#061e14', true);
@@ -3037,7 +3091,7 @@ function drawerNavigate(target) {
 
     function animateDrawerTo(targetProgress, onComplete) {
         if (!stage || !layerCard || !drawer) return;
-        const easeCurve = 'transform 0.38s var(--ease-drawer), border-radius 0.38s var(--ease-drawer), box-shadow 0.38s var(--ease-drawer), opacity 0.35s ease, filter 0.35s ease';
+        const easeCurve = 'transform 0.38s var(--ease-drawer), border-radius 0.38s var(--ease-drawer), box-shadow 0.38s var(--ease-drawer), opacity 0.35s ease';
         stage.style.transition = easeCurve;
         layerCard.style.transition = easeCurve;
         drawer.style.transition = easeCurve;
@@ -3045,9 +3099,17 @@ function drawerNavigate(target) {
         renderDrawerProgress(targetProgress);
 
         setTimeout(() => {
-            if (stage) stage.style.transition = '';
+            if (stage) {
+                stage.style.transition = '';
+                stage.style.willChange = '';
+            }
             if (layerCard) layerCard.style.transition = '';
             if (drawer) drawer.style.transition = '';
+            const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+            if (dismissOverlay) {
+                dismissOverlay.style.opacity = '';
+                dismissOverlay.style.pointerEvents = '';
+            }
             if (onComplete) onComplete();
         }, 390);
     }
@@ -3069,13 +3131,15 @@ function drawerNavigate(target) {
         if (isModalOpen) return;
 
         if (isDrawerOpen) {
-            // When drawer is open: grabbing the left depth card / main stage (left ~52%) commits instantly
+            touchStartsOnDrawer = !!(drawer && drawer.contains(e.target));
+            // When drawer is open: grabbing the left depth card / main stage commits to closing
             const leftZoneThreshold = container.offsetWidth * 0.52;
-            touchStartsOnCards = touch.clientX <= leftZoneThreshold;
+            touchStartsOnCards = !touchStartsOnDrawer && (touch.clientX <= leftZoneThreshold);
             isArmed = true;
             gestureMode = 'close';
             currentProgress = 1;
         } else {
+            touchStartsOnDrawer = false;
             touchStartsOnCards = false;
             // Check if touch started on the right edge of container
             const rect = container.getBoundingClientRect();
@@ -3100,13 +3164,19 @@ function drawerNavigate(target) {
             if (gestureMode === 'open' && diffX < -6 && isHorizontal) {
                 isDragging = true;
                 if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
-            } else if (gestureMode === 'close' && diffX > 4 && (isHorizontal || touchStartsOnCards)) {
-                // If touching on the left depth card / stage, commit immediately to dragging right!
-                isDragging = true;
-                if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
-            } else if (!touchStartsOnCards && Math.abs(diffY) > 8) {
-                isArmed = false; // scrolling vertically in drawer menu
-                return;
+            } else if (gestureMode === 'close') {
+                if (touchStartsOnCards && diffX > 4 && (isHorizontal || Math.abs(diffX) > 4)) {
+                    // Touching on the left depth card / stage: commit immediately to dragging right!
+                    isDragging = true;
+                    if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
+                } else if (touchStartsOnDrawer && diffX > 18 && isHorizontal) {
+                    // Swiping right intentionally across the drawer menu to dismiss
+                    isDragging = true;
+                    if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
+                } else if (!touchStartsOnCards && Math.abs(diffY) > 8) {
+                    isArmed = false; // scrolling vertically in drawer menu
+                    return;
+                }
             }
         }
 
@@ -3130,6 +3200,7 @@ function drawerNavigate(target) {
             stage.style.transition = 'none';
             layerCard.style.transition = 'none';
             drawer.style.transition = 'none';
+            if (stage) stage.style.willChange = 'transform, border-radius';
             renderDrawerProgress(p);
         }
     }
@@ -3140,7 +3211,8 @@ function drawerNavigate(target) {
 
         if (!isDragging) {
             // Tapped on stage/overlay while drawer is open -> close it
-            if (gestureMode === 'close') {
+            // If tapped on the drawer itself, let the button/item click trigger normally
+            if (gestureMode === 'close' && touchStartsOnCards) {
                 closeSideDrawer();
             }
             return;
@@ -3165,13 +3237,18 @@ function drawerNavigate(target) {
                     stage.style.transformOrigin = '';
                     stage.style.borderRadius = '';
                     stage.style.boxShadow = '';
-                    stage.style.filter = '';
+                    stage.style.willChange = '';
                     layerCard.style.transform = '';
                     layerCard.style.opacity = '';
                     layerCard.style.boxShadow = '';
                     drawer.style.transform = '';
                     drawer.style.opacity = '';
                     drawer.style.pointerEvents = '';
+                    const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+                    if (dismissOverlay) {
+                        dismissOverlay.style.opacity = '';
+                        dismissOverlay.style.pointerEvents = '';
+                    }
                 });
             } else {
                 // Didn't drag enough -> cancel and snap back closed
@@ -3186,13 +3263,18 @@ function drawerNavigate(target) {
                     stage.style.transformOrigin = '';
                     stage.style.borderRadius = '';
                     stage.style.boxShadow = '';
-                    stage.style.filter = '';
+                    stage.style.willChange = '';
                     layerCard.style.transform = '';
                     layerCard.style.opacity = '';
                     layerCard.style.boxShadow = '';
                     drawer.style.transform = '';
                     drawer.style.opacity = '';
                     drawer.style.pointerEvents = '';
+                    const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+                    if (dismissOverlay) {
+                        dismissOverlay.style.opacity = '';
+                        dismissOverlay.style.pointerEvents = '';
+                    }
                 });
             }
         } else if (gestureMode === 'close') {
@@ -3210,13 +3292,18 @@ function drawerNavigate(target) {
                     stage.style.transformOrigin = '';
                     stage.style.borderRadius = '';
                     stage.style.boxShadow = '';
-                    stage.style.filter = '';
+                    stage.style.willChange = '';
                     layerCard.style.transform = '';
                     layerCard.style.opacity = '';
                     layerCard.style.boxShadow = '';
                     drawer.style.transform = '';
                     drawer.style.opacity = '';
                     drawer.style.pointerEvents = '';
+                    const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+                    if (dismissOverlay) {
+                        dismissOverlay.style.opacity = '';
+                        dismissOverlay.style.pointerEvents = '';
+                    }
                 });
             } else {
                 // Didn't drag enough -> snap back open
@@ -3231,13 +3318,18 @@ function drawerNavigate(target) {
                     stage.style.transformOrigin = '';
                     stage.style.borderRadius = '';
                     stage.style.boxShadow = '';
-                    stage.style.filter = '';
+                    stage.style.willChange = '';
                     layerCard.style.transform = '';
                     layerCard.style.opacity = '';
                     layerCard.style.boxShadow = '';
                     drawer.style.transform = '';
                     drawer.style.opacity = '';
                     drawer.style.pointerEvents = '';
+                    const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+                    if (dismissOverlay) {
+                        dismissOverlay.style.opacity = '';
+                        dismissOverlay.style.pointerEvents = '';
+                    }
                 });
             }
         }
