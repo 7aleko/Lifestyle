@@ -2662,24 +2662,24 @@
                     </div>
 
                     <!-- Clean "FROM" & "TO" Segmented Bar in App Style -->
-                    <div class="grid grid-cols-2 bg-slate-100/90 rounded-2xl p-1 border border-slate-200/60 text-center text-xs font-black uppercase tracking-wider select-none">
-                        <div class="py-1.5 rounded-xl bg-white shadow-xs text-slate-900 flex items-center justify-center gap-1.5 border border-slate-200/40">
-                            <i class="fa-solid fa-arrow-up-from-bracket text-amber-500 text-[10px]"></i>
-                            <span>From</span>
+                    <div class="grid grid-cols-2 bg-slate-100/90 rounded-2xl p-1.5 border border-slate-200/60 text-center text-xs font-black uppercase tracking-wider select-none gap-1.5">
+                        <div class="py-2 rounded-xl bg-white shadow-xs text-slate-900 flex items-center justify-center gap-2 border border-slate-200/40">
+                            <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                            <span class="text-xs font-black tracking-wider">From</span>
                         </div>
-                        <div class="py-1.5 rounded-xl bg-white shadow-xs text-slate-900 flex items-center justify-center gap-1.5 border border-slate-200/40">
-                            <i class="fa-solid fa-location-dot text-emerald-500 text-[10px]"></i>
-                            <span>To</span>
+                        <div class="py-2 rounded-xl bg-white shadow-xs text-slate-900 flex items-center justify-center gap-2 border border-slate-200/40">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                            <span class="text-xs font-black tracking-wider">To</span>
                         </div>
                     </div>
 
-                    <!-- Dual Wheel / Column Selection Stage in White App Style -->
-                    <div class="relative bg-slate-100/70 rounded-[24px] border border-slate-200/80 overflow-hidden shadow-inner h-[220px]">
+                    <!-- Dual Wheel / Column Selection Stage in Apple Style (Accessible & Spacious) -->
+                    <div class="relative bg-slate-100/70 rounded-[26px] border border-slate-200/80 overflow-hidden shadow-inner h-[260px]">
                         
                         <!-- Central Focus Band (Spans across both columns behind the selected items) -->
-                        <div class="absolute top-[66px] left-2 right-2 h-[88px] bg-white border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] z-0 flex items-center justify-center">
+                        <div class="absolute top-[74px] left-2 right-2 h-[112px] bg-white border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] z-0 flex items-center justify-center">
                             <!-- Subtle Right Arrow Indicator pointing from From to To -->
-                            <div class="w-6 h-6 rounded-full bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-400 text-[10px] shadow-2xs">
+                            <div class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200/90 flex items-center justify-center text-slate-500 text-xs shadow-2xs">
                                 <i class="fa-solid fa-chevron-right ml-0.5"></i>
                             </div>
                         </div>
@@ -2687,33 +2687,33 @@
                         <!-- Dual Columns Grid -->
                         <div class="relative z-10 grid grid-cols-2 h-full">
                             
-                            <!-- LEFT COLUMN: "FROM" (Locked to current site, 1 selection only, no locked text) -->
-                            <div class="flex items-center justify-center h-full px-2 border-r border-slate-200/60 select-none">
-                                <div id="transfer-from-card" class="w-full flex flex-col items-center justify-center text-center p-2">
-                                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center text-base mb-1 shadow-2xs">
+                            <!-- LEFT COLUMN: "FROM" (Locked to current site, generous touch & text hierarchy) -->
+                            <div class="flex items-center justify-center h-full px-3 border-r border-slate-200/60 select-none">
+                                <div id="transfer-from-card" class="w-full flex flex-col items-center justify-center text-center p-2.5">
+                                    <div class="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-600 border border-amber-500/25 flex items-center justify-center text-xl mb-1.5 shadow-2xs">
                                         <i class="fa-solid fa-location-dot"></i>
                                     </div>
-                                    <span id="transfer-from-name" class="text-xs sm:text-sm font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
-                                    <span id="transfer-from-desc" class="text-[11px] text-slate-500 font-semibold line-clamp-1 mt-0.5">Current Location</span>
+                                    <span id="transfer-from-name" class="text-sm sm:text-base font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
+                                    <span id="transfer-from-desc" class="text-xs text-slate-600 font-extrabold line-clamp-1 mt-0.5">Current Location</span>
                                 </div>
                             </div>
 
                             <!-- RIGHT COLUMN: "TO" (Scrollable list of all sites) -->
                             <div id="transfer-to-scroller" 
                                  onscroll="onTransferToScrolled(this)"
-                                 class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[66px] px-2 select-none">
+                                 class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[74px] px-2 select-none">
                                 <!-- Populated dynamically via JS -->
                             </div>
                         </div>
 
                         <!-- Top & Bottom Gradient Vignettes to soften unselected items like a 3D wheel -->
-                        <div class="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-slate-100/90 to-transparent pointer-events-none z-20"></div>
-                        <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-slate-100/90 to-transparent pointer-events-none z-20"></div>
+                        <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-slate-100/95 to-transparent pointer-events-none z-20"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-100/95 to-transparent pointer-events-none z-20"></div>
                     </div>
 
                     <!-- Guidance Hint -->
-                    <p class="text-[11px] text-center text-slate-400 font-medium">
-                        Scroll or tap the <strong class="text-slate-700">To</strong> column to select destination site.
+                    <p class="text-xs text-center text-slate-500 font-medium">
+                        Scroll or tap the <strong class="text-slate-800 font-bold">To</strong> column to select destination site.
                     </p>
 
                     <!-- Inputs (Apple App Style Clean Form Fields) -->
@@ -6995,7 +6995,7 @@ function openToolTransferModal(toolId) {
         // Pre-scroll the scroller into exact position BEFORE the sheet moves (prevents repaint hitch)
         const scroller = document.getElementById('transfer-to-scroller');
         if (scroller) {
-            scroller.scrollTop = currentTransferToIndex * 88;
+            scroller.scrollTop = currentTransferToIndex * 112;
             updateTransferToItemStyles(currentTransferToIndex);
         }
 
@@ -7051,12 +7051,12 @@ function renderTransferToItems() {
         return `
             <div onclick="selectTransferToSite(${idx})" 
                  id="transfer-to-item-${idx}" 
-                 class="h-[88px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-all duration-200 ${isSelected ? 'opacity-100 scale-100' : 'opacity-30 hover:opacity-60 scale-95'}">
-                <div id="transfer-to-icon-${idx}" class="w-10 h-10 rounded-xl ${isSelected ? 'bg-slate-900 text-brand-lime shadow-sm' : 'bg-slate-200/80 text-slate-400'} flex items-center justify-center text-base mb-1 transition-all">
+                 class="h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2.5 cursor-pointer transition-all duration-200 ${isSelected ? 'opacity-100 scale-100' : 'opacity-40 hover:opacity-75 scale-95'}">
+                <div id="transfer-to-icon-${idx}" class="w-12 h-12 rounded-2xl ${isSelected ? 'bg-slate-900 text-brand-lime shadow-md' : 'bg-slate-200/90 text-slate-500'} flex items-center justify-center text-xl mb-1.5 transition-all">
                     <i class="${site.icon}"></i>
                 </div>
-                <span id="transfer-to-name-${idx}" class="text-xs sm:text-sm font-black ${isSelected ? 'text-slate-900' : 'text-slate-400'} tracking-tight line-clamp-1">${site.name}</span>
-                <span id="transfer-to-addr-${idx}" class="text-[11px] ${isSelected ? 'text-emerald-600 font-bold' : 'text-slate-400 font-medium'} line-clamp-1 mt-0.5">${site.address}</span>
+                <span id="transfer-to-name-${idx}" class="text-sm sm:text-base font-black ${isSelected ? 'text-slate-900' : 'text-slate-500'} tracking-tight line-clamp-1">${site.name}</span>
+                <span id="transfer-to-addr-${idx}" class="text-xs ${isSelected ? 'text-emerald-600 font-black' : 'text-slate-400 font-semibold'} line-clamp-1 mt-0.5">${site.address}</span>
             </div>
         `;
     }).join('');
@@ -7065,7 +7065,7 @@ function renderTransferToItems() {
 function onTransferToScrolled(scroller) {
     if (!scroller) return;
     const scrollTop = scroller.scrollTop;
-    const activeIndex = Math.max(0, Math.min(ALL_TRANSFER_SITES.length - 1, Math.round(scrollTop / 88)));
+    const activeIndex = Math.max(0, Math.min(ALL_TRANSFER_SITES.length - 1, Math.round(scrollTop / 112)));
     
     if (activeIndex !== currentTransferToIndex) {
         currentTransferToIndex = activeIndex;
@@ -7079,7 +7079,7 @@ function selectTransferToSite(index) {
     triggerHaptic('light');
     const scroller = document.getElementById('transfer-to-scroller');
     if (scroller) {
-        scroller.scrollTo({ top: index * 88, behavior: 'smooth' });
+        scroller.scrollTo({ top: index * 112, behavior: 'smooth' });
     }
     updateTransferToItemStyles(index);
 }
@@ -7095,15 +7095,15 @@ function updateTransferToItemStyles(activeIndex) {
 
         const isSelected = idx === activeIndex;
         if (isSelected) {
-            item.className = "h-[88px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-all duration-200 opacity-100 scale-100";
-            if (icon) icon.className = "w-10 h-10 rounded-xl bg-slate-900 text-brand-lime shadow-sm flex items-center justify-center text-base mb-1 transition-all";
-            if (name) name.className = "text-xs sm:text-sm font-black text-slate-900 tracking-tight line-clamp-1";
-            if (addr) addr.className = "text-[11px] text-emerald-600 font-bold line-clamp-1 mt-0.5";
+            item.className = "h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2.5 cursor-pointer transition-all duration-200 opacity-100 scale-100";
+            if (icon) icon.className = "w-12 h-12 rounded-2xl bg-slate-900 text-brand-lime shadow-md flex items-center justify-center text-xl mb-1.5 transition-all";
+            if (name) name.className = "text-sm sm:text-base font-black text-slate-900 tracking-tight line-clamp-1";
+            if (addr) addr.className = "text-xs text-emerald-600 font-black line-clamp-1 mt-0.5";
         } else {
-            item.className = "h-[88px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-all duration-200 opacity-30 hover:opacity-60 scale-95";
-            if (icon) icon.className = "w-10 h-10 rounded-xl bg-slate-200/80 text-slate-400 flex items-center justify-center text-base mb-1 transition-all";
-            if (name) name.className = "text-xs sm:text-sm font-bold text-slate-400 tracking-tight line-clamp-1";
-            if (addr) addr.className = "text-[11px] text-slate-400 font-medium line-clamp-1 mt-0.5";
+            item.className = "h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2.5 cursor-pointer transition-all duration-200 opacity-40 hover:opacity-75 scale-95";
+            if (icon) icon.className = "w-12 h-12 rounded-2xl bg-slate-200/90 text-slate-500 flex items-center justify-center text-xl mb-1.5 transition-all";
+            if (name) name.className = "text-sm sm:text-base font-black text-slate-500 tracking-tight line-clamp-1";
+            if (addr) addr.className = "text-xs text-slate-400 font-semibold line-clamp-1 mt-0.5";
         }
     });
 }
