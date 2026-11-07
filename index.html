@@ -572,6 +572,7 @@
         #preloader.fade-out {
             opacity: 0;
             pointer-events: none;
+            clip-path: inset(max(54px, env(safe-area-inset-top, 0px)) 0 0 0);
         }
 
         .rain-drop {
@@ -861,10 +862,21 @@
             box-shadow: 16px 12px 40px rgba(0, 0, 0, 0.35), 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
+        #app-container {
+            background-color: #022c22 !important;
+        }
+
         #app-container.drawer-open #app-main-stage {
             transform: translate3d(-74%, 0, 0) scale(0.85);
             border-radius: 36px;
             box-shadow: 20px 15px 50px rgba(0, 0, 0, 0.45), 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        #app-container.drawer-open #app-top-bar,
+        #app-container.drawer-closing #app-top-bar {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.25s var(--ease-drawer);
         }
 
         /* Prevent any clicks, taps, or focus on main stage elements while drawer is open or closing */
@@ -1200,7 +1212,7 @@
     </div>
 
 <!-- Mobile Container Wrapper with Forest Green Background for 3D Drawer Effect -->
-<div id="app-container" class="fixed inset-0 sm:relative sm:inset-auto sm:w-full sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 flex flex-col overflow-hidden border-0 sm:border border-slate-800/50 select-none">
+<div id="app-container" class="fixed inset-0 sm:relative sm:inset-auto sm:w-full sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-[#022c22] bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 flex flex-col overflow-hidden border-0 sm:border border-slate-800/50 select-none">
 
     <!-- 3D Off-Canvas Side Navigation Drawer (Apple / Reference Design) -->
     <aside id="app-side-drawer" 
