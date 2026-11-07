@@ -607,20 +607,21 @@
         }
 
         /* ================= MODAL / FLOATING APPLE ISLAND SHEET ================= */
-        #modal-overlay {
+        #modal-overlay, #tool-transfer-modal-overlay {
             transition: opacity 0.3s var(--ease-out);
         }
-        #modal-content {
+        #modal-content, #tool-transfer-sheet {
             /* enter: iOS spring sheet curve */
             transition: transform 0.42s var(--ease-drawer);
             will-change: transform;
             transform-origin: 50% 100%;
         }
-        #modal-overlay.opacity-0 #modal-content {
+        #modal-overlay.opacity-0 #modal-content,
+        #tool-transfer-modal-overlay.opacity-0 #tool-transfer-sheet {
             /* exit: quicker, so dismissing never feels like waiting */
             transition: transform 0.28s var(--ease-out);
         }
-        #modal-content.is-dragging {
+        #modal-content.is-dragging, #tool-transfer-sheet.is-dragging {
             transition: none !important;
         }
 
@@ -641,15 +642,23 @@
             animation: appleBounce 2s ease-in-out infinite;
         }
 
-        /* Tab switch: quick and subtle (seen tens of times a day). No fill-mode, so no
-           transform is left behind on the scroller (a lingering transform breaks
-           position:fixed/sticky children). */
-        .view-section {
-            animation: fadeInScale 0.22s var(--ease-out);
+        /* 4. Smooth Apple Tab Switch Fade & Spring Scale */
+        @keyframes appleTabSwitch {
+            0% {
+                opacity: 0;
+                transform: scale(0.975) translateY(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.985); }
-            100% { opacity: 1; transform: scale(1); }
+        .view-section {
+            animation: appleTabSwitch 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .view-tab-animate {
+            animation: appleTabSwitch 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+            will-change: opacity, transform;
         }
 
         /* Apple-esque Spring Spin Animation */
@@ -737,9 +746,9 @@
         /* Luminous Lime Color Flash on Click */
         @keyframes pillColorBurst {
             0% {
-                background: linear-gradient(180deg, rgba(210, 248, 24, 0.32) 0%, rgba(210, 248, 24, 0.12) 100%);
-                border-color: rgba(210, 248, 24, 0.7);
-                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 0 20px rgba(210, 248, 24, 0.45);
+                background: linear-gradient(180deg, rgba(210, 248, 24, 0.45) 0%, rgba(210, 248, 24, 0.18) 100%);
+                border-color: rgba(210, 248, 24, 0.85);
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.85), 0 0 25px rgba(210, 248, 24, 0.65);
             }
             100% {
                 background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%);
@@ -802,12 +811,12 @@
                 scroll-behavior: auto !important;
             }
             .rain-drop, .ai-star-glow, .animate-apple-bounce, .energy-bar-glow, .animate-pulse, .spring-pop { animation: none !important; }
-            .nav-pill-indicator, .nav-bar, .nav-bar button, #modal-content {
+            .nav-pill-indicator, .nav-bar, .nav-bar button, #modal-content, #tool-transfer-sheet {
                 transition-duration: 0.01ms !important;
             }
 
 
-            #modal-overlay { transition: opacity 0.2s ease !important; }
+            #modal-overlay, #tool-transfer-modal-overlay { transition: opacity 0.2s ease !important; }
             #app-side-drawer, #drawer-layer-card, #app-main-stage {
                 transition-duration: 0.01ms !important;
             }
@@ -1160,7 +1169,7 @@
 
         /* Frostier, near-solid surfaces when the user asks for less transparency */
         @media (prefers-reduced-transparency: reduce) {
-            .liquid-glass, .true-glass, .apple-inset-group, .apple-list-group, #modal-content, .glass-card-apple, .glass-tile-apple {
+            .liquid-glass, .true-glass, .apple-inset-group, .apple-list-group, #modal-content, #tool-transfer-sheet, .glass-card-apple, .glass-tile-apple {
                 backdrop-filter: none !important;
                 -webkit-backdrop-filter: none !important;
                 background: #ffffff !important;
@@ -1292,23 +1301,23 @@
                     <span class="w-2 h-2 rounded-full bg-limeAccent inline-block ml-[2px] translate-y-2"></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <!-- Notifications Button (Solid Lime Green Bell Icon - 48x48px matched to Drawer Close X) -->
+                    <!-- Notifications Button (Squircle - 48x48px) -->
                     <button id="btn-notifications" 
                             onclick="openNotificationsView()" 
                             aria-label="Activity and Notifications" 
                             title="Notifications" 
-                            class="relative w-12 h-12 min-w-[48px] min-h-[48px] rounded-full bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
+                            class="relative w-12 h-12 min-w-[48px] min-h-[48px] rounded-2xl bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
                         <i id="notif-top-icon" class="fa-solid fa-bell text-base text-brand-lime transition-transform group-hover:scale-110"></i>
                         <!-- Apple-style Unread Notification Counter Badge -->
                         <span id="notif-badge-count" class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[11px] font-black leading-none flex items-center justify-center border-2 border-slate-900 shadow-sm pointer-events-none transition-transform duration-200">3</span>
                     </button>
 
-                    <!-- Hamburger Menu Button (48x48px matched to Drawer Close X) -->
+                    <!-- Hamburger Menu Button (Squircle - 48x48px) -->
                     <button id="btn-hamburger" 
                             onclick="toggleSideDrawer()" 
                             aria-label="Open Navigation Menu" 
                             aria-expanded="false" 
-                            class="w-12 h-12 min-w-[48px] min-h-[48px] rounded-full bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
+                            class="w-12 h-12 min-w-[48px] min-h-[48px] rounded-2xl bg-slate-900 text-brand-lime hover:bg-slate-800 active:scale-90 flex items-center justify-center shadow-sm border border-slate-800/80 transition-all cursor-pointer group">
                         <i class="fa-solid fa-bars text-base transition-transform group-hover:scale-110"></i>
                     </button>
                 </div>
@@ -2122,151 +2131,178 @@
             </div>
         </main>
 
-<!-- ================= VIEW 4: CHAT TAB (APPLE-ESQUE INSET GROUPED) ================= -->
-<main id="view-chat" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-5 py-4 space-y-5 pb-28 relative max-w-full">
+<!-- ================= VIEW 4: CHAT TAB (WHATSAPP-INSPIRED LIFESTYLE HUB) ================= -->
+<main id="view-chat" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-5 py-4 space-y-4 pb-28 relative max-w-full">
     
-    <!-- Atmospheric Background Glows -->
-    <div class="absolute -top-10 left-6 w-40 h-40 bg-emerald-500/15 rounded-full blur-[60px] pointer-events-none"></div>
-    <div class="absolute top-64 right-4 w-40 h-40 bg-blue-500/15 rounded-full blur-[60px] pointer-events-none"></div>
+    <!-- Atmospheric Ambient Glows -->
+    <div class="absolute -top-10 left-6 w-44 h-44 bg-emerald-500/15 rounded-full blur-[65px] pointer-events-none"></div>
+    <div class="absolute top-64 right-4 w-44 h-44 bg-blue-500/15 rounded-full blur-[65px] pointer-events-none"></div>
 
-    <!-- Apple-esque Header -->
+    <!-- Header: WhatsApp-inspired Action Bar with Lifestyle Identity -->
     <div class="relative z-10 flex items-center justify-between px-1">
         <div>
             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Messages</h2>
-            <p class="text-sm text-slate-600 font-semibold mt-0.5">Lifestyle Building Design Hub</p>
+            <p class="text-xs text-slate-500 font-semibold mt-0.5">Lifestyle Building Design Hub</p>
         </div>
-        <button aria-label="New Message" class="w-12 h-12 rounded-full bg-white/90 backdrop-blur-xl shadow-apple border border-white/80 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0" onclick="showToast('Messages', 'New message window')">
-            <i class="fa-solid fa-pen-to-square text-base text-slate-700"></i>
+        
+        <div class="flex items-center gap-2">
+            <!-- New Message / Compose Button -->
+            <button onclick="openNewMessageModal()" 
+                    aria-label="New message" 
+                    title="New conversation"
+                    class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-900 text-brand-lime hover:bg-black active:scale-90 flex items-center justify-center shadow-apple border border-slate-800 transition-all cursor-pointer group">
+                <i class="fa-solid fa-pen-to-square text-sm group-hover:scale-110 transition-transform"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= Dedicated Apple-Esque Poppy Bot AI Hero Card ================= -->
+    <div id="poppy-hero-card" 
+         onclick="openPoppyBotChat()" 
+         class="relative z-10 rounded-[28px] p-5 bg-gradient-to-br from-slate-950 via-[#0d1624] to-slate-900 text-white shadow-apple-lg border border-slate-800/90 hover:border-slate-700/80 cursor-pointer overflow-hidden group active:scale-[0.99] transition-all">
+        
+        <!-- Multi-chromatic Ambient Glow Orbs (Apple Intelligence Iridescent Bloom) -->
+        <div class="absolute -top-14 -right-14 w-40 h-40 bg-brand-lime/20 rounded-full blur-[50px] pointer-events-none group-hover:bg-brand-lime/30 transition-all duration-700"></div>
+        <div class="absolute -bottom-14 -left-14 w-40 h-40 bg-sky-500/20 rounded-full blur-[50px] pointer-events-none group-hover:bg-sky-500/30 transition-all duration-700"></div>
+        <div class="absolute top-1/2 left-1/3 -translate-y-1/2 w-32 h-32 bg-purple-500/15 rounded-full blur-[45px] pointer-events-none"></div>
+
+        <!-- Ambient Rim Lighting -->
+        <div class="absolute inset-0 rounded-[28px] ring-1 ring-inset ring-white/10 pointer-events-none"></div>
+
+        <div class="relative z-10 space-y-3.5">
+            <!-- Top Row: Avatar + Title + Status + Action Button -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3.5 min-w-0">
+                    <!-- Squircle Gradient Icon with Glowing Pulse Indicator -->
+                    <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-lime via-emerald-400 to-teal-300 text-slate-950 font-black text-lg flex items-center justify-center shadow-lg shadow-brand-lime/25 group-hover:scale-105 group-hover:rotate-3 transition-transform duration-300">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-lime opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-brand-lime border-2 border-slate-950"></span>
+                        </span>
+                    </div>
+
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-base font-black text-white tracking-tight">Poppy Bot</h3>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-lime/15 border border-brand-lime/30 text-[10px] font-black text-brand-lime uppercase tracking-wider">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-lime animate-pulse"></span>
+                                AI Assistant
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-300 font-medium truncate mt-0.5">Lifestyle Procore specs, weather protocols & automation</p>
+                    </div>
+                </div>
+
+                <!-- Apple Glass Squircle Action Button -->
+                <div class="w-9 h-9 rounded-xl bg-white/10 group-hover:bg-brand-lime group-hover:text-slate-950 text-white flex items-center justify-center backdrop-blur-md transition-all shrink-0 border border-white/10 shadow-sm">
+                    <i class="fa-solid fa-arrow-right text-xs transition-transform group-hover:translate-x-0.5"></i>
+                </div>
+            </div>
+
+            <!-- Siri-Style Interactive Quick Prompt Capsule -->
+            <div onclick="event.stopPropagation(); openPoppyBotChat();" 
+                 class="bg-white/[0.07] hover:bg-white/[0.12] border border-white/10 rounded-2xl px-3.5 py-2.5 flex items-center justify-between backdrop-blur-md transition-all cursor-pointer group/prompt">
+                <span class="text-xs text-slate-300 font-medium flex items-center gap-2 truncate">
+                    <i class="fa-solid fa-sparkles text-brand-lime text-xs animate-pulse"></i>
+                    <span class="truncate">Ask Poppy anything or tap a quick action...</span>
+                </span>
+                <span class="shrink-0 text-[11px] font-bold text-brand-lime group-hover/prompt:underline flex items-center gap-1 pl-2">
+                    Chat <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                </span>
+            </div>
+
+            <!-- Quick Action Shortcut Pills (Apple Intelligence Siri Shortcuts) -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pt-0.5" onclick="event.stopPropagation()">
+                <button onclick="openPoppyBotChatWithQuery('What are today\'s wet weather & rain protocols?')" 
+                        class="shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 border border-white/10 text-[11px] font-bold text-slate-200 hover:text-white backdrop-blur-md transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>🌧️ Rain Protocols</span>
+                </button>
+                <button onclick="openPoppyBotChatWithQuery('Check active Procore specifications for Bondi & Lugarno')" 
+                        class="shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 border border-white/10 text-[11px] font-bold text-slate-200 hover:text-white backdrop-blur-md transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>🏗️ Procore Specs</span>
+                </button>
+                <button onclick="openPoppyBotChatWithQuery('Pre-start site safety checklist status')" 
+                        class="shrink-0 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 border border-white/10 text-[11px] font-bold text-slate-200 hover:text-white backdrop-blur-md transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>⚡ Safety Checklist</span>
+                </button>
+            </div>
+
+            <!-- Status Footer -->
+            <div class="flex items-center justify-between pt-2 border-t border-white/10 text-[11px] text-slate-400 font-medium">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-brand-lime animate-pulse"></span>
+                    Online & Ready
+                </span>
+                <span class="text-brand-lime font-bold flex items-center gap-1">
+                    Start session <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apple Glass Search Bar (Matching Team Directory & Tools) -->
+    <div class="relative z-10">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+        <input id="lifestyle-chat-search" 
+               type="text" 
+               placeholder="Search team chats, sites, or ask Poppy AI..." 
+               oninput="handleLifestyleChatSearch(this.value)" 
+               class="w-full pl-11 pr-10 py-3.5 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/90 text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-brand-lime focus:bg-white shadow-apple transition-all">
+        <button id="lifestyle-chat-search-clear" 
+                onclick="clearLifestyleChatSearch()" 
+                aria-label="Clear search" 
+                class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-2 cursor-pointer transition-colors">
+            <i class="ph-bold ph-x-circle text-base"></i>
         </button>
     </div>
 
-    <!-- 1. Poppy Bot AI Card (Apple Intelligence Style Banner) -->
-    <div onclick="openPoppyBotChat()" class="relative rounded-[32px] p-5 bg-gradient-to-br from-slate-900 via-[#121c2b] to-slate-950 text-white shadow-apple-lg border border-slate-800 cursor-pointer overflow-hidden group active:scale-[0.99] transition-all">
-        <div class="absolute -top-16 -right-16 w-36 h-36 bg-emerald-500/20 rounded-full blur-[45px] pointer-events-none"></div>
-        <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-blue-600/20 rounded-full blur-[45px] pointer-events-none"></div>
+    <!-- Category Filter Bar (Matching Original Squircle Glass Style) -->
+    <div class="relative z-10 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5 select-none">
+        <button onclick="setLifestyleChatFilter('all')" 
+                id="filter-chip-all" 
+                class="lifestyle-chat-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-black bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer flex items-center justify-center">
+            All
+        </button>
+        <button onclick="setLifestyleChatFilter('unread')" 
+                id="filter-chip-unread" 
+                class="lifestyle-chat-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer justify-center">
+            Unread <span id="lifestyle-unread-count-chip" class="min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-black flex items-center justify-center">3</span>
+        </button>
+        <button onclick="setLifestyleChatFilter('channel')" 
+                id="filter-chip-channel" 
+                class="lifestyle-chat-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">
+            Channels & Sites
+        </button>
+        <button onclick="setLifestyleChatFilter('direct')" 
+                id="filter-chip-direct" 
+                class="lifestyle-chat-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">
+            Direct Messages
+        </button>
+        <button onclick="setLifestyleChatFilter('ai')" 
+                id="filter-chip-ai" 
+                class="lifestyle-chat-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer justify-center">
+            <i class="fa-solid fa-wand-magic-sparkles text-emerald-600 text-[11px]"></i> Poppy AI
+        </button>
+    </div>
 
-        <div class="relative z-10 flex items-start justify-between">
-            <div class="flex items-center space-x-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-lime to-emerald-400 text-slate-950 font-black text-lg flex items-center justify-center shadow-lg shadow-brand-lime/20 shrink-0">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h4 class="text-base font-black text-white tracking-tight">Poppy Bot</h4>
-                        <span class="text-[11px] font-extrabold bg-brand-lime/20 text-brand-lime px-2 py-0.5 rounded-full border border-brand-lime/30 uppercase tracking-wider">AI Assistant</span>
-                    </div>
-                    <p class="text-xs text-slate-300 font-medium mt-0.5">Ask questions, check specs, or automate tasks</p>
-                </div>
-            </div>
-            <div class="w-8 h-8 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center backdrop-blur-md transition-colors shrink-0">
-                <i class="fa-solid fa-chevron-right text-xs text-white"></i>
-            </div>
-        </div>
-
-        <div class="relative z-10 mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-brand-lime animate-pulse"></span> Online & Ready</span>
-            <span class="text-brand-lime font-bold">Start chat</span>
+    <!-- WhatsApp-Inspired Unified Conversational Feed Card -->
+    <div class="relative z-10 bg-white/85 backdrop-blur-2xl rounded-[28px] shadow-apple border border-slate-200/80 overflow-hidden">
+        <div id="lifestyle-chat-list" class="divide-y divide-slate-100">
+            <!-- Dynamically populated via JavaScript -->
         </div>
     </div>
 
-    <!-- 2. Channels Section (Apple Inset Grouped Style) -->
-    <div class="space-y-2">
-        <div class="px-1">
-            <h3 class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Channels</h3>
-        </div>
-
-        <div class="bg-white/80 backdrop-blur-2xl rounded-[28px] shadow-apple border border-slate-200/80 overflow-hidden divide-y divide-slate-100">
-            <div onclick="openGroupChat()" class="p-4 hover:bg-slate-50/80 cursor-pointer transition-all flex items-center justify-between group active:bg-slate-100/60">
-                <div class="flex items-center space-x-3.5 min-w-0">
-                    <div class="w-10 h-10 rounded-2xl bg-slate-900 text-brand-lime flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0">
-                        <i class="fa-solid fa-users text-sm"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-2">
-                            <h4 class="text-sm font-black text-slate-900 tracking-tight truncate">Company Group Chat</h4>
-                        </div>
-                        <p class="text-xs text-slate-500 truncate mt-0.5 font-medium">David: "Indoor backup site confirmed..."</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 shrink-0 pl-2">
-                    <span class="text-xs text-slate-400 font-semibold">10:42 AM</span>
-                    <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-slate-500 transition-colors"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. Direct Messages Section (Apple Inset Grouped List Style) -->
-    <div class="space-y-2">
-        <div class="px-1">
-            <h3 class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Direct Messages</h3>
-        </div>
-
-        <div class="bg-white/80 backdrop-blur-2xl rounded-[28px] shadow-apple border border-slate-200/80 overflow-hidden divide-y divide-slate-100">
-            <!-- DM 1 -->
-            <div onclick="openDirectMessage('James Beggs')" class="p-4 hover:bg-slate-50/80 cursor-pointer transition-all flex items-center justify-between group active:bg-slate-100/60">
-                <div class="flex items-center space-x-3.5 min-w-0">
-                    <div class="relative shrink-0">
-                        <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-800 font-bold text-xs flex items-center justify-center border border-slate-200 shadow-inner">
-                            JB
-                        </div>
-                        <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
-                    </div>
-                    <div class="min-w-0">
-                        <h4 class="text-sm font-black text-slate-900 tracking-tight truncate">James Beggs</h4>
-                        <p class="text-xs text-slate-500 truncate mt-0.5 font-medium">Can you send over the updated roof details?</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 shrink-0 pl-2">
-                    <div class="text-right">
-                        <span class="text-xs text-slate-400 block mb-0.5 font-semibold">9:15 AM</span>
-                        <span id="dm-james-badge" class="w-4 h-4 rounded-full bg-brand-lime text-slate-950 font-black text-[11px] flex items-center justify-center ml-auto shadow-sm">1</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-slate-500 transition-colors"></i>
-                </div>
-            </div>
-
-            <!-- DM 2 -->
-            <div onclick="openDirectMessage('David Hilt')" class="p-4 hover:bg-slate-50/80 cursor-pointer transition-all flex items-center justify-between group active:bg-slate-100/60">
-                <div class="flex items-center space-x-3.5 min-w-0">
-                    <div class="relative shrink-0">
-                        <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-800 font-bold text-xs flex items-center justify-center border border-slate-200 shadow-inner">
-                            DH
-                        </div>
-                        <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
-                    </div>
-                    <div class="min-w-0">
-                        <h4 class="text-sm font-black text-slate-900 tracking-tight truncate">David Hilt</h4>
-                        <p class="text-xs text-slate-500 truncate mt-0.5 font-medium">All sorted for Lugarno tomorrow morning.</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 shrink-0 pl-2">
-                    <span class="text-xs text-slate-400 font-semibold">Yesterday</span>
-                    <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-slate-500 transition-colors"></i>
-                </div>
-            </div>
-
-            <!-- DM 3 -->
-<!-- DM 3 -->
-<div onclick="triggerConfetti(); openDirectMessage('Nathan Wild')" class="p-4 hover:bg-slate-50/80 cursor-pointer transition-all flex items-center justify-between group active:bg-slate-100/60">
-    <div class="flex items-center space-x-3.5 min-w-0">
-        <div class="relative shrink-0">
-            <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-800 font-bold text-xs flex items-center justify-center border border-slate-200 shadow-inner">
-                NW
-            </div>
-            <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-slate-300 border-2 border-white"></span>
-        </div>
-        <div class="min-w-0">
-            <h4 class="text-sm font-black text-slate-900 tracking-tight truncate">Nathan Wild</h4>
-            <p class="text-xs text-slate-500 truncate mt-0.5 font-medium">Cheers for the hand on site today!</p>
-        </div>
-    </div>
-    <div class="flex items-center gap-2 shrink-0 pl-2">
-        <span class="text-xs text-slate-400 font-semibold">Oct 12</span>
-        <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-slate-500 transition-colors"></i>
-    </div>
-</div>
-        </div>
+    <!-- Floating Poppy AI Quick Trigger (Bottom Right) -->
+    <div class="fixed bottom-24 right-5 z-20">
+        <button onclick="openPoppyBotChat()" 
+                aria-label="Poppy Bot AI Assistant" 
+                title="Ask Poppy Bot AI" 
+                class="w-12 h-12 rounded-full bg-slate-900 text-brand-lime border-2 border-brand-lime/40 shadow-[0_8px_25px_rgba(204,255,0,0.3)] hover:scale-105 active:scale-95 flex items-center justify-center transition-all cursor-pointer group">
+            <i class="fa-solid fa-wand-magic-sparkles text-base group-hover:rotate-12 transition-transform"></i>
+        </button>
     </div>
 </main>
 
@@ -2348,23 +2384,23 @@
             </button>
         </div>
 
-        <!-- Scrollable Category Filter Bar (Matching Tools & Gear Style) -->
-        <div class="relative z-10 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5">
-            <button onclick="filterTeamCategory('all')" id="team-cat-all" class="shrink-0 px-4 py-2.5 text-xs font-black rounded-xl bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer min-h-[40px]">All</button>
-            <button onclick="filterTeamCategory('carpenter')" id="team-cat-carpenter" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Carpenter</button>
-            <button onclick="filterTeamCategory('site supervisor')" id="team-cat-site-supervisor" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Site Manager</button>
-            <button onclick="filterTeamCategory('project manager')" id="team-cat-project-manager" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Project Manager</button>
-            <button onclick="filterTeamCategory('apprentice')" id="team-cat-apprentice" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Apprentice</button>
-        </div>
-
-        <!-- Instant Search Bar -->
+        <!-- Apple Glass Instant Search Bar -->
         <div class="relative z-10">
             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
             <input type="text" id="team-search-input" onkeyup="filterTeamDirectory()" placeholder="Search team member name or role..." 
                 class="w-full pl-11 pr-10 py-3.5 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/90 text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-brand-lime focus:bg-white shadow-apple transition-all">
-            <button onclick="clearTeamSearch()" id="team-clear-btn" aria-label="Clear search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-2">
+            <button onclick="clearTeamSearch()" id="team-clear-btn" aria-label="Clear search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-2 cursor-pointer transition-colors">
                 <i class="ph-bold ph-x-circle text-base"></i>
             </button>
+        </div>
+
+        <!-- Scrollable Category Filter Bar (Original Squircle Glass Style) -->
+        <div class="relative z-10 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5 select-none">
+            <button onclick="filterTeamCategory('all')" id="team-cat-all" class="team-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-black bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer flex items-center justify-center">All</button>
+            <button onclick="filterTeamCategory('carpenter')" id="team-cat-carpenter" class="team-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Carpenter</button>
+            <button onclick="filterTeamCategory('site supervisor')" id="team-cat-site-supervisor" class="team-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Site Manager</button>
+            <button onclick="filterTeamCategory('project manager')" id="team-cat-project-manager" class="team-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Project Manager</button>
+            <button onclick="filterTeamCategory('apprentice')" id="team-cat-apprentice" class="team-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Apprentice</button>
         </div>
 
         <!-- Grouped Contacts List Container -->
@@ -2396,28 +2432,28 @@
                 </button>
             </div>
 
-            <!-- Scrollable Category Tag Filter Bar -->
-            <div class="relative z-10 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5">
-                <button onclick="filterToolsCategory('all')" id="tool-cat-all" class="shrink-0 px-4 py-2.5 text-xs font-black rounded-xl bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer min-h-[40px]">All</button>
-                <button onclick="filterToolsCategory('power tools')" id="tool-cat-power-tools" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Power Tools</button>
-                <button onclick="filterToolsCategory('access')" id="tool-cat-access" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Access</button>
-                <button onclick="filterToolsCategory('concrete')" id="tool-cat-concrete" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Concrete</button>
-                <button onclick="filterToolsCategory('setout')" id="tool-cat-setout" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Setout</button>
-                <button onclick="filterToolsCategory('site')" id="tool-cat-site" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Site</button>
-                <button onclick="filterToolsCategory('safety')" id="tool-cat-safety" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Safety</button>
-                <button onclick="filterToolsCategory('trailers')" id="tool-cat-trailers" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Trailers</button>
-                <button onclick="filterToolsCategory('scaffolds')" id="tool-cat-scaffolds" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Scaffolds</button>
-                <button onclick="filterToolsCategory('bobcat')" id="tool-cat-bobcat" class="shrink-0 px-4 py-2.5 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[40px]">Bobcat</button>
-            </div>
-
-            <!-- Instant Search Bar -->
+            <!-- Apple Glass Instant Search Bar -->
             <div class="relative z-10">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
                 <input type="text" id="tools-search-input" onkeyup="filterToolsDirectory()" placeholder="Search equipment or location..." 
                     class="w-full pl-11 pr-10 py-3.5 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/90 text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-brand-lime focus:bg-white shadow-apple transition-all">
-                <button onclick="clearToolsSearch()" id="tools-clear-btn" aria-label="Clear tools search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-2">
+                <button onclick="clearToolsSearch()" id="tools-clear-btn" aria-label="Clear tools search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-2 cursor-pointer transition-colors">
                     <i class="ph-bold ph-x-circle text-base"></i>
                 </button>
+            </div>
+
+            <!-- Scrollable Category Tag Filter Bar (Original Squircle Glass Style) -->
+            <div class="relative z-10 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5 select-none">
+                <button onclick="filterToolsCategory('all')" id="tool-cat-all" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-black bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer flex items-center justify-center">All</button>
+                <button onclick="filterToolsCategory('power tools')" id="tool-cat-power-tools" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Power Tools</button>
+                <button onclick="filterToolsCategory('access')" id="tool-cat-access" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Access</button>
+                <button onclick="filterToolsCategory('concrete')" id="tool-cat-concrete" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Concrete</button>
+                <button onclick="filterToolsCategory('setout')" id="tool-cat-setout" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Setout</button>
+                <button onclick="filterToolsCategory('site')" id="tool-cat-site" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Site</button>
+                <button onclick="filterToolsCategory('safety')" id="tool-cat-safety" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Safety</button>
+                <button onclick="filterToolsCategory('trailers')" id="tool-cat-trailers" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Trailers</button>
+                <button onclick="filterToolsCategory('scaffolds')" id="tool-cat-scaffolds" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Scaffolds</button>
+                <button onclick="filterToolsCategory('bobcat')" id="tool-cat-bobcat" class="tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Bobcat</button>
             </div>
 
             <!-- Summary Quick Stats Banner -->
@@ -2464,12 +2500,12 @@
                 </div>
             </div>
 
-            <!-- Instagram Category Filter Chips -->
-            <div class="relative z-10 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5">
-                <button onclick="filterNotifications('all')" id="notif-filter-all" class="notif-filter-chip shrink-0 px-4 py-2 text-xs font-black rounded-xl bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer min-h-[38px]">All</button>
-                <button onclick="filterNotifications('shifts')" id="notif-filter-shifts" class="notif-filter-chip shrink-0 px-4 py-2 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[38px]">Sites & Shifts</button>
-                <button onclick="filterNotifications('tools')" id="notif-filter-tools" class="notif-filter-chip shrink-0 px-4 py-2 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[38px]">Tools</button>
-                <button onclick="filterNotifications('safety')" id="notif-filter-safety" class="notif-filter-chip shrink-0 px-4 py-2 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[38px]">Safety</button>
+            <!-- Activity Category Filter Chips (Original Squircle Glass Style) -->
+            <div class="relative z-10 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5 select-none">
+                <button onclick="filterNotifications('all')" id="notif-filter-all" class="notif-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-black bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer flex items-center justify-center">All</button>
+                <button onclick="filterNotifications('shifts')" id="notif-filter-shifts" class="notif-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Sites & Shifts</button>
+                <button onclick="filterNotifications('tools')" id="notif-filter-tools" class="notif-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Tools</button>
+                <button onclick="filterNotifications('safety')" id="notif-filter-safety" class="notif-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center">Safety</button>
             </div>
 
             <!-- Notifications Feed Container (Grouped by Today, Yesterday, Earlier) -->
@@ -2524,8 +2560,8 @@
             class="relative z-10 nav-btn flex flex-col items-center justify-center h-[54px] rounded-full text-white/80 hover:text-white transition-colors duration-150 focus:outline-none">
         <div class="relative inline-flex items-center justify-center">
             <i class="fa-solid fa-comment text-[18px] mb-1" aria-hidden="true"></i>
-            <!-- Apple-style Unread Message Notification Counter Badge -->
-            <span id="chat-badge-count" class="absolute -top-1 -right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-black leading-none flex items-center justify-center shadow-sm border border-slate-900 pointer-events-none transition-transform duration-200">1</span>
+            <!-- Unread Message Notification Counter Badge (Apple Red) -->
+            <span id="chat-badge-count" class="absolute -top-1 -right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-black leading-none flex items-center justify-center shadow-sm border border-slate-900 pointer-events-none transition-transform duration-200">3</span>
         </div>
         <span class="nav-tab-label text-[11px] font-bold leading-none tracking-tight">Chat</span>
     </button>
@@ -2574,6 +2610,166 @@
                 </div>
                 <!-- Scrollable Body with smooth momentum scrolling -->
                 <div id="modal-body" class="space-y-4 text-slate-600 text-sm overflow-y-auto flex-1 no-scrollbar pr-0.5"></div>
+            </div>
+        </div>
+
+        <!-- Tool Transfer Modal Overlay (White Apple-Style Dual Roller Selector) -->
+        <div id="tool-transfer-modal-overlay" 
+             aria-hidden="true" 
+             class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-0 sm:p-4 select-none">
+            
+            <div id="tool-transfer-sheet" 
+                 role="dialog" 
+                 aria-modal="true" 
+                 aria-labelledby="transfer-modal-title" 
+                 class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl text-slate-900 rounded-t-[32px] sm:rounded-[32px] shadow-[0_-12px_40px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border-t border-x sm:border border-white/80 transform translate-y-[120%] max-h-[90vh] flex flex-col overflow-hidden will-change-transform pb-[max(1.25rem,calc(env(safe-area-inset-bottom,0px)+1rem))]">
+                
+                <!-- iOS Drag Handle Zone -->
+                <div id="transfer-drag-zone" class="w-full pt-2 pb-1.5 flex justify-center cursor-grab select-none shrink-0" onclick="closeToolTransferModal()">
+                    <div class="w-10 h-1 bg-slate-300/90 rounded-full transition-colors hover:bg-slate-400"></div>
+                </div>
+
+                <!-- Apple Sheet Header: Title on Left, X Close on Right -->
+                <div class="flex items-center justify-between pb-3 px-5 border-b border-slate-100 shrink-0">
+                    <h3 id="transfer-modal-title" class="text-xl font-black text-slate-900 tracking-tight">Transfer Details</h3>
+                    
+                    <!-- Circular Close Button (X) on Top-Right -->
+                    <button type="button" 
+                            onclick="closeToolTransferModal()" 
+                            aria-label="Close transfer modal" 
+                            class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer transition-all border border-slate-200/50 shrink-0">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Scrollable Modal Content -->
+                <div class="flex-1 overflow-y-auto no-scrollbar px-5 py-4 space-y-3.5">
+                    
+                    <!-- Equipment Highlight Strip -->
+                    <div class="bg-slate-50/90 border border-slate-200/70 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-2xs">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl bg-slate-900 text-brand-lime flex items-center justify-center text-base shrink-0 shadow-xs">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 id="transfer-tool-name" class="text-sm font-black text-slate-900 truncate">Equipment</h4>
+                                <p id="transfer-tool-meta" class="text-xs text-slate-500 font-medium truncate">Category • Status</p>
+                            </div>
+                        </div>
+                        <span id="transfer-tool-status" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                            Available
+                        </span>
+                    </div>
+
+                    <!-- Clean "FROM" & "TO" Segmented Bar in App Style -->
+                    <div class="grid grid-cols-2 bg-slate-100/90 rounded-2xl p-1 border border-slate-200/60 text-center text-xs font-black uppercase tracking-wider select-none">
+                        <div class="py-1.5 rounded-xl bg-white shadow-xs text-slate-900 flex items-center justify-center gap-1.5 border border-slate-200/40">
+                            <i class="fa-solid fa-arrow-up-from-bracket text-amber-500 text-[10px]"></i>
+                            <span>From</span>
+                        </div>
+                        <div class="py-1.5 rounded-xl bg-white shadow-xs text-slate-900 flex items-center justify-center gap-1.5 border border-slate-200/40">
+                            <i class="fa-solid fa-location-dot text-emerald-500 text-[10px]"></i>
+                            <span>To</span>
+                        </div>
+                    </div>
+
+                    <!-- Dual Wheel / Column Selection Stage in White App Style -->
+                    <div class="relative bg-slate-100/70 rounded-[24px] border border-slate-200/80 overflow-hidden shadow-inner h-[220px]">
+                        
+                        <!-- Central Focus Band (Spans across both columns behind the selected items) -->
+                        <div class="absolute top-[66px] left-2 right-2 h-[88px] bg-white border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] z-0 flex items-center justify-center">
+                            <!-- Subtle Right Arrow Indicator pointing from From to To -->
+                            <div class="w-6 h-6 rounded-full bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-400 text-[10px] shadow-2xs">
+                                <i class="fa-solid fa-chevron-right ml-0.5"></i>
+                            </div>
+                        </div>
+
+                        <!-- Dual Columns Grid -->
+                        <div class="relative z-10 grid grid-cols-2 h-full">
+                            
+                            <!-- LEFT COLUMN: "FROM" (Locked to current site, 1 selection only, no locked text) -->
+                            <div class="flex items-center justify-center h-full px-2 border-r border-slate-200/60 select-none">
+                                <div id="transfer-from-card" class="w-full flex flex-col items-center justify-center text-center p-2">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center text-base mb-1 shadow-2xs">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                    </div>
+                                    <span id="transfer-from-name" class="text-xs sm:text-sm font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
+                                    <span id="transfer-from-desc" class="text-[11px] text-slate-500 font-semibold line-clamp-1 mt-0.5">Current Location</span>
+                                </div>
+                            </div>
+
+                            <!-- RIGHT COLUMN: "TO" (Scrollable list of all sites) -->
+                            <div id="transfer-to-scroller" 
+                                 onscroll="onTransferToScrolled(this)"
+                                 class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[66px] px-2 select-none">
+                                <!-- Populated dynamically via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Top & Bottom Gradient Vignettes to soften unselected items like a 3D wheel -->
+                        <div class="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-slate-100/90 to-transparent pointer-events-none z-20"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-slate-100/90 to-transparent pointer-events-none z-20"></div>
+                    </div>
+
+                    <!-- Guidance Hint -->
+                    <p class="text-[11px] text-center text-slate-400 font-medium">
+                        Scroll or tap the <strong class="text-slate-700">To</strong> column to select destination site.
+                    </p>
+
+                    <!-- Inputs (Apple App Style Clean Form Fields) -->
+                    <div class="space-y-3 pt-1">
+                        <!-- Amount / Units Line with Stepper & Input -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Transfer Amount</label>
+                                <span id="transfer-amount-available" class="text-xs font-bold text-slate-400">Available: 24 Props</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" 
+                                        onclick="adjustTransferQuantity(-1)" 
+                                        aria-label="Decrease quantity" 
+                                        class="w-11 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-700 font-black border border-slate-200/80 cursor-pointer transition-all shrink-0">
+                                    <i class="fa-solid fa-minus text-xs"></i>
+                                </button>
+                                <div class="relative flex-1">
+                                    <input type="number" 
+                                           id="transfer-input-qty" 
+                                           min="1" 
+                                           max="999" 
+                                           value="10" 
+                                           oninput="onTransferQuantityChange(this.value)"
+                                           class="w-full h-11 px-3 text-center rounded-xl bg-slate-50 border border-slate-200/80 text-slate-900 font-extrabold text-base focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all">
+                                    <span id="transfer-input-unit" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none select-none">Props</span>
+                                </div>
+                                <button type="button" 
+                                        onclick="adjustTransferQuantity(1)" 
+                                        aria-label="Increase quantity" 
+                                        class="w-11 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-700 font-black border border-slate-200/80 cursor-pointer transition-all shrink-0">
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Description Line -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Description / Notes</label>
+                            <input type="text" id="transfer-input-desc" placeholder="Optional notes (e.g. framing stage)" 
+                                   class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-900 placeholder:text-slate-400 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Bottom Action Button in App's Signature Style -->
+                    <div class="pt-2">
+                        <button type="button" 
+                                id="transfer-confirm-btn"
+                                onclick="confirmToolTransfer()" 
+                                class="w-full py-4 rounded-2xl bg-slate-900 hover:bg-black active:scale-[0.98] text-brand-lime font-black text-sm uppercase tracking-wider shadow-apple transition-all flex items-center justify-center gap-2.5 cursor-pointer">
+                            <span id="transfer-confirm-btn-label">Transfer Equipment</span>
+                            <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+                        </button>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -2653,6 +2849,9 @@
             renderTeamDirectory(TEAM_DIRECTORY_DATA);
             renderToolsDirectory(TOOLS_DIRECTORY_DATA);
             updateSiteAttendanceUI();
+            if (typeof renderLifestyleChats === 'function') {
+                renderLifestyleChats();
+            }
             if (typeof renderNotificationsFeed === 'function') {
                 renderNotificationsFeed('all');
             }
@@ -2973,11 +3172,24 @@ function switchTab(tabName) {
         notifBtn.classList.remove('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
     }
 
-    // Toggle views
+    // Toggle views with guaranteed Apple-esque transition replay
     allViews.forEach(t => {
         const view = document.getElementById(`view-${t}`);
         if (view) {
-            view.classList.toggle('hidden', t !== tabName);
+            const isTarget = (t === tabName);
+            if (isTarget) {
+                view.classList.remove('hidden');
+                // Force animation restart across all browsers (including Safari)
+                view.classList.remove('view-tab-animate');
+                void view.offsetWidth; // Force reflow
+                view.classList.add('view-tab-animate');
+                view.addEventListener('animationend', () => {
+                    view.classList.remove('view-tab-animate');
+                }, { once: true });
+            } else {
+                view.classList.add('hidden');
+                view.classList.remove('view-tab-animate');
+            }
         }
     });
 
@@ -3167,9 +3379,20 @@ function drawerNavigate(target) {
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-    // Initial call to align on default 'home' tab
-    setTimeout(() => updateNavPillPosition('home'), 50);
+    function initNavPill() {
+        updateNavPillPosition('home');
+        requestAnimationFrame(() => updateNavPillPosition('home'));
+        setTimeout(() => updateNavPillPosition('home'), 60);
+        setTimeout(() => updateNavPillPosition('home'), 150);
+    }
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', initNavPill);
+    } else {
+        initNavPill();
+    }
+    window.addEventListener('load', () => updateNavPillPosition(getActiveNavTab()));
+
+    window.addEventListener('DOMContentLoaded', () => {
 
     // Keyboard support: Escape closes drawer
     document.addEventListener('keydown', (e) => {
@@ -4774,78 +4997,712 @@ function openTimesheetsModal() {
 
 
 
-        function openPoppyBotChat() {
-            openModal("Poppy Bot AI", `
-                <div class="space-y-4 py-1">
-                    <div class="bg-slate-900 text-white p-4 rounded-2xl space-y-2 border border-slate-800">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-brand-lime"></span>
-                            <strong class="text-xs text-brand-lime tracking-wide">Poppy Bot Assistant</strong>
+        // =========================================================================
+        // LIFESTYLE BUILDING DESIGN HUB - CHAT ENGINE (WHATSAPP-INSPIRED LAYOUT)
+        // =========================================================================
+        let currentLifestyleChatFilter = 'all';
+        let currentLifestyleChatSearchQuery = '';
+
+        const LIFESTYLE_CHATS = [
+            {
+                id: 'chat-poppy',
+                name: 'Poppy Bot',
+                role: 'AI Assistant',
+                category: 'ai',
+                isGroup: false,
+                isOnline: true,
+                preview: 'Online & ready to check Procore specs or wet weather protocols.',
+                time: 'Online',
+                unread: 0,
+                avatarType: 'ai',
+                avatarBg: 'bg-gradient-to-br from-brand-lime to-emerald-400 text-slate-950',
+                avatarIcon: 'fa-solid fa-wand-magic-sparkles',
+                messages: [
+                    { sender: 'Poppy Bot', text: 'G\'day Alexander! How can I help you automate tasks, look up Procore specs, or check wet weather protocols today?', time: 'Just now', isIncoming: true }
+                ]
+            },
+            {
+                id: 'chat-company',
+                name: 'Company All-Hands',
+                role: 'General Channel',
+                category: 'channel',
+                isGroup: true,
+                isOnline: false,
+                preview: 'David Hilt: "Indoor backup site confirmed for tomorrow at Lugarno Shed B..."',
+                time: '10:42 AM',
+                unread: 0,
+                avatarType: 'icon',
+                avatarBg: 'bg-slate-900 text-brand-lime',
+                avatarIcon: 'fa-solid fa-users',
+                messages: [
+                    { sender: 'David Hilt', text: 'Indoor backup site confirmed for tomorrow at Lugarno Shed B. All gear is checked.', time: '10:35 AM', isIncoming: true },
+                    { sender: 'James Beggs', text: 'Beauty, thanks Dave. See everyone at 7 AM sharp.', time: '10:40 AM', isIncoming: true },
+                    { sender: 'You', text: 'Sounds good! I\'ll bring the extra tarp setup just in case.', time: '10:42 AM', isIncoming: false }
+                ]
+            },
+            {
+                id: 'chat-bondi',
+                name: 'Bondi Site Crew',
+                role: '350 Bondi Rd',
+                category: 'channel',
+                isGroup: true,
+                isOnline: false,
+                preview: 'Jeremy Gillon: "Roof truss delivery on site, crane set up complete"',
+                time: '8:30 AM',
+                unread: 2,
+                avatarType: 'icon',
+                avatarBg: 'bg-blue-900 text-blue-200',
+                avatarIcon: 'fa-solid fa-helmet-safety',
+                messages: [
+                    { sender: 'Curtis Bell', text: 'Perimeter scaffolding is tagged green and safe.', time: '8:15 AM', isIncoming: true },
+                    { sender: 'Jeremy Gillon', text: 'Roof truss delivery on site, crane set up complete.', time: '8:30 AM', isIncoming: true }
+                ]
+            },
+            {
+                id: 'chat-james',
+                name: 'James Beggs',
+                role: 'Project Architect',
+                category: 'direct',
+                isGroup: false,
+                isOnline: true,
+                preview: 'Can you send over the updated roof details for Bondi?',
+                time: '9:15 AM',
+                unread: 1,
+                avatarType: 'text',
+                avatarBg: 'bg-emerald-100 text-emerald-800',
+                avatarFallback: 'JB',
+                messages: [
+                    { sender: 'James Beggs', text: 'Morning Alexander, hope the setout went well today.', time: '8:55 AM', isIncoming: true },
+                    { sender: 'You', text: 'Morning James, setout is complete and pinned.', time: '9:00 AM', isIncoming: false },
+                    { sender: 'James Beggs', text: 'Can you send over the updated roof details for Bondi?', time: '9:15 AM', isIncoming: true }
+                ]
+            },
+            {
+                id: 'chat-lugarno',
+                name: 'Lugarno Site Crew',
+                role: '935 Forest Rd',
+                category: 'channel',
+                isGroup: true,
+                isOnline: false,
+                preview: 'Jude Hudson: "Shed B framing underway, rain safe and protected"',
+                time: 'Yesterday',
+                unread: 0,
+                avatarType: 'icon',
+                avatarBg: 'bg-emerald-950 text-emerald-300',
+                avatarIcon: 'fa-solid fa-warehouse',
+                messages: [
+                    { sender: 'David Hilt', text: 'Remember all electrical leads must be elevated off the ground.', time: 'Yesterday 1:15 pm', isIncoming: true },
+                    { sender: 'Jude Hudson', text: 'Shed B framing underway, rain safe and protected.', time: 'Yesterday 2:30 pm', isIncoming: true }
+                ]
+            },
+            {
+                id: 'chat-david',
+                name: 'David Hilt',
+                role: 'Site Supervisor',
+                category: 'direct',
+                isGroup: false,
+                isOnline: true,
+                preview: 'All sorted for Lugarno tomorrow morning. Meet at 6:45 AM.',
+                time: 'Yesterday',
+                unread: 0,
+                avatarType: 'text',
+                avatarBg: 'bg-slate-200 text-slate-800',
+                avatarFallback: 'DH',
+                messages: [
+                    { sender: 'David Hilt', text: 'All sorted for Lugarno tomorrow morning. Meet at 6:45 AM for pre-start brief.', time: 'Yesterday 4:30 pm', isIncoming: true },
+                    { sender: 'You', text: 'Copy that Dave, see you then.', time: 'Yesterday 4:35 pm', isIncoming: false }
+                ]
+            },
+            {
+                id: 'chat-nathan',
+                name: 'Nathan Wild',
+                role: 'Tradesman',
+                category: 'direct',
+                isGroup: false,
+                isOnline: false,
+                preview: 'Cheers for the hand on site today! Joists went up quick.',
+                time: 'Oct 12',
+                unread: 0,
+                avatarType: 'text',
+                avatarBg: 'bg-amber-100 text-amber-800',
+                avatarFallback: 'NW',
+                messages: [
+                    { sender: 'Nathan Wild', text: 'Cheers for the hand on site today! Joists went up quick.', time: '12 Oct 3:30 pm', isIncoming: true },
+                    { sender: 'You', text: 'Anytime mate, great team effort today!', time: '12 Oct 3:35 pm', isIncoming: false }
+                ]
+            },
+            {
+                id: 'chat-jeremy',
+                name: 'Jeremy Gillon',
+                role: 'Foreman',
+                category: 'direct',
+                isGroup: false,
+                isOnline: false,
+                preview: 'Timber load confirmed for Monday morning brief.',
+                time: 'Oct 11',
+                unread: 0,
+                avatarType: 'text',
+                avatarBg: 'bg-blue-100 text-blue-800',
+                avatarFallback: 'JG',
+                messages: [
+                    { sender: 'Jeremy Gillon', text: 'Timber load confirmed for Monday morning brief.', time: '11 Oct 10:22 am', isIncoming: true }
+                ]
+            },
+            {
+                id: 'chat-brad',
+                name: 'Brad Davis',
+                role: 'Site Supervisor',
+                category: 'direct',
+                isGroup: false,
+                isOnline: false,
+                preview: 'Checked depot stock, all 54V Flexvolt batteries charged.',
+                time: 'Oct 10',
+                unread: 0,
+                avatarType: 'text',
+                avatarBg: 'bg-slate-100 text-slate-800',
+                avatarFallback: 'BD',
+                messages: [
+                    { sender: 'Brad Davis', text: 'Checked depot stock, all 54V Flexvolt batteries charged.', time: '10 Oct 11:15 am', isIncoming: true }
+                ]
+            },
+            {
+                id: 'chat-brendan',
+                name: 'Brendan Hodge',
+                role: 'Site Supervisor',
+                category: 'direct',
+                isGroup: false,
+                isOnline: false,
+                preview: 'Pre-start safety checklist approved for Castlecrag Hub.',
+                time: 'Oct 8',
+                unread: 0,
+                avatarType: 'text',
+                avatarBg: 'bg-purple-100 text-purple-800',
+                avatarFallback: 'BH',
+                messages: [
+                    { sender: 'Brendan Hodge', text: 'Pre-start safety checklist approved for Castlecrag Hub.', time: '8 Oct 7:05 am', isIncoming: true }
+                ]
+            }
+        ];
+
+        function getLifestyleUnreadCount() {
+            return LIFESTYLE_CHATS.reduce((sum, c) => sum + (c.unread || 0), 0);
+        }
+
+        function updateLifestyleBadges() {
+            const totalUnread = getLifestyleUnreadCount();
+            
+            // 1. Filter pill badge
+            const chipBadge = document.getElementById('lifestyle-unread-count-chip');
+            if (chipBadge) {
+                chipBadge.textContent = totalUnread;
+                chipBadge.style.display = totalUnread > 0 ? 'inline-flex' : 'none';
+            }
+
+            // 2. Bottom navigation tab badge
+            const navBadge = document.getElementById('chat-badge-count');
+            if (navBadge) {
+                if (totalUnread > 0) {
+                    navBadge.style.display = 'flex';
+                    navBadge.textContent = totalUnread;
+                } else {
+                    navBadge.style.display = 'none';
+                }
+            }
+        }
+
+        function renderLifestyleChats(filter = currentLifestyleChatFilter, query = currentLifestyleChatSearchQuery) {
+            const container = document.getElementById('lifestyle-chat-list');
+            if (!container) return;
+
+            currentLifestyleChatFilter = filter;
+            currentLifestyleChatSearchQuery = query;
+
+            let filtered = LIFESTYLE_CHATS.filter(chat => {
+                // When actively searching, allow all matches including Poppy
+                if (query && query.trim() !== '') return true;
+                if (filter === 'unread') return chat.unread > 0;
+                if (filter === 'channel') return chat.category === 'channel';
+                if (filter === 'direct') return chat.category === 'direct';
+                if (filter === 'ai') return chat.category === 'ai';
+                // For 'all', Poppy Bot is already permanently separated at the top in its dedicated Apple hero card!
+                return chat.id !== 'chat-poppy';
+            });
+
+            if (query && query.trim() !== '') {
+                const q = query.toLowerCase().trim();
+                filtered = filtered.filter(chat => 
+                    chat.name.toLowerCase().includes(q) ||
+                    chat.role.toLowerCase().includes(q) ||
+                    chat.preview.toLowerCase().includes(q)
+                );
+            }
+
+            if (filtered.length === 0) {
+                if (query && query.trim() !== '') {
+                    container.innerHTML = `
+                        <div class="py-12 px-6 text-center space-y-3">
+                            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-900">No chats found</h4>
+                                <p class="text-xs text-slate-500 mt-0.5 font-medium">No results for "${query}"</p>
+                            </div>
+                            <button onclick="openPoppyBotChatWithQuery('${query.replace(/'/g, "\\'")}')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-brand-lime font-bold text-xs shadow-apple active:scale-95 transition-all">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Ask Poppy AI "${query}"</span>
+                            </button>
                         </div>
-                        <p class="text-xs text-slate-200 leading-relaxed">G'day Alexander! I'm Poppy, your company AI. How can I help you automate tasks, look up Procore project specs, or check wet weather protocols today?</p>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="py-12 px-6 text-center space-y-1">
+                            <p class="text-sm font-bold text-slate-800">No ${filter} messages</p>
+                            <p class="text-xs text-slate-400">You're all caught up!</p>
+                        </div>
+                    `;
+                }
+                updateLifestyleBadges();
+                return;
+            }
+
+            container.innerHTML = filtered.map(chat => {
+                const isUnread = chat.unread > 0;
+                const timeColor = isUnread ? 'text-emerald-600 font-bold' : 'text-slate-400 font-medium';
+
+                let avatarHtml = '';
+                if (chat.avatarType === 'ai') {
+                    avatarHtml = `
+                        <div class="w-12 h-12 rounded-2xl ${chat.avatarBg} flex items-center justify-center text-lg shadow-md shadow-brand-lime/20 shrink-0">
+                            <i class="${chat.avatarIcon}"></i>
+                        </div>
+                    `;
+                } else if (chat.avatarType === 'icon') {
+                    avatarHtml = `
+                        <div class="w-12 h-12 rounded-2xl ${chat.avatarBg} flex items-center justify-center text-base shadow-sm shrink-0">
+                            <i class="${chat.avatarIcon}"></i>
+                        </div>
+                    `;
+                } else {
+                    avatarHtml = `
+                        <div class="relative shrink-0">
+                            <div class="w-12 h-12 rounded-2xl ${chat.avatarBg} font-black text-sm flex items-center justify-center border border-slate-200/80 shadow-inner">
+                                ${chat.avatarFallback}
+                            </div>
+                            ${chat.isOnline ? '<span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-2xs"></span>' : ''}
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div onclick="openLifestyleConversation('${chat.id}')" 
+                         class="p-4 hover:bg-slate-50/90 active:bg-slate-100/70 cursor-pointer transition-all flex items-center justify-between group">
+                        
+                        <div class="flex items-center space-x-3.5 min-w-0 flex-1 pr-2">
+                            ${avatarHtml}
+                            
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <h4 class="text-sm font-black text-slate-900 tracking-tight truncate">${chat.name}</h4>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${chat.category === 'ai' ? 'bg-brand-lime/20 text-slate-900 border border-brand-lime/30' : (chat.category === 'channel' ? 'bg-slate-100 text-slate-600 border border-slate-200/60' : 'bg-slate-100 text-slate-500')} shrink-0">
+                                        ${chat.role}
+                                    </span>
+                                </div>
+                                <p class="text-xs ${isUnread ? 'text-slate-900 font-semibold' : 'text-slate-500 font-medium'} truncate mt-1">
+                                    ${chat.preview}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-end gap-1.5 shrink-0 pl-1">
+                            <span class="text-[11px] ${timeColor}">${chat.time}</span>
+                            ${isUnread ? `
+                                <span class="min-w-[18px] h-4.5 px-1.5 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center justify-center shadow-xs">
+                                    ${chat.unread}
+                                </span>
+                            ` : `
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-slate-500 transition-colors"></i>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateLifestyleBadges();
+        }
+
+        function handleLifestyleChatSearch(query) {
+            const clearBtn = document.getElementById('lifestyle-chat-search-clear');
+            if (clearBtn) {
+                clearBtn.classList.toggle('hidden', !query || query.trim() === '');
+            }
+            renderLifestyleChats(currentLifestyleChatFilter, query);
+        }
+
+        function clearLifestyleChatSearch() {
+            const input = document.getElementById('lifestyle-chat-search');
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+            const clearBtn = document.getElementById('lifestyle-chat-search-clear');
+            if (clearBtn) clearBtn.classList.add('hidden');
+            renderLifestyleChats(currentLifestyleChatFilter, '');
+        }
+
+        function setLifestyleChatFilter(filter) {
+            triggerHaptic('light');
+            currentLifestyleChatFilter = filter;
+
+            const chips = ['all', 'unread', 'channel', 'direct', 'ai'];
+            chips.forEach(c => {
+                const chip = document.getElementById(`filter-chip-${c}`);
+                if (chip) {
+                    const extraGap = (c === 'unread' || c === 'ai') ? ' gap-1.5' : '';
+                    if (c === filter) {
+                        chip.className = "lifestyle-chat-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-black bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer flex items-center justify-center" + extraGap;
+                    } else {
+                        chip.className = "lifestyle-chat-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center" + extraGap;
+                    }
+                }
+            });
+
+            renderLifestyleChats(filter, currentLifestyleChatSearchQuery);
+        }
+
+        // =========================================================================
+        // CONVERSATION VIEW (WHATSAPP-INSPIRED SPEECH BUBBLES & THREAD)
+        // =========================================================================
+        function openLifestyleConversation(chatId) {
+            triggerHaptic('medium');
+            const chat = LIFESTYLE_CHATS.find(c => c.id === chatId);
+            if (!chat) return;
+
+            // Mark this conversation as read
+            chat.unread = 0;
+            renderLifestyleChats(currentLifestyleChatFilter, currentLifestyleChatSearchQuery);
+
+            if (chat.id === 'chat-poppy') {
+                openPoppyBotChat();
+                return;
+            }
+
+            if (chat.name === 'Nathan Wild') {
+                triggerConfetti();
+            }
+
+            const modalHtml = `
+                <div class="flex flex-col h-[70vh] max-h-[550px] -mx-5 -mt-3 -mb-5 select-none">
+                    
+                    <!-- Top Thread Header -->
+                    <div class="bg-white px-4 py-3 border-b border-slate-200/80 flex items-center justify-between shrink-0">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <button onclick="closeModal()" aria-label="Back to messages" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-700 cursor-pointer">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                            <div class="min-w-0">
+                                <h3 class="text-sm font-black text-slate-900 truncate leading-snug">${chat.name}</h3>
+                                <p class="text-[11px] text-slate-500 font-semibold truncate leading-none mt-0.5">${chat.role} ${chat.isOnline ? '• Online' : ''}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-slate-700">
+                            <button onclick="showToast('Call', 'Connecting call...')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400">Quick Actions</span>
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <button onclick="closeModal(); showToast('Poppy Bot', 'Checking weather & site safety guidelines...');" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-left transition-all">☀️ Weather & Rain Protocols</button>
-                            <button onclick="closeModal(); showToast('Poppy Bot', 'Retrieving active Procore project list...');" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-left transition-all">🏗️ Procore Project Status</button>
+                    <!-- Messages Scroll Canvas -->
+                    <div id="lifestyle-msg-scroll-area" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/70">
+                        
+                        <!-- Date Badge -->
+                        <div class="text-center my-1">
+                            <span class="inline-block px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-bold text-slate-500 shadow-2xs border border-slate-200/60 uppercase tracking-wider">
+                                Today
+                            </span>
+                        </div>
+
+                        <!-- Message Bubbles -->
+                        <div id="lifestyle-msg-list" class="space-y-2.5">
+                            ${chat.messages.map(m => {
+                                if (m.isIncoming) {
+                                    return `
+                                        <div class="flex flex-col items-start max-w-[85%]">
+                                            ${chat.isGroup && m.sender !== chat.name ? `<span class="text-[10px] font-bold text-slate-500 ml-1 mb-0.5">${m.sender}</span>` : ''}
+                                            <div class="bg-white border border-slate-200/80 rounded-2xl rounded-tl-sm p-3 shadow-2xs text-slate-900 text-xs leading-relaxed">
+                                                <p class="break-words">${m.text}</p>
+                                                <div class="text-right mt-1">
+                                                    <span class="text-[10px] text-slate-400 font-medium">${m.time}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    return `
+                                        <div class="flex flex-col items-end max-w-[85%] ml-auto">
+                                            <div class="bg-slate-900 text-white rounded-2xl rounded-tr-sm p-3 shadow-2xs text-xs leading-relaxed">
+                                                <p class="break-words">${m.text}</p>
+                                                <div class="flex items-center justify-end gap-1 mt-1 text-slate-400">
+                                                    <span class="text-[10px] text-slate-400 font-medium">${m.time}</span>
+                                                    <i class="fa-solid fa-check-double text-[11px] text-brand-lime"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                            }).join('')}
                         </div>
                     </div>
 
-                    <div class="flex space-x-2 pt-2">
-                        <input type="text" placeholder="Ask Poppy anything..." class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-3 text-xs focus:outline-none focus:border-brand-lime">
-                        <button onclick="closeModal(); showToast('Poppy Bot', 'Query sent to Poppy');" class="bg-slate-900 text-brand-lime px-4 py-3 rounded-xl text-xs font-bold hover:bg-black transition-all">Ask</button>
+                    <!-- Input Bar -->
+                    <div class="bg-white p-3 border-t border-slate-200/80 flex items-center gap-2 shrink-0">
+                        <div class="flex-1 relative flex items-center bg-slate-100 rounded-2xl px-3.5 py-2 border border-slate-200/80 focus-within:bg-white focus-within:border-slate-400 transition-all">
+                            <input id="lifestyle-msg-input" 
+                                   type="text" 
+                                   placeholder="Reply to ${chat.name}..." 
+                                   onkeydown="if(event.key === 'Enter') sendLifestyleMessage('${chat.id}')"
+                                   class="w-full bg-transparent text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none">
+                        </div>
+
+                        <button onclick="sendLifestyleMessage('${chat.id}')" 
+                                aria-label="Send message" 
+                                class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-900 hover:bg-black text-brand-lime active:scale-90 flex items-center justify-center shadow-md transition-all shrink-0">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            openModal("", modalHtml);
+
+            setTimeout(() => {
+                const scroller = document.getElementById('lifestyle-msg-scroll-area');
+                if (scroller) scroller.scrollTop = scroller.scrollHeight;
+            }, 80);
+        }
+
+        function sendLifestyleMessage(chatId) {
+            const input = document.getElementById('lifestyle-msg-input');
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+
+            triggerHaptic('light');
+            const chat = LIFESTYLE_CHATS.find(c => c.id === chatId);
+            if (!chat) return;
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+
+            chat.messages.push({
+                sender: 'You',
+                text: text,
+                time: timeStr,
+                isIncoming: false
+            });
+
+            chat.preview = text;
+            chat.time = timeStr;
+
+            input.value = '';
+
+            const list = document.getElementById('lifestyle-msg-list');
+            if (list) {
+                const msgEl = document.createElement('div');
+                msgEl.className = "flex flex-col items-end max-w-[85%] ml-auto";
+                msgEl.innerHTML = `
+                    <div class="bg-slate-900 text-white rounded-2xl rounded-tr-sm p-3 shadow-2xs text-xs leading-relaxed">
+                        <p class="break-words">${text}</p>
+                        <div class="flex items-center justify-end gap-1 mt-1 text-slate-400">
+                            <span class="text-[10px] text-slate-400 font-medium">${timeStr}</span>
+                            <i class="fa-solid fa-check-double text-[11px] text-brand-lime"></i>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(msgEl);
+            }
+
+            const scroller = document.getElementById('lifestyle-msg-scroll-area');
+            if (scroller) scroller.scrollTop = scroller.scrollHeight;
+
+            renderLifestyleChats(currentLifestyleChatFilter, currentLifestyleChatSearchQuery);
+        }
+
+        // =========================================================================
+        // NEW MESSAGE / COMPOSE MODAL (TEAM DIRECTORY PICKER)
+        // =========================================================================
+        function openNewMessageModal() {
+            triggerHaptic('light');
+            const members = (typeof TEAM_DIRECTORY_DATA !== 'undefined') ? TEAM_DIRECTORY_DATA : [];
+
+            openModal("New Conversation", `
+                <div class="space-y-3 py-1">
+                    <p class="text-xs text-slate-500 font-medium">Select a crew member or channel to start messaging:</p>
+                    
+                    <div class="divide-y divide-slate-100 py-1">
+                        <div onclick="closeModal(); openLifestyleConversation('chat-company');" class="flex items-center gap-3 py-2.5 px-2 hover:bg-slate-50 cursor-pointer rounded-xl">
+                            <div class="w-9 h-9 rounded-xl bg-slate-900 text-brand-lime flex items-center justify-center font-bold text-sm">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-900">Company All-Hands</p>
+                                <p class="text-xs text-slate-500">General broadcast channel</p>
+                            </div>
+                        </div>
+
+                        <div onclick="closeModal(); openPoppyBotChat();" class="flex items-center gap-3 py-2.5 px-2 hover:bg-slate-50 cursor-pointer rounded-xl">
+                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-lime to-emerald-400 text-slate-950 flex items-center justify-center font-bold text-sm">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-900">Poppy Bot AI</p>
+                                <p class="text-xs text-slate-500">Automate tasks, look up specs & safety</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-1">
+                        <span class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Team Members (${members.length})</span>
+                        <div class="mt-2 space-y-1 max-h-[260px] overflow-y-auto no-scrollbar">
+                            ${members.map(m => `
+                                <div onclick="closeModal(); openDirectMessage('${m.name}')" class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl cursor-pointer">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs flex items-center justify-center border border-slate-200">
+                                            ${m.initials}
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-900">${m.name}</p>
+                                            <p class="text-xs text-slate-500">${m.role}</p>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-comment text-slate-400 text-xs"></i>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 </div>
             `);
         }
 
-        function openGroupChat() {
-            openModal("Company Group Chat", `
-                <div class="space-y-3 py-1 text-xs">
-                    <div class="max-h-[260px] overflow-y-auto space-y-3 pr-1">
-                        <div class="bg-slate-100 p-3 rounded-2xl text-slate-700">
-                            <strong>David Hilt:</strong> Indoor backup site confirmed for tomorrow at Lugarno Shed B. All gear is checked.
-                        </div>
-                        <div class="bg-slate-100 p-3 rounded-2xl text-slate-700">
-                            <strong>James Beggs:</strong> Beauty, thanks Dave. See everyone at 7 AM sharp.
-                        </div>
-                        <div class="bg-emerald-50 border border-emerald-200/80 p-3 rounded-2xl text-emerald-900 ml-auto max-w-[85%]">
-                            <strong>You:</strong> Sounds good! I'll bring the extra tarp setup just in case.
+        // =========================================================================
+        // POPPY BOT AI ASSISTANT MODAL
+        // =========================================================================
+        function openPoppyBotChat() {
+            triggerHaptic('medium');
+            openModal("Poppy Bot AI", `
+                <div class="space-y-4 py-1 select-none">
+                    <!-- Apple Intelligence Glow Card -->
+                    <div class="relative rounded-2xl p-4 bg-gradient-to-br from-slate-950 via-[#0d1624] to-slate-900 text-white border border-slate-800 shadow-apple-lg overflow-hidden group">
+                        <div class="absolute -top-10 -right-10 w-28 h-28 bg-brand-lime/20 rounded-full blur-[40px] pointer-events-none"></div>
+                        <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-sky-500/20 rounded-full blur-[40px] pointer-events-none"></div>
+
+                        <div class="relative z-10 space-y-1.5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-brand-lime animate-pulse"></span>
+                                <span class="text-xs font-black text-brand-lime uppercase tracking-wider">Lifestyle AI Assistant</span>
+                            </div>
+                            <p class="text-xs text-slate-200 leading-relaxed font-medium">G'day Alexander! How can I help you automate tasks, look up Procore specs, or check wet weather site protocols today?</p>
                         </div>
                     </div>
-                    <div class="flex space-x-2 pt-2 border-t border-slate-100">
-                        <input type="text" placeholder="Message company channel..." class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-3 text-xs focus:outline-none focus:border-brand-lime">
-                        <button onclick="closeModal(); showToast('Group Chat', 'Message broadcasted');" class="bg-slate-900 text-brand-lime px-4 py-3 rounded-xl text-xs font-bold hover:bg-black">Send</button>
+
+                    <!-- Apple Siri Quick Actions -->
+                    <div class="space-y-2">
+                        <span class="text-[11px] font-black uppercase tracking-wider text-slate-400 block px-1">Suggested Prompts</span>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <button onclick="closeModal(); showToast('Poppy Bot', 'Checking weather & rain protocols for Bondi and Lugarno...');" 
+                                    class="p-3 bg-white hover:bg-slate-50 border border-slate-200/80 shadow-2xs text-slate-800 font-bold rounded-xl text-left transition-all active:scale-95 flex flex-col gap-1 cursor-pointer">
+                                <span class="text-base">🌧️</span>
+                                <span>Rain Protocols</span>
+                            </button>
+                            <button onclick="closeModal(); showToast('Poppy Bot', 'Retrieving active Procore spec list...');" 
+                                    class="p-3 bg-white hover:bg-slate-50 border border-slate-200/80 shadow-2xs text-slate-800 font-bold rounded-xl text-left transition-all active:scale-95 flex flex-col gap-1 cursor-pointer">
+                                <span class="text-base">🏗️</span>
+                                <span>Procore Specs</span>
+                            </button>
+                            <button onclick="closeModal(); showToast('Poppy Bot', 'Analyzing site pre-start safety checklist...');" 
+                                    class="p-3 bg-white hover:bg-slate-50 border border-slate-200/80 shadow-2xs text-slate-800 font-bold rounded-xl text-left transition-all active:scale-95 flex flex-col gap-1 cursor-pointer">
+                                <span class="text-base">⚡</span>
+                                <span>Safety Checklist</span>
+                            </button>
+                            <button onclick="closeModal(); showToast('Poppy Bot', 'Calculating roof pitch & setout specs...');" 
+                                    class="p-3 bg-white hover:bg-slate-50 border border-slate-200/80 shadow-2xs text-slate-800 font-bold rounded-xl text-left transition-all active:scale-95 flex flex-col gap-1 cursor-pointer">
+                                <span class="text-base">📐</span>
+                                <span>Setout Calculations</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Input Bar -->
+                    <div class="flex items-center gap-2 pt-1">
+                        <input id="poppy-query-input" 
+                               type="text" 
+                               placeholder="Ask Poppy anything..." 
+                               onkeydown="if(event.key==='Enter') handlePoppySubmit()" 
+                               class="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 placeholder:text-slate-400 font-medium shadow-2xs focus:outline-none focus:border-brand-lime focus:ring-2 focus:ring-brand-lime/20">
+                        <button onclick="handlePoppySubmit()" 
+                                class="bg-slate-900 text-brand-lime hover:bg-black active:scale-95 px-5 py-3 rounded-xl text-xs font-black shadow-apple transition-all cursor-pointer shrink-0">
+                            Ask
+                        </button>
                     </div>
                 </div>
             `);
+        }
+
+        function openPoppyBotChatWithQuery(query) {
+            openPoppyBotChat();
+            setTimeout(() => {
+                const input = document.getElementById('poppy-query-input');
+                if (input) {
+                    input.value = query;
+                    input.focus();
+                }
+            }, 150);
+        }
+
+        function handlePoppySubmit() {
+            const input = document.getElementById('poppy-query-input');
+            const q = input ? input.value : '';
+            closeModal();
+            showToast('Poppy Bot', q ? `Processing "${q}"...` : 'Query sent to Poppy');
+        }
+
+        // =========================================================================
+        // BACKWARDS COMPATIBILITY WRAPPERS
+        // =========================================================================
+        function openGroupChat() {
+            openLifestyleConversation('chat-company');
         }
 
         function openDirectMessage(name) {
-            if (name === 'James Beggs') {
-                const jbBadge = document.getElementById('dm-james-badge');
-                if (jbBadge) jbBadge.style.display = 'none';
-                const chatBadge = document.getElementById('chat-badge-count');
-                if (chatBadge) chatBadge.style.display = 'none';
+            let chat = LIFESTYLE_CHATS.find(c => c.name.toLowerCase() === name.toLowerCase());
+
+            if (!chat) {
+                const member = (typeof TEAM_DIRECTORY_DATA !== 'undefined') ? TEAM_DIRECTORY_DATA.find(m => m.name.toLowerCase() === name.toLowerCase()) : null;
+                const initials = member ? member.initials : name.split(' ').map(n => n[0]).join('').slice(0, 2);
+                const role = member ? member.role : 'Team Member';
+
+                chat = {
+                    id: `chat-${name.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
+                    name: name,
+                    role: role,
+                    category: 'direct',
+                    isGroup: false,
+                    isOnline: true,
+                    preview: 'Start a conversation...',
+                    time: 'Now',
+                    unread: 0,
+                    avatarType: 'text',
+                    avatarBg: 'bg-slate-100 text-slate-800',
+                    avatarFallback: initials,
+                    messages: [
+                        { sender: name, text: `Hey Alexander, touching base regarding our allocation for next week.`, time: '9:00 am', isIncoming: true }
+                    ]
+                };
+                LIFESTYLE_CHATS.push(chat);
             }
-            openModal(`Chat with ${name}`, `
-                <div class="space-y-3 py-1 text-xs">
-                    <div class="max-h-[260px] overflow-y-auto space-y-3 pr-1">
-                        <div class="bg-slate-100 p-3 rounded-2xl text-slate-700">
-                            <strong>${name}:</strong> Hey Alexander, just touching base regarding our allocation for next week.
-                        </div>
-                        <div class="bg-blue-50 border border-blue-200/80 p-3 rounded-2xl text-blue-900 ml-auto max-w-[85%]">
-                            <strong>You:</strong> All good! Let's review it during tomorrow's morning brief.
-                        </div>
-                    </div>
-                    <div class="flex space-x-2 pt-2 border-t border-slate-100">
-                        <input type="text" placeholder="Reply to ${name}..." class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-3 text-xs focus:outline-none focus:border-brand-lime">
-                        <button onclick="closeModal(); showToast('Direct Message', 'Message sent to ${name}');" class="bg-slate-900 text-brand-lime px-4 py-3 rounded-xl text-xs font-bold hover:bg-black">Send</button>
-                    </div>
-                </div>
-            `);
+
+            openLifestyleConversation(chat.id);
         }
 
         const JOBS_DATA = [
@@ -5598,12 +6455,14 @@ const TEAM_DIRECTORY_DATA = [
             { id: 'tool-7', name: 'First Aid & Spill Response Kit', location: 'Castlecrag Hub', category: 'safety', status: 'Available', lastLogged: '14 Oct by Safety Officer' },
             { id: 'tool-8', name: 'Dual Axle Plant Trailer', location: 'Caringbah HQ', category: 'trailers', status: 'Available', lastLogged: '08 Oct by Warehouse' },
             { id: 'tool-9', name: 'Aluminum Mobile Scaffold Tower', location: 'Lugarno Site', category: 'scaffolds', status: 'In Use', lastLogged: '13 Oct by David H.' },
-            { id: 'tool-10', name: 'Bobcat T590 Compact Track Loader', location: 'Bondi Site', category: 'bobcat', status: 'In Use', lastLogged: '14 Oct by Jeremy G.' }
+            { id: 'tool-10', name: 'Bobcat T590 Compact Track Loader', location: 'Bondi Site', category: 'bobcat', status: 'In Use', lastLogged: '14 Oct by Jeremy G.' },
+            { id: 'tool-11', name: 'Acro Props (Adjustable Steel)', location: 'Caringbah HQ', category: 'site', status: 'Available', quantity: 24, unit: 'Props', lastLogged: '14 Oct by Warehouse' }
         ];
 
         let currentToolCategory = 'all';
 
         function filterToolsCategory(category) {
+            triggerHaptic('light');
             currentToolCategory = category;
 
             const categories = ['all', 'power tools', 'access', 'concrete', 'setout', 'site', 'safety', 'trailers', 'scaffolds', 'bobcat'];
@@ -5612,9 +6471,9 @@ const TEAM_DIRECTORY_DATA = [
                 const btn = document.getElementById(btnId);
                 if (btn) {
                     if (cat === category) {
-                        btn.className = "shrink-0 px-4 py-2 text-xs font-extrabold rounded-xl bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer";
+                        btn.className = "tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-black bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer flex items-center justify-center";
                     } else {
-                        btn.className = "shrink-0 px-3.5 py-2 text-xs font-bold text-slate-600 bg-white/50 backdrop-blur-xl border border-white/60 rounded-xl hover:text-slate-900 transition-all cursor-pointer";
+                        btn.className = "tool-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center";
                     }
                 }
             });
@@ -5761,110 +6620,95 @@ const TEAM_DIRECTORY_DATA = [
             if (!member) return;
 
             const isOnLeave = member.status === 'On Leave';
-            const memberSite = getMemberSite(member);
 
             openModal("", `
                 <div class="space-y-5 pt-1 pb-2">
                     <!-- Profile Hero Section (Apple Contacts Hero) -->
                     <div class="flex flex-col items-center text-center">
-                        <!-- Prominent 88px Squircle Avatar with Status Pill -->
+                        <!-- Prominent 88px Squircle Avatar with Apple Presence Indicator -->
                         <div class="relative mb-3">
                             <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-[28px] bg-gradient-to-br from-slate-900 via-[#141b24] to-slate-950 text-brand-lime font-black text-2xl sm:text-3xl flex items-center justify-center shadow-xl shadow-slate-950/25 border-2 border-slate-800">
                                 ${member.initials}
                             </div>
-                            <span class="absolute -bottom-1 -right-1 px-2.5 py-0.5 rounded-full text-[11px] font-black tracking-wide ${isOnLeave ? 'bg-amber-400 text-slate-950' : 'bg-brand-lime text-slate-950'} border-2 border-white shadow-sm flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full ${isOnLeave ? 'bg-amber-900' : 'bg-slate-950'}"></span>
-                                <span>${isOnLeave ? 'On Leave' : 'Active'}</span>
-                            </span>
+                            <!-- Clean Apple Presence Status Dot -->
+                            <span class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full ${isOnLeave ? 'bg-amber-400' : 'bg-emerald-500'} border-[2.5px] border-white shadow-sm"></span>
                         </div>
                         
                         <!-- Member Name in Confident Apple Typography -->
                         <h3 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">${member.name}</h3>
                         
-                        <!-- Role & Status Badges -->
-                        <div class="flex items-center justify-center gap-2 mt-2 flex-wrap">
-                            <span class="text-xs font-black bg-slate-900 text-brand-lime px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">${member.role}</span>
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200/80">${member.category}</span>
-                        </div>
-
-                        <!-- Active Jobsite Pill -->
-                        <div class="mt-2.5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/25 text-emerald-950 font-extrabold text-xs shadow-xs">
-                            <i class="fa-solid fa-location-dot text-emerald-600 text-xs"></i>
-                            <span>${memberSite}</span>
+                        <!-- Role & Apple Status Badges -->
+                        <div class="flex items-center justify-center gap-2 mt-2.5">
+                            <span class="text-xs font-black bg-slate-900 text-brand-lime px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs">${member.role}</span>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${isOnLeave ? 'bg-amber-50 text-amber-700 border border-amber-200/80' : 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'} shadow-2xs">
+                                <span class="w-1.5 h-1.5 rounded-full ${isOnLeave ? 'bg-amber-500' : 'bg-emerald-500'}"></span>
+                                <span>${isOnLeave ? 'On Leave' : 'Active'}</span>
+                            </span>
                         </div>
                     </div>
 
-                    <!-- Apple HIG 4-Column Action Cards Bar -->
-                    <div class="grid grid-cols-4 gap-2.5 pt-1">
+                    <!-- Apple HIG 3-Column Action Cards Bar (Call, Message, Email) -->
+                    <div class="grid grid-cols-3 gap-3 pt-1">
                         <!-- Action 1: Call -->
-                        <button onclick="closeModal(); showToast('Calling', 'Dialing ${member.phone}...');" aria-label="Call ${member.name}" class="flex flex-col items-center justify-center py-3.5 px-2 rounded-2xl bg-slate-100 hover:bg-slate-200/90 active:scale-95 transition-all cursor-pointer border border-slate-200/70 shadow-xs group">
-                            <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-lg mb-1 group-hover:scale-110 transition-transform">
+                        <button onclick="closeModal(); showToast('Calling', 'Dialing ${member.phone}...');" aria-label="Call ${member.name}" class="flex flex-col items-center justify-center py-4 px-3 min-h-[86px] rounded-2xl bg-slate-100 hover:bg-slate-200/90 active:scale-95 transition-all cursor-pointer border border-slate-200/70 shadow-xs group">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-xl mb-1.5 group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-phone"></i>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 tracking-tight">Call</span>
+                            <span class="text-xs sm:text-[13px] font-extrabold text-slate-800 tracking-tight">Call</span>
                         </button>
 
-                        <!-- Action 2: SMS -->
-                        <button onclick="closeModal(); showToast('Messages', 'Opening SMS thread with ${member.name}');" aria-label="Text ${member.name}" class="flex flex-col items-center justify-center py-3.5 px-2 rounded-2xl bg-slate-100 hover:bg-slate-200/90 active:scale-95 transition-all cursor-pointer border border-slate-200/70 shadow-xs group">
-                            <div class="w-10 h-10 rounded-xl bg-blue-500/15 text-blue-600 flex items-center justify-center text-lg mb-1 group-hover:scale-110 transition-transform">
+                        <!-- Action 2: Message -->
+                        <button onclick="closeModal(); showToast('Messages', 'Opening SMS thread with ${member.name}');" aria-label="Text ${member.name}" class="flex flex-col items-center justify-center py-4 px-3 min-h-[86px] rounded-2xl bg-slate-100 hover:bg-slate-200/90 active:scale-95 transition-all cursor-pointer border border-slate-200/70 shadow-xs group">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-600 flex items-center justify-center text-xl mb-1.5 group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-comment-dots"></i>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 tracking-tight">Message</span>
+                            <span class="text-xs sm:text-[13px] font-extrabold text-slate-800 tracking-tight">Message</span>
                         </button>
 
-                        <!-- Action 3: In-App Chat -->
-                        <button onclick="closeModal(); openDirectMessage('${member.name}');" aria-label="Direct message ${member.name}" class="flex flex-col items-center justify-center py-3.5 px-2 rounded-2xl bg-slate-900 hover:bg-black active:scale-95 transition-all cursor-pointer border border-slate-800 shadow-md group">
-                            <div class="w-10 h-10 rounded-xl bg-white/10 text-brand-lime flex items-center justify-center text-lg mb-1 group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-comment"></i>
-                            </div>
-                            <span class="text-xs font-bold text-white tracking-tight">Chat</span>
-                        </button>
-
-                        <!-- Action 4: Email -->
-                        <button onclick="closeModal(); showToast('Email', 'Drafting email to ${member.email}');" aria-label="Email ${member.name}" class="flex flex-col items-center justify-center py-3.5 px-2 rounded-2xl bg-slate-100 hover:bg-slate-200/90 active:scale-95 transition-all cursor-pointer border border-slate-200/70 shadow-xs group">
-                            <div class="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-600 flex items-center justify-center text-lg mb-1 group-hover:scale-110 transition-transform">
+                        <!-- Action 3: Email -->
+                        <button onclick="closeModal(); showToast('Email', 'Drafting email to ${member.email}');" aria-label="Email ${member.name}" class="flex flex-col items-center justify-center py-4 px-3 min-h-[86px] rounded-2xl bg-slate-100 hover:bg-slate-200/90 active:scale-95 transition-all cursor-pointer border border-slate-200/70 shadow-xs group">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-500/15 text-indigo-600 flex items-center justify-center text-xl mb-1.5 group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-envelope"></i>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 tracking-tight">Email</span>
+                            <span class="text-xs sm:text-[13px] font-extrabold text-slate-800 tracking-tight">Email</span>
                         </button>
                     </div>
 
                     <!-- Apple Inset Grouped Details Card -->
                     <div class="bg-slate-100/80 border border-slate-200/80 rounded-2xl overflow-hidden divide-y divide-slate-200/70 shadow-xs">
                         <!-- Phone Row -->
-                        <div class="p-4 flex items-center justify-between hover:bg-white/60 transition-colors">
+                        <div class="p-4 sm:p-4.5 flex items-center justify-between hover:bg-white/60 transition-colors">
                             <div class="min-w-0 pr-3">
                                 <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500 block">Mobile Number</span>
-                                <a href="tel:${member.phone.replace(/\s+/g, '')}" class="text-base font-black text-slate-900 hover:text-emerald-600 transition-colors tracking-tight truncate block mt-0.5">${member.phone}</a>
+                                <a href="tel:${member.phone.replace(/\s+/g, '')}" class="text-base sm:text-lg font-black text-slate-900 hover:text-emerald-600 transition-colors tracking-tight truncate block mt-0.5">${member.phone}</a>
                             </div>
-                            <button onclick="copyToClipboard('${member.phone}', 'Phone number copied to clipboard')" aria-label="Copy phone number" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-900 hover:text-brand-lime text-slate-800 border border-slate-200/80 text-xs font-black transition-all shrink-0 active:scale-90 flex items-center gap-1.5 cursor-pointer shadow-xs">
+                            <button onclick="copyToClipboard('${member.phone}', 'Phone number copied to clipboard')" aria-label="Copy phone number" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-900 hover:text-brand-lime text-slate-800 border border-slate-200/80 text-xs font-black transition-all shrink-0 active:scale-90 flex items-center gap-1.5 cursor-pointer shadow-xs min-h-[44px]">
                                 <i class="fa-regular fa-copy text-xs"></i>
                                 <span>Copy</span>
                             </button>
                         </div>
 
                         <!-- Email Row -->
-                        <div class="p-4 flex items-center justify-between hover:bg-white/60 transition-colors">
+                        <div class="p-4 sm:p-4.5 flex items-center justify-between hover:bg-white/60 transition-colors">
                             <div class="min-w-0 pr-3">
                                 <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500 block">Email Address</span>
                                 <a href="mailto:${member.email}" class="text-sm sm:text-base font-black text-slate-900 hover:text-blue-600 transition-colors tracking-tight truncate block mt-0.5">${member.email}</a>
                             </div>
-                            <button onclick="copyToClipboard('${member.email}', 'Email copied to clipboard')" aria-label="Copy email" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-900 hover:text-brand-lime text-slate-800 border border-slate-200/80 text-xs font-black transition-all shrink-0 active:scale-90 flex items-center gap-1.5 cursor-pointer shadow-xs">
+                            <button onclick="copyToClipboard('${member.email}', 'Email copied to clipboard')" aria-label="Copy email" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-900 hover:text-brand-lime text-slate-800 border border-slate-200/80 text-xs font-black transition-all shrink-0 active:scale-90 flex items-center gap-1.5 cursor-pointer shadow-xs min-h-[44px]">
                                 <i class="fa-regular fa-copy text-xs"></i>
                                 <span>Copy</span>
                             </button>
                         </div>
 
-                        <!-- Birthday Row -->
-                        <div class="p-4 flex items-center justify-between hover:bg-white/60 transition-colors">
+                        <!-- Birthday Row (No Apprentice / Category badge) -->
+                        <div class="p-4 sm:p-4.5 flex items-center justify-between hover:bg-white/60 transition-colors">
                             <div>
                                 <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500 block">Birthday</span>
-                                <span class="text-sm font-black text-slate-900 tracking-tight flex items-center gap-2 mt-0.5">
+                                <span class="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2.5 mt-0.5">
                                     <i class="fa-solid fa-cake-candles text-amber-500 text-sm"></i>
                                     <span>${member.birthday ? member.birthday : 'Not listed'}</span>
                                 </span>
                             </div>
-                            <span class="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-md bg-slate-200/80 text-slate-700">${member.category}</span>
                         </div>
                     </div>
 
@@ -5881,6 +6725,7 @@ const TEAM_DIRECTORY_DATA = [
         let currentTeamCategory = 'all';
 
         function filterTeamCategory(category) {
+            triggerHaptic('light');
             currentTeamCategory = category;
 
             // Update active pill button styling
@@ -5890,9 +6735,9 @@ const TEAM_DIRECTORY_DATA = [
                 const btn = document.getElementById(btnId);
                 if (btn) {
                     if (cat === category) {
-                        btn.className = "shrink-0 px-4 py-2 text-xs font-extrabold rounded-xl bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer";
+                        btn.className = "team-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-black bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer flex items-center justify-center";
                     } else {
-                        btn.className = "shrink-0 px-3.5 py-2 text-xs font-bold text-slate-600 bg-white/50 backdrop-blur-xl border border-white/60 rounded-xl hover:text-slate-900 transition-all cursor-pointer";
+                        btn.className = "team-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center";
                     }
                 }
             });
@@ -6006,6 +6851,13 @@ const TEAM_DIRECTORY_DATA = [
                             <i class="fa-solid fa-location-dot text-xs text-slate-400 shrink-0"></i>
                             <span>Location: <strong class="text-slate-800 font-bold">${t.location}</strong></span>
                         </span>
+                        ${t.quantity ? `
+                            <span class="text-slate-300">•</span>
+                            <span class="inline-flex items-center gap-1 font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md text-xs">
+                                <i class="fa-solid fa-layer-group text-[10px] text-slate-400"></i>
+                                <span>${t.quantity} ${t.unit || 'Units'}</span>
+                            </span>
+                        ` : ''}
                         <span class="text-slate-300">•</span>
                         <span class="font-bold ${theme.statusText}">${t.status}</span>
                     </p>
@@ -6019,7 +6871,7 @@ const TEAM_DIRECTORY_DATA = [
                         </div>
                         <span class="truncate">Last log: <strong class="text-slate-700 font-bold">${t.lastLogged || 'N/A'}</strong></span>
                     </div>
-                    <button onclick="triggerHaptic('medium'); showToast('Tools & Gear', 'Opening transfer request for ${t.name}')" 
+                    <button onclick="openToolTransferModal('${t.id}')" 
                             aria-label="Transfer ${t.name}"
                             class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-brand-lime font-black transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer text-xs shadow-sm min-h-[44px] shrink-0">
                         <span>Transfer</span>
@@ -6030,6 +6882,336 @@ const TEAM_DIRECTORY_DATA = [
         `;
     }).join('');
 }
+
+// =========================================================================
+// TOOLS & GEAR TRANSFER ENGINE (COMMBANK-INSPIRED DUAL ROLLER SELECTOR)
+// =========================================================================
+const ALL_TRANSFER_SITES = [
+    { id: 'site-lugarno', name: 'Lugarno Site', address: '935 Forest Rd, Lugarno', icon: 'fa-solid fa-building-user' },
+    { id: 'site-castlecrag', name: 'Castlecrag Hub', address: '8c The Bulwark, Castlecrag', icon: 'fa-solid fa-hammer' },
+    { id: 'site-bondi', name: 'Bondi Site', address: '350 Bondi Rd, Bondi', icon: 'fa-solid fa-compass-drafting' },
+    { id: 'site-caringbah', name: 'Caringbah HQ', address: 'Warehouse & Central Depot', icon: 'fa-solid fa-warehouse' },
+    { id: 'site-cronulla', name: 'Cronulla Waterfront', address: 'Lot 4 Waterfront Esplanade', icon: 'fa-solid fa-water' },
+    { id: 'site-miranda', name: 'Miranda Commercial', address: 'The Kingsway Hub', icon: 'fa-solid fa-city' },
+    { id: 'site-sutherland', name: 'Sutherland Depot', address: 'Flora St Storage Yard', icon: 'fa-solid fa-truck-ramp-box' }
+];
+
+let currentTransferTool = null;
+let currentTransferToIndex = 0;
+
+function getCurrentWorkingSite() {
+    // Current rostered working site in the app is Lugarno Site
+    return 'Lugarno Site';
+}
+
+function openToolTransferModal(toolId) {
+    closeSideDrawer();
+    triggerHaptic('medium');
+    const tool = TOOLS_DIRECTORY_DATA.find(t => t.id === toolId);
+    if (!tool) return;
+
+    currentTransferTool = tool;
+
+    // Update Equipment info strip
+    const nameEl = document.getElementById('transfer-tool-name');
+    const metaEl = document.getElementById('transfer-tool-meta');
+    const statusEl = document.getElementById('transfer-tool-status');
+    if (nameEl) nameEl.textContent = tool.name;
+    if (metaEl) metaEl.textContent = `Category: ${tool.category.toUpperCase()} • Last: ${tool.lastLogged || 'N/A'}`;
+    
+    if (statusEl) {
+        statusEl.textContent = tool.status;
+        if (tool.status === 'Available') {
+            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0';
+        } else if (tool.status === 'Service') {
+            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 shrink-0';
+        } else {
+            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 shrink-0';
+        }
+    }
+
+    // "From" card is locked to the last site it was logged to (1 selection only)
+    const fromNameEl = document.getElementById('transfer-from-name');
+    const fromDescEl = document.getElementById('transfer-from-desc');
+    if (fromNameEl) fromNameEl.textContent = tool.location;
+    if (fromDescEl) fromDescEl.textContent = tool.lastLogged ? `Logged: ${tool.lastLogged}` : 'Current Location';
+
+    // Default "To" site:
+    // User requirement: automatically opens as the site you're working at (Lugarno Site) so you can easily
+    // click transfer again immediately. If the tool is ALREADY at the working site, default to Caringbah HQ (depot).
+    const workingSite = getCurrentWorkingSite();
+    let defaultIndex = ALL_TRANSFER_SITES.findIndex(s => s.name.toLowerCase() === workingSite.toLowerCase());
+    
+    if (tool.location.toLowerCase() === workingSite.toLowerCase()) {
+        // Tool is already at Lugarno, default to Caringbah HQ or first alternative
+        const altIndex = ALL_TRANSFER_SITES.findIndex(s => s.name !== tool.location);
+        defaultIndex = altIndex !== -1 ? altIndex : 0;
+    } else if (defaultIndex === -1) {
+        defaultIndex = 0;
+    }
+    
+    currentTransferToIndex = defaultIndex;
+
+    // Render all sites into the "To" scroller
+    renderTransferToItems();
+
+    // Setup quantity & availability
+    const qtyInput = document.getElementById('transfer-input-qty');
+    const unitLabel = document.getElementById('transfer-input-unit');
+    const availLabel = document.getElementById('transfer-amount-available');
+    const btnLabel = document.getElementById('transfer-confirm-btn-label');
+    const descInput = document.getElementById('transfer-input-desc');
+
+    const isBulk = Boolean(tool.quantity && tool.quantity > 1);
+    const unitName = tool.unit || (isBulk ? 'Units' : 'Unit');
+    const initialQty = isBulk ? Math.min(10, tool.quantity) : 1;
+
+    if (qtyInput) {
+        qtyInput.value = initialQty;
+        qtyInput.max = tool.quantity || 999;
+    }
+    if (unitLabel) unitLabel.textContent = unitName;
+    if (availLabel) {
+        if (tool.quantity) {
+            availLabel.textContent = `Available: ${tool.quantity} ${unitName}`;
+        } else {
+            availLabel.textContent = `1 Unit in stock`;
+        }
+    }
+    if (btnLabel) {
+        btnLabel.textContent = initialQty > 1 ? `Transfer ${initialQty} ${unitName}` : `Transfer Equipment`;
+    }
+    if (descInput) descInput.value = '';
+
+    // Animate open
+    const overlay = document.getElementById('tool-transfer-modal-overlay');
+    const sheet = document.getElementById('tool-transfer-sheet');
+    if (overlay && sheet) {
+        // Clear any leftover inline transforms/transitions from gestures
+        sheet.classList.remove('is-dragging');
+        sheet.style.transform = '';
+        sheet.style.transition = '';
+
+        // Pre-scroll the scroller into exact position BEFORE the sheet moves (prevents repaint hitch)
+        const scroller = document.getElementById('transfer-to-scroller');
+        if (scroller) {
+            scroller.scrollTop = currentTransferToIndex * 88;
+            updateTransferToItemStyles(currentTransferToIndex);
+        }
+
+        // Show overlay and smoothly animate sheet in using the Apple sheet spring curve
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(() => {
+            sheet.classList.remove('translate-y-[120%]');
+        });
+    }
+}
+
+function adjustTransferQuantity(delta) {
+    triggerHaptic('light');
+    const input = document.getElementById('transfer-input-qty');
+    if (!input) return;
+    let val = parseInt(input.value) || 1;
+    const max = currentTransferTool && currentTransferTool.quantity ? currentTransferTool.quantity : 999;
+    val = Math.max(1, Math.min(max, val + delta));
+    input.value = val;
+    onTransferQuantityChange(val);
+}
+
+function onTransferQuantityChange(val) {
+    const qty = parseInt(val) || 1;
+    const btnLabel = document.getElementById('transfer-confirm-btn-label');
+    if (btnLabel && currentTransferTool) {
+        const unitName = currentTransferTool.unit || 'Units';
+        btnLabel.textContent = qty > 1 ? `Transfer ${qty} ${unitName}` : `Transfer Equipment`;
+    }
+}
+
+function closeToolTransferModal() {
+    triggerHaptic('light');
+    const overlay = document.getElementById('tool-transfer-modal-overlay');
+    const sheet = document.getElementById('tool-transfer-sheet');
+    if (!overlay || !sheet) return;
+
+    sheet.classList.remove('is-dragging');
+    sheet.style.transition = '';
+    sheet.style.transform = '';
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    overlay.setAttribute('aria-hidden', 'true');
+    sheet.classList.add('translate-y-[120%]');
+}
+
+function renderTransferToItems() {
+    const scroller = document.getElementById('transfer-to-scroller');
+    if (!scroller) return;
+
+    scroller.innerHTML = ALL_TRANSFER_SITES.map((site, idx) => {
+        const isSelected = idx === currentTransferToIndex;
+        return `
+            <div onclick="selectTransferToSite(${idx})" 
+                 id="transfer-to-item-${idx}" 
+                 class="h-[88px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-all duration-200 ${isSelected ? 'opacity-100 scale-100' : 'opacity-30 hover:opacity-60 scale-95'}">
+                <div id="transfer-to-icon-${idx}" class="w-10 h-10 rounded-xl ${isSelected ? 'bg-slate-900 text-brand-lime shadow-sm' : 'bg-slate-200/80 text-slate-400'} flex items-center justify-center text-base mb-1 transition-all">
+                    <i class="${site.icon}"></i>
+                </div>
+                <span id="transfer-to-name-${idx}" class="text-xs sm:text-sm font-black ${isSelected ? 'text-slate-900' : 'text-slate-400'} tracking-tight line-clamp-1">${site.name}</span>
+                <span id="transfer-to-addr-${idx}" class="text-[11px] ${isSelected ? 'text-emerald-600 font-bold' : 'text-slate-400 font-medium'} line-clamp-1 mt-0.5">${site.address}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function onTransferToScrolled(scroller) {
+    if (!scroller) return;
+    const scrollTop = scroller.scrollTop;
+    const activeIndex = Math.max(0, Math.min(ALL_TRANSFER_SITES.length - 1, Math.round(scrollTop / 88)));
+    
+    if (activeIndex !== currentTransferToIndex) {
+        currentTransferToIndex = activeIndex;
+        triggerHaptic('light');
+    }
+    updateTransferToItemStyles(activeIndex);
+}
+
+function selectTransferToSite(index) {
+    currentTransferToIndex = index;
+    triggerHaptic('light');
+    const scroller = document.getElementById('transfer-to-scroller');
+    if (scroller) {
+        scroller.scrollTo({ top: index * 88, behavior: 'smooth' });
+    }
+    updateTransferToItemStyles(index);
+}
+
+function updateTransferToItemStyles(activeIndex) {
+    ALL_TRANSFER_SITES.forEach((site, idx) => {
+        const item = document.getElementById(`transfer-to-item-${idx}`);
+        const icon = document.getElementById(`transfer-to-icon-${idx}`);
+        const name = document.getElementById(`transfer-to-name-${idx}`);
+        const addr = document.getElementById(`transfer-to-addr-${idx}`);
+        
+        if (!item) return;
+
+        const isSelected = idx === activeIndex;
+        if (isSelected) {
+            item.className = "h-[88px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-all duration-200 opacity-100 scale-100";
+            if (icon) icon.className = "w-10 h-10 rounded-xl bg-slate-900 text-brand-lime shadow-sm flex items-center justify-center text-base mb-1 transition-all";
+            if (name) name.className = "text-xs sm:text-sm font-black text-slate-900 tracking-tight line-clamp-1";
+            if (addr) addr.className = "text-[11px] text-emerald-600 font-bold line-clamp-1 mt-0.5";
+        } else {
+            item.className = "h-[88px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-all duration-200 opacity-30 hover:opacity-60 scale-95";
+            if (icon) icon.className = "w-10 h-10 rounded-xl bg-slate-200/80 text-slate-400 flex items-center justify-center text-base mb-1 transition-all";
+            if (name) name.className = "text-xs sm:text-sm font-bold text-slate-400 tracking-tight line-clamp-1";
+            if (addr) addr.className = "text-[11px] text-slate-400 font-medium line-clamp-1 mt-0.5";
+        }
+    });
+}
+
+function confirmToolTransfer() {
+    if (!currentTransferTool) return;
+    triggerHaptic('success');
+    
+    const fromSite = currentTransferTool.location;
+    const destSite = ALL_TRANSFER_SITES[currentTransferToIndex] ? ALL_TRANSFER_SITES[currentTransferToIndex].name : 'Lugarno Site';
+    
+    const qtyInput = document.getElementById('transfer-input-qty');
+    const qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+    const unitName = currentTransferTool.unit || (qty > 1 ? 'Units' : 'Unit');
+
+    // Update tool location & last log record with the exact amount moved!
+    currentTransferTool.location = destSite;
+    currentTransferTool.lastLogged = `${qty} ${unitName} moved by Alexander F. today`;
+    
+    // Re-render tools directory so UI reflects the movement
+    filterToolsDirectory();
+
+    // Feedback toast & confetti
+    showToast('Transfer Logged', `${qty}x ${currentTransferTool.name} transferred to ${destSite}`);
+    
+    if (typeof confetti === 'function') {
+        confetti({
+            particleCount: 45,
+            spread: 60,
+            origin: { y: 0.65 }
+        });
+    }
+
+    // Close modal
+    closeToolTransferModal();
+}
+
+// Attach overlay click & swipe down gesture listeners to transfer modal
+document.addEventListener('DOMContentLoaded', () => {
+    const transferOverlay = document.getElementById('tool-transfer-modal-overlay');
+    const transferSheet = document.getElementById('tool-transfer-sheet');
+    const dragZone = document.getElementById('transfer-drag-zone');
+
+    if (transferOverlay) {
+        transferOverlay.addEventListener('click', (e) => {
+            if (e.target.id === 'tool-transfer-modal-overlay') closeToolTransferModal();
+        });
+    }
+
+    // Touch swipe down on handle / header to dismiss
+    if (transferSheet) {
+        let startY = 0;
+        let lastY = 0;
+        let isDragging = false;
+
+        transferSheet.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) return;
+            const target = e.target;
+            const isScroller = target.closest('#transfer-to-scroller');
+            if (isScroller) return; // Don't hijack scroller touches
+
+            startY = lastY = e.touches[0].clientY;
+            isDragging = true;
+        }, { passive: true });
+
+        transferSheet.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const currentY = e.touches[0].clientY;
+            const diffY = currentY - startY;
+
+            if (diffY > 8) {
+                transferSheet.classList.add('is-dragging');
+                transferSheet.style.transform = `translate3d(0, ${diffY}px, 0)`;
+            }
+        }, { passive: true });
+
+        const endDrag = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            transferSheet.classList.remove('is-dragging');
+            const currentY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : lastY;
+            const diffY = currentY - startY;
+
+            if (diffY > 100) {
+                closeToolTransferModal();
+            } else {
+                transferSheet.style.transition = 'transform 0.35s var(--ease-drawer)';
+                transferSheet.style.transform = '';
+                setTimeout(() => {
+                    transferSheet.style.transition = '';
+                }, 360);
+            }
+        };
+
+        transferSheet.addEventListener('touchend', endDrag, { passive: true });
+        transferSheet.addEventListener('touchcancel', endDrag, { passive: true });
+    }
+});
+
+// Escape key dismiss listener
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const transferOverlay = document.getElementById('tool-transfer-modal-overlay');
+        if (transferOverlay && !transferOverlay.classList.contains('opacity-0')) {
+            closeToolTransferModal();
+        }
+    }
+});
 
 // =========================================================================
 // INSTAGRAM-STYLE NOTIFICATIONS & ACTIVITY ENGINE
@@ -6151,9 +7333,9 @@ function filterNotifications(category) {
     filterButtons.forEach(btn => {
         const isCurrent = btn.id === `notif-filter-${category}`;
         if (isCurrent) {
-            btn.className = 'notif-filter-chip shrink-0 px-4 py-2 text-xs font-black rounded-xl bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer min-h-[38px]';
+            btn.className = 'notif-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-black bg-slate-900 text-brand-lime shadow-sm transition-all cursor-pointer flex items-center justify-center';
         } else {
-            btn.className = 'notif-filter-chip shrink-0 px-4 py-2 text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl hover:text-slate-900 transition-all cursor-pointer min-h-[38px]';
+            btn.className = 'notif-filter-chip shrink-0 px-4 py-2.5 min-h-[40px] rounded-xl text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-xl border border-white/80 hover:text-slate-900 hover:bg-white shadow-2xs transition-all cursor-pointer flex items-center justify-center';
         }
     });
 
