@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-appBg sm:bg-slate-950">
+<html lang="en" class="h-full bg-slate-950 sm:bg-slate-950">
 <head>
     <meta charset="UTF-8">
     <!-- Mobile viewport configured with zoom locked per app requirement -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
-    <meta name="theme-color" content="#F3F4F6">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F4F6">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#F3F4F6">
+    <meta id="app-theme-color" name="theme-color" content="#020617">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -79,7 +77,7 @@
 
         /* ================= MOBILE-NATIVE BASELINE ================= */
         html {
-            background-color: #F3F4F6;        /* match header at y=0 before Tailwind CDN runs so iOS status bar stays seamless */
+            background-color: #020617;        /* matches initial preloader at y=0 so status bar starts seamless dark */
             -webkit-tap-highlight-color: transparent;
             -webkit-text-size-adjust: 100%;   /* no font inflation in landscape */
             overscroll-behavior: none;        /* app shell: no page bounce / pull-to-refresh hijack */
@@ -89,7 +87,7 @@
             html { background-color: #020617; }
         }
         html.drawer-open, body.drawer-open {
-            background-color: #061e14 !important;
+            background-color: #022c22 !important;
         }
         * {
             -webkit-tap-highlight-color: transparent;
@@ -253,12 +251,12 @@
 
         /* 97% opaque dark surfaces skip invisible backdrop-filter so Safari doesn't re-blur on expand */
         .glass-tile-today {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.97) 0%, rgba(2, 6, 23, 0.99) 100%);
-            border: 1px solid rgba(163, 230, 53, 0.5);
+            background: linear-gradient(135deg, #022c22 0%, #061e14 50%, #020617 100%);
+            border: 1px solid rgba(16, 185, 129, 0.35);
             box-shadow: 
-                inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.3),
+                inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.25),
                 0 14px 30px -4px rgba(0, 0, 0, 0.45),
-                0 0 20px -2px rgba(163, 230, 53, 0.32);
+                0 0 24px -2px rgba(16, 185, 129, 0.25);
         }
 
         .glass-card-apple {
@@ -274,10 +272,10 @@
         }
 
         .glass-card-today {
-            background: linear-gradient(145deg, rgba(2, 35, 22, 0.97) 0%, rgba(6, 30, 20, 0.98) 50%, rgba(2, 6, 23, 0.99) 100%);
-            border: 1px solid rgba(52, 211, 153, 0.4);
+            background: linear-gradient(135deg, #022c22 0%, #061e14 50%, #020617 100%);
+            border: 1px solid rgba(16, 185, 129, 0.35);
             box-shadow: 
-                inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.3),
+                inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.25),
                 0 18px 40px -8px rgba(0, 0, 0, 0.55),
                 0 0 28px -4px rgba(16, 185, 129, 0.25);
         }
@@ -869,6 +867,14 @@
             box-shadow: 20px 15px 50px rgba(0, 0, 0, 0.45), 0 25px 50px rgba(0, 0, 0, 0.25);
         }
 
+        /* Prevent any clicks, taps, or focus on main stage elements while drawer is open or closing */
+        #app-container.drawer-open #app-main-stage > *:not(#drawer-dismiss-overlay),
+        #app-container.drawer-closing #app-main-stage > *:not(#drawer-dismiss-overlay) {
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+
         #drawer-dismiss-overlay {
             opacity: 0;
             pointer-events: none;
@@ -877,6 +883,11 @@
 
         #app-container.drawer-open #drawer-dismiss-overlay {
             opacity: 1;
+            pointer-events: auto;
+        }
+
+        #app-container.drawer-closing #drawer-dismiss-overlay {
+            opacity: 0;
             pointer-events: auto;
         }
 
@@ -1178,7 +1189,7 @@
         }
     </style>
 </head>
-<body class="bg-appBg sm:bg-slate-950 text-gray-900 h-full sm:flex sm:justify-center sm:items-center font-sans antialiased selection:bg-brand-lime selection:text-black">
+<body class="bg-slate-950 sm:bg-slate-950 text-gray-900 h-full sm:flex sm:justify-center sm:items-center font-sans antialiased selection:bg-brand-lime selection:text-black">
     
     <!-- PRELOADER -->
     <div id="preloader" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out">
@@ -1288,7 +1299,7 @@
     </aside>
 
     <!-- Intermediate 3D Layer Card (Physical Depth Effect as in Reference Image) -->
-    <div id="drawer-layer-card" onclick="closeSideDrawer()" role="button" aria-label="Close navigation menu" class="absolute inset-0 bg-emerald-500/[0.12] backdrop-blur-2xl rounded-[32px] border border-emerald-400/30 shadow-2xl pointer-events-none z-10 opacity-0" style="transform: translate3d(0,0,0) scale(1);"></div>
+    <div id="drawer-layer-card" onclick="handleDrawerDismissOverlayClick(event)" role="button" aria-label="Close navigation menu" class="absolute inset-0 bg-emerald-500/[0.12] backdrop-blur-2xl rounded-[32px] border border-emerald-400/30 shadow-2xl pointer-events-none z-10 opacity-0" style="transform: translate3d(0,0,0) scale(1);"></div>
 
     <!-- Main Screen Content Stage (Transforms in 3D when drawer opens) -->
     <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30 pb-[env(safe-area-inset-bottom,0px)]">
@@ -2590,7 +2601,7 @@
 </nav>
 
         <!-- Click-to-Dismiss Scrim Overlay for 3D Drawer (Active when drawer is open, zero blur to keep home stage razor sharp) -->
-        <div id="drawer-dismiss-overlay" onclick="closeSideDrawer()" class="absolute inset-0 z-50 cursor-pointer pointer-events-none opacity-0 bg-slate-950/20"></div>
+        <div id="drawer-dismiss-overlay" onclick="handleDrawerDismissOverlayClick(event)" class="absolute inset-0 z-50 cursor-pointer pointer-events-none opacity-0 bg-slate-950/20"></div>
     </div> <!-- /#app-main-stage -->
 
         <!-- Universal Modal Overlay with Apple Bottom Sheet -->
@@ -2861,6 +2872,8 @@
             const preloader = document.getElementById('preloader');
             if (preloader) {
                 setTimeout(() => {
+                    // Synchronously transition status bar and root background to white as preloader fades
+                    setStatusBarThemeColor('#F3F4F6', false);
                     preloader.classList.add('fade-out');
                     setTimeout(() => {
                         preloader.remove();
@@ -2872,6 +2885,8 @@
                         }
                     }, 500); // matches the 500ms fade-out transition duration
                 }, 400);
+            } else {
+                setStatusBarThemeColor('#F3F4F6', false);
             }
         });
 
@@ -3234,27 +3249,49 @@ function switchTab(tabName) {
 
 // ================= 3D OFF-CANVAS SIDE DRAWER CONTROLS =================
 function setStatusBarThemeColor(color, isDark = false) {
-    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-        meta.setAttribute('content', color);
-    });
-    let defaultMeta = document.querySelector('meta[name="theme-color"]:not([media])');
-    if (!defaultMeta) {
-        defaultMeta = document.createElement('meta');
-        defaultMeta.name = 'theme-color';
-        document.head.appendChild(defaultMeta);
+    let themeMeta = document.getElementById('app-theme-color');
+    if (!themeMeta) {
+        document.querySelectorAll('meta[name="theme-color"]').forEach(el => el.remove());
+        themeMeta = document.createElement('meta');
+        themeMeta.id = 'app-theme-color';
+        themeMeta.name = 'theme-color';
+        document.head.appendChild(themeMeta);
     }
-    defaultMeta.setAttribute('content', color);
+    themeMeta.setAttribute('content', color);
 
     document.documentElement.style.backgroundColor = color;
-    document.body.style.backgroundColor = color;
-
-    const appleMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (appleMeta) {
-        appleMeta.setAttribute('content', isDark ? 'black-translucent' : 'default');
+    if (document.body) {
+        document.body.style.backgroundColor = color;
     }
 }
 
 let drawerStageTimer = null;
+let isSuppressingDrawerClick = false;
+
+function blockNextClick() {
+    isSuppressingDrawerClick = true;
+    setTimeout(() => { isSuppressingDrawerClick = false; }, 450);
+}
+
+// Global capture-phase listener: stops any phantom click from reaching stage UI buttons when closing drawer
+window.addEventListener('click', (e) => {
+    if (isSuppressingDrawerClick) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+    }
+}, true);
+
+function handleDrawerDismissOverlayClick(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+    }
+    blockNextClick();
+    closeSideDrawer();
+}
 
 function openSideDrawer() {
     triggerHaptic('light');
@@ -3264,6 +3301,7 @@ function openSideDrawer() {
     const stage = document.getElementById('app-main-stage');
     if (!container) return;
 
+    container.classList.remove('drawer-closing');
     if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
 
     // Clear overrides so CSS class takes full effect cleanly
@@ -3297,21 +3335,23 @@ function openSideDrawer() {
     container.classList.add('drawer-open');
     document.documentElement.classList.add('drawer-open');
     document.body.classList.add('drawer-open');
-    setStatusBarThemeColor('#061e14', true);
+    setStatusBarThemeColor('#022c22', true);
     if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
     if (drawer) drawer.setAttribute('aria-hidden', 'false');
 }
 
 function closeSideDrawer() {
     const container = document.getElementById('app-container');
-    if (!container || !container.classList.contains('drawer-open')) return;
+    if (!container || (!container.classList.contains('drawer-open') && !container.classList.contains('drawer-closing'))) return;
 
+    blockNextClick();
     triggerHaptic('light');
     const hamburger = document.getElementById('btn-hamburger');
     const drawer = document.getElementById('app-side-drawer');
     const stage = document.getElementById('app-main-stage');
 
     container.classList.remove('drawer-open');
+    container.classList.add('drawer-closing');
     document.documentElement.classList.remove('drawer-open');
     document.body.classList.remove('drawer-open');
     setStatusBarThemeColor('#F3F4F6', false);
@@ -3320,15 +3360,10 @@ function closeSideDrawer() {
 
     if (drawerStageTimer) { clearTimeout(drawerStageTimer); drawerStageTimer = null; }
 
-    const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
-    if (dismissOverlay) {
-        dismissOverlay.style.opacity = '';
-        dismissOverlay.style.pointerEvents = '';
-    }
-
     if (stage) {
         drawerStageTimer = setTimeout(() => {
             drawerStageTimer = null;
+            container.classList.remove('drawer-closing');
             if (!container.classList.contains('drawer-open')) {
                 stage.style.transform = '';
                 stage.style.transformOrigin = '';
@@ -3336,6 +3371,11 @@ function closeSideDrawer() {
                 stage.style.boxShadow = '';
                 stage.style.transition = '';
                 stage.style.willChange = '';
+            }
+            const dismissOverlay = document.getElementById('drawer-dismiss-overlay');
+            if (dismissOverlay) {
+                dismissOverlay.style.opacity = '';
+                dismissOverlay.style.pointerEvents = '';
             }
         }, 420);
     }
@@ -3470,7 +3510,7 @@ function drawerNavigate(target) {
         }
 
         if (p > 0.35) {
-            setStatusBarThemeColor('#061e14', true);
+            setStatusBarThemeColor('#022c22', true);
             document.documentElement.classList.add('drawer-open');
             document.body.classList.add('drawer-open');
         } else {
@@ -3604,6 +3644,8 @@ function drawerNavigate(target) {
             // Tapped on stage/overlay while drawer is open -> close it
             // If tapped on the drawer itself, let the button/item click trigger normally
             if (gestureMode === 'close' && touchStartsOnCards) {
+                if (e && e.cancelable) e.preventDefault();
+                blockNextClick();
                 closeSideDrawer();
             }
             return;
@@ -3620,7 +3662,7 @@ function drawerNavigate(target) {
                     container.classList.add('drawer-open');
                     document.documentElement.classList.add('drawer-open');
                     document.body.classList.add('drawer-open');
-                    setStatusBarThemeColor('#061e14', true);
+                    setStatusBarThemeColor('#022c22', true);
                     if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
                     if (drawer) drawer.setAttribute('aria-hidden', 'false');
                     // Clear overrides to let CSS class hold state
@@ -3702,7 +3744,7 @@ function drawerNavigate(target) {
                     container.classList.add('drawer-open');
                     document.documentElement.classList.add('drawer-open');
                     document.body.classList.add('drawer-open');
-                    setStatusBarThemeColor('#061e14', true);
+                    setStatusBarThemeColor('#022c22', true);
                     if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
                     if (drawer) drawer.setAttribute('aria-hidden', 'false');
                     stage.style.transform = '';
@@ -4906,7 +4948,7 @@ function openTimesheetsModal() {
                     <div class="relative flex items-start gap-3.5">
                         <!-- Left: Fixed-Size Apple Liquid Glass Date Tile (Never shrinks or shifts) -->
                         <div class="roster-date-tile w-[68px] min-w-[68px] h-[72px] shrink-0 rounded-[24px] flex flex-col items-center justify-center select-none z-10 ${isToday ? 'glass-tile-today' : 'glass-tile-apple'}">
-                            <span class="text-[11px] font-black uppercase tracking-widest leading-none ${isToday ? 'text-brand-lime' : 'text-slate-400'}">
+                            <span class="text-[11px] font-black uppercase tracking-widest leading-none ${isToday ? 'text-emerald-300' : 'text-slate-400'}">
                                 ${config.day}
                             </span>
                             <span class="text-2xl font-black tracking-tight leading-none ${isToday ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-slate-800'} mt-1.5">
@@ -4917,6 +4959,7 @@ function openTimesheetsModal() {
                         <!-- Right: Fixed-Header Card that Smoothly Expands Downward -->
                         <div class="flex-1 min-w-0 z-10">
                             <div class="roster-card-surface relative flex flex-col ${cardSurfaceBaseClass} ${cardRainClass} rounded-[24px] overflow-hidden">
+                                ${isToday ? '<div class="absolute -top-12 -left-12 w-36 h-36 bg-emerald-500/20 rounded-full blur-[40px] pointer-events-none z-0"></div><div class="absolute -bottom-12 -right-12 w-36 h-36 bg-blue-600/15 rounded-full blur-[40px] pointer-events-none z-0"></div>' : ''}
                                 ${rainBackdropHtml}
                                 
                                 <!-- Fixed 72px Header (1:1 height match with Date Tile when closed) -->
@@ -4940,7 +4983,7 @@ function openTimesheetsModal() {
                                     <div class="roster-drawer-inner">
                                         <div class="px-[18px] pb-4 pt-0.5">
                                             <div>
-                                                <a href="https://maps.apple.com/?q=${encodeURIComponent(activeSite.address)}" target="_blank" onclick="event.stopPropagation()" class="site-address inline-flex items-center gap-1.5 text-[13px] font-semibold ${isToday ? 'text-slate-200 hover:text-white' : (isRainActive ? 'text-blue-300 hover:text-white' : 'text-emerald-600 hover:text-emerald-800')} transition-colors">
+                                                <a href="https://maps.apple.com/?q=${encodeURIComponent(activeSite.address)}" target="_blank" onclick="event.stopPropagation()" class="site-address inline-flex items-center gap-1.5 text-[13px] font-semibold ${isToday ? 'text-emerald-200/90 hover:text-white' : (isRainActive ? 'text-blue-300 hover:text-white' : 'text-emerald-600 hover:text-emerald-800')} transition-colors">
                                                     <span class="site-address-text">${activeSite.address}</span>
                                                     <i class="ph-bold ph-arrow-up-right text-xs"></i>
                                                 </a>
@@ -4948,11 +4991,11 @@ function openTimesheetsModal() {
 
                                             ${rainPillHtml}
 
-                                            <div class="roster-team-divider pt-3 mt-3 border-t ${isToday ? 'border-white/10' : (isRainActive ? 'border-slate-800' : 'border-slate-100')}">
-                                                <span class="roster-with-label text-[11px] font-black uppercase tracking-wider ${isToday ? 'text-emerald-300/80' : (isRainActive ? 'text-slate-300' : 'text-slate-500')} block mb-2">With:</span>
+                                            <div class="roster-team-divider pt-3 mt-3 border-t ${isToday ? 'border-emerald-500/20' : (isRainActive ? 'border-slate-800' : 'border-slate-100')}">
+                                                <span class="roster-with-label text-[11px] font-black uppercase tracking-wider ${isToday ? 'text-emerald-300/90' : (isRainActive ? 'text-slate-300' : 'text-slate-500')} block mb-2">With:</span>
                                                 <div class="flex flex-wrap gap-1.5">
                                                     ${config.team.map(member => `
-                                                        <span class="roster-team-chip px-3 py-1 rounded-full ${isToday ? 'bg-black/45 text-slate-200 border border-white/10 font-bold text-xs shadow-inner' : (isRainActive ? 'bg-slate-800 text-white border border-slate-700 font-bold text-xs' : 'bg-slate-100 text-slate-800 border border-slate-200/50 font-bold text-xs')}">${member}</span>
+                                                        <span class="roster-team-chip px-3 py-1 rounded-full ${isToday ? 'bg-emerald-950/60 text-emerald-100 border border-emerald-500/30 font-bold text-xs shadow-inner' : (isRainActive ? 'bg-slate-800 text-white border border-slate-700 font-bold text-xs' : 'bg-slate-100 text-slate-800 border border-slate-200/50 font-bold text-xs')}">${member}</span>
                                                     `).join('')}
                                                 </div>
                                             </div>
