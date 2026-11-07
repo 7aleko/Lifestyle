@@ -679,6 +679,8 @@
 
         /* ================= APPLE FITNESS & GLISSE FLOATING LIQUID GLASS BAR ================= */
         .nav-bar {
+            bottom: 1.25rem;
+            bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 6px));
             /* Hero card gradient: deep midnight emerald-to-black, dark & partially see-through */
             background: 
                 radial-gradient(ellipse 70% 90% at 15% 0%, rgba(16, 185, 129, 0.10) 0%, transparent 60%),
@@ -1228,7 +1230,8 @@
            aria-label="Navigation Drawer" 
            aria-modal="true" 
            aria-hidden="true"
-           class="absolute inset-y-0 right-0 left-auto w-[78%] z-20 flex flex-col justify-between pl-6 pr-[max(1.5rem,calc(env(safe-area-inset-right,0px)+1.25rem))] pt-[max(1.25rem,calc(env(safe-area-inset-top,0px)+1rem))] pb-[max(1.75rem,calc(env(safe-area-inset-bottom,0px)+1.5rem))] text-white pointer-events-none opacity-0 select-none">
+           class="absolute inset-y-0 right-0 left-auto w-[78%] z-20 flex flex-col justify-between pl-6 pr-6 pt-5 pb-7 text-white pointer-events-none opacity-0 select-none"
+           style="padding-top: max(1.25rem, calc(env(safe-area-inset-top) + 1rem)); padding-bottom: max(1.75rem, calc(env(safe-area-inset-bottom) + 1.5rem)); padding-right: max(1.5rem, calc(env(safe-area-inset-right) + 1.25rem));">
 
         <!-- Ambient Glow Orbs (Matching Hero Card Palette) -->
 <!-- Ambient Glow Orbs (Matching Hero Card Palette) -->
@@ -1326,7 +1329,7 @@
 <div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30">
 
         <!-- iOS Native Navigation Top Bar (Edge-to-edge under status bar with frosted glass) -->
-        <header id="app-top-bar" class="w-full bg-appBg/90 backdrop-blur-xl shrink-0 z-20 pt-[max(0.65rem,calc(env(safe-area-inset-top,0px)+0.3rem))] sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all">
+        <header id="app-top-bar" class="w-full bg-appBg/90 backdrop-blur-xl shrink-0 z-20 pt-3 sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all" style="padding-top: max(0.75rem, calc(env(safe-area-inset-top) + 0.35rem));">
             <div class="flex justify-between items-center py-0.5">
                 <div class="flex items-center gap-0.5">
                     <span class="text-2xl font-black tracking-tight text-slate-900">lifestyle</span>
@@ -2555,8 +2558,8 @@
      onpointerup="onNavPointerUp(event)" 
      onpointercancel="onNavPointerCancel(event)"
      onpointerleave="onNavPointerUp(event)"
-     style="bottom: max(0.85rem, calc(env(safe-area-inset-bottom, 0px) + 0.35rem));"
-     class="nav-bar absolute left-3.5 right-3.5 rounded-full px-1.5 py-1.5 grid grid-cols-5 items-center z-40 text-white select-none touch-none">
+     class="nav-bar absolute bottom-5 left-3.5 right-3.5 rounded-full px-1.5 py-1.5 grid grid-cols-5 items-center z-40 text-white select-none touch-none"
+     style="bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 6px));">
      
     <!-- Optical Specular Pill Indicator -->
     <div id="nav-pill" class="nav-pill-indicator opacity-0"></div>
@@ -2627,7 +2630,7 @@
 
         <!-- Universal Modal Overlay with Apple Bottom Sheet -->
         <div id="modal-overlay" aria-hidden="true" class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-0 sm:p-4">
-            <div id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl rounded-t-[32px] rounded-b-none sm:rounded-[32px] p-5 pt-2.5 pb-[max(1.5rem,calc(env(safe-area-inset-bottom,0px)+1.25rem))] shadow-[0_-12px_40px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border-t border-x sm:border border-white/80 transform translate-y-[120%] transition-transform duration-350 max-h-[88vh] flex flex-col overflow-hidden will-change-transform">
+            <div id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl rounded-t-[32px] rounded-b-none sm:rounded-[32px] p-5 pt-2.5 pb-6 shadow-[0_-12px_40px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border-t border-x sm:border border-white/80 transform translate-y-[120%] transition-transform duration-350 max-h-[88vh] flex flex-col overflow-hidden will-change-transform" style="padding-bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + 1.25rem));">
                 <!-- iOS Drag Handle Pill Zone (Large hit area) -->
                 <div id="modal-drag-zone" class="w-full pt-1 pb-2.5 flex justify-center cursor-grab active:cursor-grabbing select-none shrink-0 group">
                     <div class="w-10 h-1 bg-slate-300/90 group-hover:bg-slate-400 group-active:bg-slate-500 rounded-full transition-colors"></div>
@@ -2654,7 +2657,7 @@
                  role="dialog" 
                  aria-modal="true" 
                  aria-labelledby="transfer-modal-title" 
-                 class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl text-slate-900 rounded-t-[32px] sm:rounded-[32px] shadow-[0_-12px_40px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border-t border-x sm:border border-white/80 transform translate-y-[120%] max-h-[90vh] flex flex-col overflow-hidden will-change-transform pb-[max(1.25rem,calc(env(safe-area-inset-bottom,0px)+1rem))]">
+                 class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl text-slate-900 rounded-t-[32px] sm:rounded-[32px] shadow-[0_-12px_40px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border-t border-x sm:border border-white/80 transform translate-y-[120%] max-h-[90vh] flex flex-col overflow-hidden will-change-transform pb-5" style="padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 1rem));">
                 
                 <!-- iOS Drag Handle Zone -->
                 <div id="transfer-drag-zone" class="w-full pt-2 pb-1.5 flex justify-center cursor-grab select-none shrink-0" onclick="closeToolTransferModal()">
