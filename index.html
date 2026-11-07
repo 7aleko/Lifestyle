@@ -883,6 +883,7 @@
                 width: 100%;
                 height: 100vh;
                 height: 100dvh;
+                height: auto; /* let top/bottom:0 fill the true screen; 100vh/100dvh fall short in iOS web-app mode */
             }
         }
 
@@ -1233,6 +1234,7 @@
 
 <!-- Mobile Container Wrapper with Forest Green Background for 3D Drawer Effect -->
 <div id="app-container" class="fixed inset-0 h-[100dvh] sm:h-[90vh] sm:relative sm:inset-auto sm:w-full sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-[#022c22] ...">
+<div id="app-container" class="fixed inset-0 sm:relative sm:inset-auto sm:w-full sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-[#022c22] bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 flex flex-col overflow-hidden border-0 sm:border border-slate-800/50 select-none">
 
     <!-- 3D Off-Canvas Side Navigation Drawer (Apple / Reference Design) -->
     <aside id="app-side-drawer" 
