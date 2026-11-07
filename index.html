@@ -883,6 +883,148 @@
             transform: scale(0.97) !important;
         }
 
+        /* ================= OPAL GLOWING BORDER BEAM (ATTENDANCE HERO CARD) ================= */
+        .site-card-glow-wrap {
+            position: absolute;
+            inset: -1.5px;
+            border-radius: 23.5px;
+            pointer-events: none;
+            z-index: 20;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 1;
+        }
+
+        .site-card-glow-wrap.is-signed-in-hidden {
+            opacity: 0;
+            transform: scale(0.985);
+        }
+
+        /* 1. Luminous Ambient Outer Halo (diffused neon bloom outside & along the card border) */
+        .site-card-glow-halo {
+            position: absolute;
+            inset: -8px;
+            border-radius: 30px;
+            padding: 10px;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            overflow: hidden;
+            filter: blur(14px);
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        /* 2. Permanent Iridescent Base Glass Rim (Subtle Lime on Left, Cyan on Right) */
+        .site-card-glow-base {
+            position: absolute;
+            inset: 0;
+            border-radius: 23.5px;
+            padding: 1.5px;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            overflow: hidden;
+            pointer-events: none;
+            background: linear-gradient(
+                135deg,
+                rgba(163, 230, 53, 0.35) 0%,
+                rgba(74, 222, 128, 0.18) 30%,
+                rgba(34, 211, 238, 0.15) 60%,
+                rgba(56, 189, 248, 0.35) 100%
+            );
+            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
+        }
+
+        /* 3. Razor-Sharp Traveling Dual-Beam Stroke with White Core Hotspots */
+        .site-card-glow-stroke {
+            position: absolute;
+            inset: 0;
+            border-radius: 23.5px;
+            padding: 1.5px;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            overflow: hidden;
+            pointer-events: none;
+            filter: drop-shadow(0 0 2px #ffffff)
+                    drop-shadow(0 0 6px rgba(56, 189, 248, 0.85))
+                    drop-shadow(0 0 14px rgba(163, 230, 53, 0.7));
+        }
+
+        /* 4. High-Lumen Specular Glint & Flare Bloom */
+        .site-card-glow-glint {
+            position: absolute;
+            inset: -2px;
+            border-radius: 25.5px;
+            padding: 4px;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            overflow: hidden;
+            pointer-events: none;
+            filter: blur(3px);
+            opacity: 0.95;
+            mix-blend-mode: screen;
+        }
+
+        /* 5. Opal Dual-Beam Conic Gradient Spinner (Clockwise 3.4s - Exactly Matching Reference Video) */
+        .site-glow-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 320%;
+            height: 320%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            background: conic-gradient(
+                from 0deg,
+                /* Beam 1: Neon Lime & Emerald sweeping into dazzling pure-white specular flare */
+                transparent 0deg,
+                transparent 40deg,
+                rgba(74, 222, 128, 0.15) 65deg,
+                rgba(163, 230, 53, 0.6) 90deg,
+                rgba(204, 255, 0, 0.95) 114deg,
+                #ffffff 125deg,
+                #ffffff 127deg,
+                rgba(204, 255, 0, 0.95) 136deg,
+                rgba(52, 211, 153, 0.5) 150deg,
+                transparent 170deg,
+                transparent 180deg,
+
+                /* Beam 2: Neon Cyan & Electric Ice Blue sweeping into dazzling pure-white specular flare */
+                transparent 220deg,
+                rgba(6, 182, 212, 0.15) 245deg,
+                rgba(34, 211, 238, 0.6) 270deg,
+                rgba(56, 189, 248, 0.95) 294deg,
+                #ffffff 305deg,
+                #ffffff 307deg,
+                rgba(56, 189, 248, 0.95) 316deg,
+                rgba(34, 211, 238, 0.5) 330deg,
+                transparent 350deg,
+                transparent 360deg
+            );
+            animation: opal-border-spin 3.4s linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes opal-border-spin {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .site-glow-spinner {
+                animation: none;
+            }
+        }
+
         /* ================= APPLE CONTROL CENTRE ATTENDANCE MODULE ================= */
         #site-signin-btn {
             border-color: rgba(204, 255, 0, 0.9);
@@ -1444,9 +1586,29 @@
                 G'day, <span class="text-brand-lime drop-shadow-[0_0_15px_rgba(163,230,53,0.4)]">Alexander</span>
             </h1>
 
-            <!-- ULTRA-MINIMAL APPLE GLASS SITE CARD WITH DYNAMIC AMBIENT BOTTOM GRADIENT -->
-            <div onclick="switchTab('week')" role="button" tabindex="0" aria-label="Today's rostered site: Lugarno at 935 Forest Road. Work shift 7:00 AM to 3:30 PM. Tap to view full schedule." 
-                class="relative rounded-[22px] p-6 bg-slate-900/40 hover:bg-slate-900/60 backdrop-blur-3xl border border-white/15 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.22),0_12px_32px_0_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer group/site active:scale-[0.98] mb-5 overflow-hidden flex flex-col justify-between">
+            <!-- ULTRA-MINIMAL APPLE GLASS SITE CARD WRAPPER WITH OPAL GLOWING BORDER BEAM -->
+            <div class="relative mb-5 group/site-wrap">
+                <!-- Opal-Style Animated Glowing Border Beam (Active when NOT signed in; fades away when signed in) -->
+                <div id="site-card-glow-beam" class="site-card-glow-wrap pointer-events-none" aria-hidden="true">
+                    <!-- 1. Ambient Diffuse Outer Bloom / Aura -->
+                    <div class="site-card-glow-halo">
+                        <div class="site-glow-spinner"></div>
+                    </div>
+                    <!-- 2. Permanent Iridescent Base Glass Rim (Subtle Lime on Left, Cyan on Right) -->
+                    <div class="site-card-glow-base"></div>
+                    <!-- 3. Razor-Sharp Traveling Dual-Beam Stroke with White Core Hotspots -->
+                    <div class="site-card-glow-stroke">
+                        <div class="site-glow-spinner"></div>
+                    </div>
+                    <!-- 4. High-Lumen Specular Glint & Flare Bloom -->
+                    <div class="site-card-glow-glint">
+                        <div class="site-glow-spinner"></div>
+                    </div>
+                </div>
+
+                <!-- Site Details Card -->
+                <div id="site-hero-card" onclick="switchTab('week')" role="button" tabindex="0" aria-label="Today's rostered site: Lugarno at 935 Forest Road. Work shift 7:00 AM to 3:30 PM. Tap to view full schedule." 
+                    class="relative rounded-[22px] p-6 bg-[#0c121e]/80 hover:bg-[#0c121e]/90 backdrop-blur-3xl border border-white/10 shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.22),0_16px_36px_0_rgba(0,0,0,0.4)] transition-all duration-300 cursor-pointer group/site active:scale-[0.98] overflow-hidden flex flex-col justify-between">
 
                 <!-- ================= DYNAMIC AMBIENT BOTTOM GRADIENT EFFECT ================= -->
                 <!-- DYNAMIC AMBIENT BOTTOM GRADIENT EFFECT -->
@@ -1544,6 +1706,7 @@
                     </div>
                 </div>
             </div>
+            </div> <!-- /#site-card-glow-beam wrapper -->
 
             <!-- BOTTOM WIDGET SECTION (Apple Glass Birthday Row - High Contrast & Instant Readability) -->
             <div class="pt-3.5 border-t border-white/10">
@@ -2577,6 +2740,7 @@
             const btn = document.getElementById('site-signin-btn');
             const ambientProgress = document.querySelector('.hero-ambient-progress');
             const shiftTrack = document.getElementById('site-shift-track');
+            const glowBeam = document.getElementById('site-card-glow-beam');
 
             if (!btn || !kicker) return;
 
@@ -2593,6 +2757,11 @@
                 if (shiftTrack) {
                     shiftTrack.style.width = "65%";
                     shiftTrack.style.opacity = "1";
+                }
+
+                // Hide glowing border beam when signed in
+                if (glowBeam) {
+                    glowBeam.classList.add('is-signed-in-hidden');
                 }
             } else {
                 // Bolder text above Lugarno: "Not Signed In"
@@ -2617,6 +2786,11 @@
                 if (shiftTrack) {
                     shiftTrack.style.width = "0%";
                     shiftTrack.style.opacity = "0.3";
+                }
+
+                // Show and animate glowing border beam when not signed in
+                if (glowBeam) {
+                    glowBeam.classList.remove('is-signed-in-hidden');
                 }
             }
 
