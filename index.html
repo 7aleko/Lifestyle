@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 sm:bg-slate-950">
+<html lang="en" class="bg-slate-950 sm:bg-slate-950">
 <head>
     <meta charset="UTF-8">
-    <!-- Mobile viewport configured with zoom locked per app requirement -->
+    <!-- Mobile viewport configured with zoom locked & viewport-fit=cover so content extends into the iOS status bar -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta id="app-theme-color" name="theme-color" content="#020617">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Lifestyle Dashboard & Roster - Apple-esque UI</title>
+    <title>Lifestyle Dashboard</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -77,6 +77,8 @@
 
         /* ================= MOBILE-NATIVE BASELINE ================= */
         html {
+            margin: 0;
+            padding: 0;
             background-color: #020617;        /* matches initial preloader at y=0 so status bar starts seamless dark */
             -webkit-tap-highlight-color: transparent;
             -webkit-text-size-adjust: 100%;   /* no font inflation in landscape */
@@ -84,7 +86,7 @@
             transition: background-color 0.35s ease;
         }
         @media (min-width: 640px) {
-            html { background-color: #020617; }
+            html, body { background-color: #020617 !important; }
         }
         html.drawer-open, body.drawer-open {
             background-color: #022c22 !important;
@@ -93,12 +95,28 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;       /* no 300ms double-tap-zoom delay */
         }
+        /* Allow content to bleed behind the top status bar with no unwanted bottom padding */
         body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: hidden;
             overscroll-behavior: none;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
             transition: background-color 0.35s ease;
+        }
+        /* Custom header sits safely below time/battery while overlapping the status bar region at margin-top: 0 */
+        .custom-header, #app-top-bar {
+            margin-top: 0;
+            padding-top: max(0.75rem, calc(env(safe-area-inset-top, 0px) + 0.35rem));
+            transition: background-color 0.32s var(--ease-out), background 0.32s var(--ease-out), border-color 0.32s var(--ease-out), box-shadow 0.32s var(--ease-out), opacity 0.25s var(--ease-drawer);
+        }
+        /* Ensure no awkward bottom bar padding or white gap */
+        .content-container, #app-container, #app-main-stage {
+            padding-bottom: 0;
         }
         /* Controls aren't content: long-press shouldn't select labels or pop the callout */
         button, [role="button"], [role="tab"], .nav-btn {
@@ -829,10 +847,14 @@
         }
 
         /* ================= 3D OFF-CANVAS SIDE DRAWER (APPLE PHYSICAL FEEL - RIGHT DRAWER) ================= */
-        #app-side-drawer {
-            transition: opacity 0.35s var(--ease-drawer), transform 0.4s var(--ease-drawer);
-            will-change: transform, opacity;
-            transform: translate3d(12px, 0, 0);
+        .side-drawer {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        min-height: 100dvh;
+        padding-top: env(safe-area-inset-top, 20px);
+        padding-bottom: env(safe-area-inset-bottom, 20px);
         }
         
         #app-side-drawer::before {
@@ -874,14 +896,22 @@
         #app-container {
             background-color: #022c22 !important;
         }
-        /* Mobile: fill the entire screen edge-to-edge, no bottom gap */
+        /* Mobile: fill the entire screen edge-to-edge with 100vw/100vh, no bottom padding or white gap */
         @media (max-width: 639px) {
-            html, body { height: 100%; margin: 0; padding: 0; }
+            html, body {
+                margin: 0;
+                padding: 0;
+                width: 100vw;
+                height: 100vh;
+                overflow-x: hidden;
+            }
             #app-container {
                 position: fixed;
                 top: 0; left: 0; right: 0; bottom: 0;
-                width: 100%;
-                height: auto; /* let top/bottom:0 fill the true screen; 100vh/100dvh fall short in iOS web-app mode */
+                margin: 0;
+                padding-bottom: 0;
+                width: 100vw;
+                height: 100vh;
             }
         }
 
@@ -1220,7 +1250,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 sm:bg-slate-950 text-gray-900 h-full sm:flex sm:justify-center sm:items-center font-sans antialiased selection:bg-brand-lime selection:text-black">
+<body class="bg-slate-950 sm:bg-slate-950 text-gray-900 sm:h-full sm:flex sm:justify-center sm:items-center font-sans antialiased selection:bg-brand-lime selection:text-black">
     
     <!-- PRELOADER -->
     <div id="preloader" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out">
@@ -1231,7 +1261,7 @@
     </div>
 
 <!-- Mobile Container Wrapper with Forest Green Background for 3D Drawer Effect -->
-<div id="app-container" class="fixed inset-0 sm:relative sm:inset-auto sm:w-full sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-[#022c22] bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 flex flex-col overflow-hidden border-0 sm:border border-slate-800/50 select-none">
+<div id="app-container" class="content-container fixed inset-0 sm:relative sm:inset-auto sm:w-full sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-[#022c22] bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 flex flex-col overflow-hidden border-0 sm:border border-slate-800/50 select-none">
 
     <!-- 3D Off-Canvas Side Navigation Drawer (Apple / Reference Design) -->
     <aside id="app-side-drawer" 
@@ -1335,13 +1365,13 @@
     <div id="drawer-layer-card" onclick="handleDrawerDismissOverlayClick(event)" role="button" aria-label="Close navigation menu" class="absolute inset-0 bg-emerald-500/[0.12] backdrop-blur-2xl rounded-[32px] border border-emerald-400/30 shadow-2xl pointer-events-none z-10 opacity-0" style="transform: translate3d(0,0,0) scale(1);"></div>
 
     <!-- Main Screen Content Stage (Transforms in 3D when drawer opens) -->
-<div id="app-main-stage" class="w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30">
+<div id="app-main-stage" class="content-container w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30">
 
         <!-- iOS Native Navigation Top Bar (Edge-to-edge under status bar with frosted glass) -->
-        <header id="app-top-bar" class="w-full bg-appBg/90 backdrop-blur-xl shrink-0 z-20 pt-3 sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all" style="padding-top: max(0.75rem, calc(env(safe-area-inset-top) + 0.35rem));">
+        <header id="app-top-bar" class="custom-header w-full bg-appBg/90 backdrop-blur-xl shrink-0 z-20 pt-3 sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all" style="margin-top: 0; padding-top: max(0.75rem, calc(env(safe-area-inset-top, 0px) + 0.35rem));">
             <div class="flex justify-between items-center py-0.5">
                 <div class="flex items-center gap-0.5">
-                    <span class="text-2xl font-black tracking-tight text-slate-900">lifestyle</span>
+                    <span id="app-top-bar-title" class="text-2xl font-black tracking-tight text-slate-900 transition-colors duration-300">lifestyle</span>
                     <span class="w-2 h-2 rounded-full bg-limeAccent inline-block ml-[2px] translate-y-2"></span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -1618,7 +1648,7 @@
 <main id="view-home" class="view-section flex-1 overflow-y-auto no-scrollbar px-5 py-2 space-y-4 pb-20">
     <!-- UPGRADED HERO CARD -->
 <!-- UPGRADED HERO CARD -->
-<div class="relative rounded-[32px] p-6 overflow-hidden backdrop-blur-2xl bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 border border-emerald-500/30 group">        <!-- Ambient Glow Orbs -->
+<div data-statusbar-surface="emerald" class="relative rounded-[32px] p-6 overflow-hidden backdrop-blur-2xl bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 border border-emerald-500/30 group">        <!-- Ambient Glow Orbs -->
         <div class="absolute -top-20 -left-20 w-64 h-64 bg-emerald-500/20 rounded-full blur-[85px] pointer-events-none"></div>
         <div class="absolute -right-16 -bottom-16 w-60 h-60 bg-blue-600/20 rounded-full blur-[80px] pointer-events-none"></div>
         
@@ -1834,7 +1864,7 @@
     </div>
 
     <!-- LEAVE ACCRUED BANNER -->
-    <div onclick="openPendingLeaveModal()" role="button" tabindex="0" aria-label="Leave Accrued: 13.9 Days. Annual and sick leave balance." class="relative z-10 rounded-[32px] p-6 backdrop-blur-2xl bg-gradient-to-br from-emerald-950 via-[#0a2218] to-slate-950 text-white shadow-apple-lg border border-emerald-500/40 hover:border-brand-lime/60 cursor-pointer transition-all group overflow-hidden">
+    <div data-statusbar-surface="emerald" onclick="openPendingLeaveModal()" role="button" tabindex="0" aria-label="Leave Accrued: 13.9 Days. Annual and sick leave balance." class="relative z-10 rounded-[32px] p-6 backdrop-blur-2xl bg-gradient-to-br from-emerald-950 via-[#0a2218] to-slate-950 text-white shadow-apple-lg border border-emerald-500/40 hover:border-brand-lime/60 cursor-pointer transition-all group overflow-hidden">
         <div class="absolute -top-16 -right-16 w-36 h-36 bg-emerald-500/25 rounded-full blur-[45px] pointer-events-none" aria-hidden="true"></div>
         <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-teal-600/20 rounded-full blur-[45px] pointer-events-none" aria-hidden="true"></div>
 
@@ -2069,7 +2099,7 @@
             </div>
             
             <!-- Modern Project Selector Card -->
-            <div class="relative rounded-[32px] p-5 bg-gradient-to-br from-slate-900 via-[#101722] to-slate-950 text-white shadow-apple-lg border border-slate-800 cursor-pointer overflow-hidden group active:scale-[0.99] transition-all" onclick="openProjectSelectorModal()">
+            <div data-statusbar-surface="slate" class="relative rounded-[32px] p-5 bg-gradient-to-br from-slate-900 via-[#101722] to-slate-950 text-white shadow-apple-lg border border-slate-800 cursor-pointer overflow-hidden group active:scale-[0.99] transition-all" onclick="openProjectSelectorModal()">
                 <div class="absolute -top-16 -right-16 w-36 h-36 bg-blue-600/20 rounded-full blur-[45px] pointer-events-none"></div>
                 <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-emerald-600/15 rounded-full blur-[45px] pointer-events-none"></div>
 
@@ -2103,7 +2133,7 @@
                 <div class="grid grid-cols-2 gap-3.5">
                     <!-- Site Diary -->
                     <!-- Schedule Button (Add inside view-sitehub grid) -->
-                    <div onclick="switchTab('schedule')" class="bg-gradient-to-br from-indigo-900 via-slate-900 to-slate-950 text-white rounded-[28px] p-5 shadow-apple border border-indigo-500/30 hover:border-indigo-400 cursor-pointer transition-all flex flex-col justify-between group active:scale-[0.98]">
+                    <div data-statusbar-surface="slate" onclick="switchTab('schedule')" class="bg-gradient-to-br from-indigo-900 via-slate-900 to-slate-950 text-white rounded-[28px] p-5 shadow-apple border border-indigo-500/30 hover:border-indigo-400 cursor-pointer transition-all flex flex-col justify-between group active:scale-[0.98]">
                         <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-indigo-400 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                             <i class="fa-solid fa-calendar-week text-xl"></i>
                         </div>
@@ -2157,7 +2187,7 @@
                     </div>
 
                     <!-- Camera Quick Capture (Full Width Apple Style Card) -->
-                    <div onclick="openCameraCaptureModal()" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white rounded-[28px] p-5 shadow-apple-lg border border-blue-500/40 hover:opacity-95 cursor-pointer transition-all flex items-center justify-between group active:scale-[0.98] col-span-2">
+                    <div data-statusbar-surface="blue" onclick="openCameraCaptureModal()" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white rounded-[28px] p-5 shadow-apple-lg border border-blue-500/40 hover:opacity-95 cursor-pointer transition-all flex items-center justify-between group active:scale-[0.98] col-span-2">
                         <div class="flex items-center space-x-4">
                             <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform shrink-0">
                                 <i class="fa-solid fa-camera text-xl"></i>
@@ -2202,6 +2232,7 @@
 
     <!-- ================= Dedicated Apple-Esque Poppy Bot AI Hero Card ================= -->
     <div id="poppy-hero-card" 
+         data-statusbar-surface="slate"
          onclick="openPoppyBotChat()" 
          class="relative z-10 rounded-[28px] p-5 bg-gradient-to-br from-slate-950 via-[#0d1624] to-slate-900 text-white shadow-apple-lg border border-slate-800/90 hover:border-slate-700/80 cursor-pointer overflow-hidden group active:scale-[0.99] transition-all">
         
@@ -2905,9 +2936,10 @@ window.addEventListener('load', () => {
             if (preloader) {
                 setTimeout(() => {
                     preloader.classList.add('fade-out');
-                    setStatusBarThemeColor('#F3F4F6', false);
+                    syncDynamicStatusBar();
                     setTimeout(() => {
                         preloader.remove();
+                        syncDynamicStatusBar();
                         
                         const heroProgress = document.querySelector('.hero-ambient-progress');
                         if (heroProgress) {
@@ -2916,7 +2948,7 @@ window.addEventListener('load', () => {
                     }, 500);
                 }, 400);
             } else {
-                setStatusBarThemeColor('#F3F4F6', false);
+                syncDynamicStatusBar();
             }
         });
 
@@ -3272,12 +3304,13 @@ function switchTab(tabName) {
 
     // Smooth Apple Bezier glide + momentary expansion & color flash
     updateNavPillPosition(tabName, true);
+    requestAnimationFrame(syncDynamicStatusBar);
 
     // No toast on navigation: the pill + view change already confirm it, and a toast
     // on every tab switch trains people to ignore the toasts that matter.
 }
 
-// ================= 3D OFF-CANVAS SIDE DRAWER CONTROLS =================
+// ================= DYNAMIC IOS STATUS BAR & TOP HEADER ENGINE =================
 function setStatusBarThemeColor(color, isDark = false) {
     let themeMeta = document.getElementById('app-theme-color');
     if (!themeMeta) {
@@ -3289,11 +3322,129 @@ function setStatusBarThemeColor(color, isDark = false) {
     }
     themeMeta.setAttribute('content', color);
 
-    document.documentElement.style.backgroundColor = color;
-    if (document.body) {
-        document.body.style.backgroundColor = color;
+    if (window.innerWidth < 640) {
+        document.documentElement.style.backgroundColor = color;
+        if (document.body) {
+            document.body.style.backgroundColor = color;
+        }
     }
 }
+
+let statusBarRaf = null;
+function scheduleDynamicStatusBarSync() {
+    if (statusBarRaf) return;
+    statusBarRaf = requestAnimationFrame(() => {
+        statusBarRaf = null;
+        syncDynamicStatusBar();
+    });
+}
+
+function applyTopBarSurface(surface) {
+    const topBar = document.getElementById('app-top-bar');
+    const titleEl = document.getElementById('app-top-bar-title');
+    if (!topBar) return;
+
+    if (surface === 'emerald') {
+        topBar.style.background = 'linear-gradient(135deg, rgba(2, 44, 34, 0.94) 0%, rgba(6, 30, 20, 0.94) 60%, rgba(2, 6, 23, 0.94) 100%)';
+        topBar.style.borderColor = 'rgba(16, 185, 129, 0.25)';
+        topBar.style.boxShadow = '0 10px 24px -8px rgba(0, 0, 0, 0.35)';
+        if (titleEl) { titleEl.classList.remove('text-slate-900'); titleEl.classList.add('text-white'); }
+        setStatusBarThemeColor('#022c22', true);
+    } else if (surface === 'rain') {
+        topBar.style.background = 'linear-gradient(135deg, rgba(11, 26, 56, 0.95) 0%, rgba(12, 22, 45, 0.95) 100%)';
+        topBar.style.borderColor = 'rgba(96, 165, 250, 0.3)';
+        topBar.style.boxShadow = '0 10px 24px -8px rgba(0, 0, 0, 0.38)';
+        if (titleEl) { titleEl.classList.remove('text-slate-900'); titleEl.classList.add('text-white'); }
+        setStatusBarThemeColor('#0b1a38', true);
+    } else if (surface === 'slate') {
+        topBar.style.background = 'linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(12, 22, 45, 0.94) 100%)';
+        topBar.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        topBar.style.boxShadow = '0 10px 24px -8px rgba(0, 0, 0, 0.35)';
+        if (titleEl) { titleEl.classList.remove('text-slate-900'); titleEl.classList.add('text-white'); }
+        setStatusBarThemeColor('#0f172a', true);
+    } else if (surface === 'blue') {
+        topBar.style.background = 'linear-gradient(135deg, rgba(37, 99, 235, 0.94) 0%, rgba(67, 56, 202, 0.94) 100%)';
+        topBar.style.borderColor = 'rgba(147, 197, 253, 0.3)';
+        topBar.style.boxShadow = '0 10px 24px -8px rgba(37, 99, 235, 0.3)';
+        if (titleEl) { titleEl.classList.remove('text-slate-900'); titleEl.classList.add('text-white'); }
+        setStatusBarThemeColor('#2563eb', true);
+    } else if (surface === 'light-scrolled') {
+        topBar.style.background = 'rgba(255, 255, 255, 0.88)';
+        topBar.style.borderColor = 'rgba(15, 23, 42, 0.06)';
+        topBar.style.boxShadow = '0 6px 20px -6px rgba(15, 23, 42, 0.06)';
+        if (titleEl) { titleEl.classList.remove('text-white'); titleEl.classList.add('text-slate-900'); }
+        setStatusBarThemeColor('#ffffff', false);
+    } else {
+        // Default 'light-top': blends seamlessly with #F3F4F6 appBg
+        topBar.style.background = '';
+        topBar.style.borderColor = '';
+        topBar.style.boxShadow = '';
+        if (titleEl) { titleEl.classList.remove('text-white'); titleEl.classList.add('text-slate-900'); }
+        setStatusBarThemeColor('#F3F4F6', false);
+    }
+}
+
+function syncDynamicStatusBar() {
+    const preloader = document.getElementById('preloader');
+    if (preloader && !preloader.classList.contains('fade-out')) {
+        setStatusBarThemeColor('#020617', true);
+        return;
+    }
+
+    const container = document.getElementById('app-container');
+    if (container && container.classList.contains('drawer-open')) {
+        setStatusBarThemeColor('#022c22', true);
+        return;
+    }
+
+    const modalOverlay = document.getElementById('modal-overlay');
+    const transferOverlay = document.getElementById('tool-transfer-modal-overlay');
+    const isModalOpen = (modalOverlay && !modalOverlay.classList.contains('opacity-0')) ||
+                        (transferOverlay && !transferOverlay.classList.contains('opacity-0'));
+    if (isModalOpen) {
+        setStatusBarThemeColor('#5b5e66', true);
+        return;
+    }
+
+    const topBar = document.getElementById('app-top-bar');
+    const activeView = document.querySelector('.view-section:not(.hidden)');
+    if (!topBar || !activeView) {
+        applyTopBarSurface('light-top');
+        return;
+    }
+
+    const scrollTop = activeView.scrollTop || 0;
+    if (scrollTop <= 6) {
+        applyTopBarSurface('light-top');
+        return;
+    }
+
+    const headerBottom = topBar.getBoundingClientRect().bottom;
+    const themedCards = activeView.querySelectorAll('[data-statusbar-surface], .glass-card-today, .is-rain-mode, .glass-card-rain');
+    for (let i = 0; i < themedCards.length; i++) {
+        const card = themedCards[i];
+        const rect = card.getBoundingClientRect();
+        if (rect.top <= headerBottom + 6 && rect.bottom >= headerBottom - 10) {
+            if (card.classList.contains('is-rain-mode') || card.classList.contains('glass-card-rain')) {
+                applyTopBarSurface('rain');
+                return;
+            }
+            const explicitSurface = card.getAttribute('data-statusbar-surface');
+            if (explicitSurface) {
+                applyTopBarSurface(explicitSurface);
+                return;
+            }
+            if (card.classList.contains('glass-card-today')) {
+                applyTopBarSurface('emerald');
+                return;
+            }
+        }
+    }
+
+    applyTopBarSurface('light-scrolled');
+}
+
+// ================= 3D OFF-CANVAS SIDE DRAWER CONTROLS =================
 
 let drawerStageTimer = null;
 let isSuppressingDrawerClick = false;
@@ -3384,7 +3535,7 @@ function closeSideDrawer() {
     container.classList.add('drawer-closing');
     document.documentElement.classList.remove('drawer-open');
     document.body.classList.remove('drawer-open');
-    setStatusBarThemeColor('#F3F4F6', false);
+    syncDynamicStatusBar();
     if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
     if (drawer) drawer.setAttribute('aria-hidden', 'true');
 
@@ -3544,9 +3695,9 @@ function drawerNavigate(target) {
             document.documentElement.classList.add('drawer-open');
             document.body.classList.add('drawer-open');
         } else {
-            setStatusBarThemeColor('#F3F4F6', false);
             document.documentElement.classList.remove('drawer-open');
             document.body.classList.remove('drawer-open');
+            syncDynamicStatusBar();
         }
     }
 
@@ -3719,7 +3870,7 @@ function drawerNavigate(target) {
                     container.classList.remove('drawer-open');
                     document.documentElement.classList.remove('drawer-open');
                     document.body.classList.remove('drawer-open');
-                    setStatusBarThemeColor('#F3F4F6', false);
+                    syncDynamicStatusBar();
                     if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
                     if (drawer) drawer.setAttribute('aria-hidden', 'true');
                     stage.style.transform = '';
@@ -3748,7 +3899,7 @@ function drawerNavigate(target) {
                     container.classList.remove('drawer-open');
                     document.documentElement.classList.remove('drawer-open');
                     document.body.classList.remove('drawer-open');
-                    setStatusBarThemeColor('#F3F4F6', false);
+                    syncDynamicStatusBar();
                     if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
                     if (drawer) drawer.setAttribute('aria-hidden', 'true');
                     stage.style.transform = '';
@@ -3804,6 +3955,11 @@ function drawerNavigate(target) {
         container.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
         container.addEventListener('touchcancel', onDrawerTouchEnd, { passive: true });
     }
+
+    // Bind passive scroll listeners to all view scrollers so the top header & status bar dynamically adapt
+    document.querySelectorAll('.view-section').forEach(view => {
+        view.addEventListener('scroll', scheduleDynamicStatusBarSync, { passive: true });
+    });
 });
 
 window.addEventListener('resize', () => {
@@ -3812,6 +3968,7 @@ window.addEventListener('resize', () => {
         const activeTabName = activeTab.id.replace('tab-', '');
         updateNavPillPosition(activeTabName);
     }
+    scheduleDynamicStatusBarSync();
 });
 
         function openLiveChat() {
@@ -3850,6 +4007,7 @@ window.addEventListener('resize', () => {
             overlay.classList.remove('opacity-0', 'pointer-events-none');
             overlay.setAttribute('aria-hidden', 'false');
             content.classList.remove('translate-y-[120%]');
+            syncDynamicStatusBar();
         }
 
         function closeModal() {
@@ -3864,6 +4022,7 @@ window.addEventListener('resize', () => {
             overlay.classList.add('opacity-0', 'pointer-events-none');
             overlay.setAttribute('aria-hidden', 'true');
             content.classList.add('translate-y-[120%]');
+            syncDynamicStatusBar();
         }
 
         document.addEventListener('keydown', (e) => {
@@ -4747,6 +4906,7 @@ function openTimesheetsModal() {
 
             // 1. Smoothly update card surface styling
             surfaceEl.classList.toggle('is-rain-mode', isRain);
+            scheduleDynamicStatusBarSync();
 
             // 2. Smoothly update rain toggle button
             const toggleBtn = surfaceEl.querySelector('.roster-rain-btn');
@@ -7077,6 +7237,7 @@ function openToolTransferModal(toolId) {
         overlay.setAttribute('aria-hidden', 'false');
         requestAnimationFrame(() => {
             sheet.classList.remove('translate-y-[120%]');
+            syncDynamicStatusBar();
         });
     }
 }
@@ -7113,6 +7274,7 @@ function closeToolTransferModal() {
     overlay.classList.add('opacity-0', 'pointer-events-none');
     overlay.setAttribute('aria-hidden', 'true');
     sheet.classList.add('translate-y-[120%]');
+    syncDynamicStatusBar();
 }
 
 function renderTransferToItems() {
@@ -7605,25 +7767,5 @@ function renderNotificationsFeed(filter = 'all') {
 // Initial sync of notification counter badge
 updateNotificationBadges();
     </script>
-<script>
-// iOS home-screen mode with a translucent status bar reports a window that is shorter than the screen
-// (screen height minus the top inset) but still starts at y=0, leaving a gap at the bottom.
-// Size the app to the real screen height so it runs edge-to-edge on both ends.
-(function () {
-  function fitApp() {
-    var standalone = navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
-    var app = document.getElementById('app-container');
-    var pre = document.getElementById('preloader');
-    var phone = window.innerWidth < 640;
-    var h = (standalone && phone) ? Math.max(window.innerHeight, window.screen.height) + 'px' : '';
-    if (app) app.style.height = h;
-    if (pre) pre.style.height = h;
-  }
-  fitApp();
-  window.addEventListener('load', fitApp);
-  window.addEventListener('resize', fitApp);
-  window.addEventListener('orientationchange', function () { setTimeout(fitApp, 300); });
-})();
-</script>
 </body>
 </html>
