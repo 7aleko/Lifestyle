@@ -649,12 +649,12 @@
         #modal-content, #tool-transfer-sheet {
             /* enter: iOS spring sheet curve + guaranteed crisp light surface */
             background-color: rgba(255, 255, 255, 0.97);
-            transition: transform 0.42s var(--ease-drawer);
+            transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform;
             transform-origin: 50% 100%;
         }
         #apple-calendar-card-container {
-            transition: transform 0.35s var(--ease-drawer), opacity 0.25s var(--ease-out);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s var(--ease-out);
             will-change: transform, opacity;
             transform-origin: 50% 50%;
         }
@@ -666,10 +666,19 @@
         #modal-overlay.opacity-0 #modal-content,
         #tool-transfer-modal-overlay.opacity-0 #tool-transfer-sheet {
             /* exit: quicker, so dismissing never feels like waiting */
-            transition: transform 0.28s var(--ease-out);
+            transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
         }
         #modal-content.is-dragging, #tool-transfer-sheet.is-dragging {
             transition: none !important;
+            will-change: transform;
+        }
+        #modal-drag-zone {
+            touch-action: none;
+        }
+        #modal-content.poppy-dark-modal.is-dragging {
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.6) !important;
         }
 
         @keyframes contentFadeIn {
@@ -733,11 +742,11 @@
         @keyframes appleSubpagePushUnderlayExit {
             0% {
                 transform: translate3d(0, 0, 0) scale(1);
-                filter: brightness(1);
+                opacity: 1;
             }
             100% {
-                transform: translate3d(-28%, 0, 0) scale(0.97);
-                filter: brightness(0.91);
+                transform: translate3d(-24%, 0, 0) scale(0.97);
+                opacity: 0.88;
             }
         }
         @keyframes appleSubpageSlideAway {
@@ -745,17 +754,17 @@
                 transform: translate3d(0, 0, 0);
             }
             100% {
-                transform: translate3d(104%, 0, 0);
+                transform: translate3d(100%, 0, 0);
             }
         }
         @keyframes appleSubpagePopUnderlayEnter {
             0% {
-                transform: translate3d(-28%, 0, 0) scale(0.97);
-                filter: brightness(0.91);
+                transform: translate3d(-24%, 0, 0) scale(0.97);
+                opacity: 0.88;
             }
             100% {
                 transform: translate3d(0, 0, 0) scale(1);
-                filter: brightness(1);
+                opacity: 1;
             }
         }
 
@@ -768,7 +777,7 @@
         .view-apple-push-underlay-exit {
             z-index: 14 !important;
             animation: appleSubpagePushUnderlayExit 0.44s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
-            will-change: transform, filter;
+            will-change: transform, opacity;
         }
         .view-apple-pop-slide-away {
             z-index: 26 !important;
@@ -779,7 +788,7 @@
         .view-apple-pop-underlay-enter {
             z-index: 15 !important;
             animation: appleSubpagePopUnderlayEnter 0.43s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
-            will-change: transform, filter;
+            will-change: transform, opacity;
         }
 
         /* Apple-esque Spring Spin Animation */
@@ -5267,29 +5276,43 @@ window.addEventListener('resize', () => {
             document.getElementById('modal-body').innerHTML = htmlContent;
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
-            const appContainer = document.getElementById('app-container');
-            const stage = document.getElementById('app-main-stage');
+            if (!overlay || !content) return;
 
             // Clear any leftover drag offset so the sheet always rises from fully closed
             content.classList.remove('is-dragging');
-            content.style.transform = '';
-            content.style.transition = '';
+            content.classList.remove('translate-y-[120%]');
+            content.style.transform = 'translate3d(0, 100%, 0)';
+            content.style.transition = 'none';
+
             const bodyScroller = document.getElementById('modal-body');
             if (bodyScroller) bodyScroller.scrollTop = 0;
 
-            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.remove('pointer-events-none', 'opacity-0');
             overlay.setAttribute('aria-hidden', 'false');
-            content.classList.remove('translate-y-[120%]');
-            syncDynamicStatusBar();
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.32s ease-out';
+
+            // Double RAF guarantees frame 1 begins cleanly offscreen, animating with Apple spring curve
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    overlay.style.opacity = '1';
+                    content.style.transition = 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)';
+                    content.style.transform = 'translate3d(0, 0, 0)';
+                    syncDynamicStatusBar();
+                });
+            });
         }
 
-        function closeModal() {
+        function closeModal(fromDrag = false, startYOffset = 0, releaseVelocity = 0) {
             triggerHaptic('light');
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
+            if (!overlay || !content) return;
 
             // Reset Poppy Bot Siri Orb state and remove dark luxury modal styling
-            if (content) content.classList.remove('poppy-dark-modal');
+            if (content.classList.contains('poppy-dark-modal')) {
+                setTimeout(() => { content.classList.remove('poppy-dark-modal'); }, 300);
+            }
             if (typeof modalOrbInstance !== 'undefined' && modalOrbInstance) {
                 try { modalOrbInstance.destroy(); } catch (_) {}
                 modalOrbInstance = null;
@@ -5298,14 +5321,34 @@ window.addEventListener('resize', () => {
                 if (typeof setPoppyOrbState === 'function') setPoppyOrbState('idle');
             }
 
-            // Animate from wherever the sheet is right now (mid-drag included) down to closed
             content.classList.remove('is-dragging');
-            content.style.transition = '';
-            content.style.transform = '';
-            overlay.classList.add('opacity-0', 'pointer-events-none');
-            overlay.setAttribute('aria-hidden', 'true');
-            content.classList.add('translate-y-[120%]');
-            syncDynamicStatusBar();
+            const sheetH = content.offsetHeight || 500;
+            const exitTarget = sheetH + 50;
+
+            let duration = 0.32;
+            if (fromDrag) {
+                const remaining = Math.max(0, exitTarget - startYOffset);
+                const projectedSpeed = Math.max(releaseVelocity, 1.2);
+                duration = Math.min(Math.max(remaining / (projectedSpeed * 1000), 0.20), 0.32);
+            }
+
+            // Animate smoothly from current position off the screen (no jump / snap)
+            content.style.transition = `transform ${duration}s cubic-bezier(0.32, 0.72, 0, 1)`;
+            content.style.transform = `translate3d(0, ${exitTarget}px, 0)`;
+            overlay.style.transition = `opacity ${duration}s ease-out`;
+            overlay.style.opacity = '0';
+            overlay.classList.add('pointer-events-none');
+
+            setTimeout(() => {
+                overlay.classList.add('opacity-0');
+                overlay.setAttribute('aria-hidden', 'true');
+                content.classList.add('translate-y-[120%]');
+                content.style.transition = '';
+                content.style.transform = '';
+                overlay.style.opacity = '';
+                overlay.style.transition = '';
+                syncDynamicStatusBar();
+            }, duration * 1000 + 20);
         }
 
         document.addEventListener('keydown', (e) => {
@@ -5323,92 +5366,139 @@ window.addEventListener('resize', () => {
                 });
             }
 
-            // iOS Native Sheet Drag-to-Dismiss: 1:1 tracking, velocity-aware release,
-            // rubber-band resistance when pulled upward past the top, interactive stage interpolation
+            // High-Performance Apple Bottom Sheet Drag-to-Dismiss
+            // 120fps rAF batching, velocity momentum release, subpixel rubberband past top, zero choppiness
             if (content) {
-                const DRAG_SLOP = 6;           // px before we commit to dragging the sheet
+                const DRAG_SLOP = 6;           // px before dragging commits
                 const DISMISS_DISTANCE = 0.22; // fraction of sheet height
-                const DISMISS_VELOCITY = 0.45; // px/ms, a quick flick is enough on its own
+                const DISMISS_VELOCITY = 0.45; // px/ms flick threshold
                 let startY = 0;
                 let lastY = 0;
                 let lastT = 0;
                 let velocity = 0;
                 let armed = false;
                 let dragging = false;
+                let rafId = null;
+                let currentTranslate = 0;
 
-                const rubberband = (overshoot, dimension, c = 0.55) =>
+                const rubberband = (overshoot, dimension, c = 0.45) =>
                     (overshoot * dimension * c) / (dimension + c * Math.abs(overshoot));
 
-                content.addEventListener('touchstart', (e) => {
-                    if (e.touches.length > 1) return;
+                function scheduleSheetRender() {
+                    if (rafId) return;
+                    rafId = requestAnimationFrame(() => {
+                        rafId = null;
+                        content.style.transform = `translate3d(0, ${currentTranslate}px, 0)`;
+                        if (overlay) {
+                            const sheetH = content.offsetHeight || 500;
+                            const progress = Math.min(Math.max(currentTranslate / sheetH, 0), 1);
+                            overlay.style.opacity = `${Math.max(0, 1 - progress * 0.85)}`;
+                        }
+                    });
+                }
+
+                function onDragStart(clientX, clientY, target) {
                     const bodyScroller = document.getElementById('modal-body');
                     const dragZone = document.getElementById('modal-drag-zone');
-                    const touchedHandle = dragZone && dragZone.contains(e.target);
-                    const touchedHeader = !bodyScroller || !bodyScroller.contains(e.target);
+                    const touchedHandle = dragZone && dragZone.contains(target);
+                    const touchedHeader = !bodyScroller || !bodyScroller.contains(target);
                     
-                    // Always armed if touching drag handle pill or header, or if body is at top
                     armed = touchedHandle || touchedHeader || (bodyScroller && bodyScroller.scrollTop <= 0);
                     dragging = false;
-                    startY = lastY = e.touches[0].clientY;
+                    startY = lastY = clientY;
                     lastT = performance.now();
                     velocity = 0;
-                }, { passive: true });
+                    currentTranslate = 0;
+                }
 
-                content.addEventListener('touchmove', (e) => {
+                function onDragMove(clientX, clientY, e) {
                     if (!armed) return;
-                    const y = e.touches[0].clientY;
-                    const diffY = y - startY;
+                    const diffY = clientY - startY;
 
                     if (!dragging) {
                         if (diffY > DRAG_SLOP) {
                             dragging = true;
                             content.classList.add('is-dragging');
                         } else if (diffY < -DRAG_SLOP) {
-                            armed = false; // scrolling upward, pass through
+                            armed = false; // scrolling upward pass through
                             return;
                         } else {
                             return;
                         }
                     }
 
-                    // Own the gesture so the inner scroller doesn't bounce underneath the finger
-                    if (e.cancelable) e.preventDefault();
+                    if (e && e.cancelable) e.preventDefault();
 
                     const now = performance.now();
                     const dt = Math.max(1, now - lastT);
-                    velocity = 0.8 * ((y - lastY) / dt) + 0.2 * velocity; // smoothed px/ms
-                    lastY = y;
+                    velocity = 0.8 * ((clientY - lastY) / dt) + 0.2 * velocity;
+                    lastY = clientY;
                     lastT = now;
 
                     const offset = diffY - DRAG_SLOP;
-                    const translate = offset >= 0
+                    currentTranslate = offset >= 0
                         ? offset
-                        : rubberband(offset, content.offsetHeight);
-                    content.style.transform = `translate3d(0, ${translate}px, 0)`;
-                }, { passive: false });
+                        : rubberband(offset, content.offsetHeight || 500);
+                    scheduleSheetRender();
+                }
 
-                const release = () => {
+                function onDragEnd() {
                     if (!dragging) { armed = false; return; }
                     dragging = false;
                     armed = false;
-                    content.classList.remove('is-dragging');
+                    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
 
+                    content.classList.remove('is-dragging');
                     const offset = lastY - startY - DRAG_SLOP;
+                    const sheetH = content.offsetHeight || 500;
                     const shouldDismiss =
                         velocity > DISMISS_VELOCITY ||
-                        (offset > content.offsetHeight * DISMISS_DISTANCE && velocity > -0.1);
+                        (offset > sheetH * DISMISS_DISTANCE && velocity > -0.15);
 
                     if (shouldDismiss) {
-                        closeModal();
+                        closeModal(true, currentTranslate, velocity);
                     } else {
-                        // Settle back with the Apple spring curve: critically damped, smooth settle
-                        content.style.transition = 'transform 0.4s var(--ease-drawer)';
-                        content.style.transform = '';
-                        setTimeout(() => { if (!dragging) content.style.transition = ''; }, 420);
+                        // Settle back up with critical damped Apple spring
+                        content.style.transition = 'transform 0.38s cubic-bezier(0.16, 1, 0.3, 1)';
+                        content.style.transform = 'translate3d(0, 0, 0)';
+                        if (overlay) {
+                            overlay.style.transition = 'opacity 0.32s ease-out';
+                            overlay.style.opacity = '1';
+                        }
+                        setTimeout(() => {
+                            if (!dragging) {
+                                content.style.transition = '';
+                                content.style.transform = '';
+                                if (overlay) overlay.style.opacity = '';
+                            }
+                        }, 380);
                     }
-                };
-                content.addEventListener('touchend', release, { passive: true });
-                content.addEventListener('touchcancel', release, { passive: true });
+                }
+
+                // Touch Listeners
+                content.addEventListener('touchstart', (e) => {
+                    if (e.touches.length > 1) return;
+                    onDragStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+                }, { passive: true });
+
+                content.addEventListener('touchmove', (e) => {
+                    onDragMove(e.touches[0].clientX, e.touches[0].clientY, e);
+                }, { passive: false });
+
+                content.addEventListener('touchend', onDragEnd, { passive: true });
+                content.addEventListener('touchcancel', onDragEnd, { passive: true });
+
+                // Pointer Listeners for mouse/trackpad drag support
+                content.addEventListener('pointerdown', (e) => {
+                    if (e.pointerType === 'mouse' && e.button !== 0) return;
+                    onDragStart(e.clientX, e.clientY, e.target);
+                });
+                window.addEventListener('pointermove', (e) => {
+                    if (!armed) return;
+                    onDragMove(e.clientX, e.clientY, e);
+                });
+                window.addEventListener('pointerup', onDragEnd);
+                window.addEventListener('pointercancel', onDragEnd);
             }
         });
 
@@ -9768,8 +9858,9 @@ function openToolTransferModal(toolId) {
     const sheet = document.getElementById('tool-transfer-sheet');
     if (overlay && sheet) {
         sheet.classList.remove('is-dragging');
-        sheet.style.transform = '';
-        sheet.style.transition = '';
+        sheet.classList.remove('translate-y-[120%]');
+        sheet.style.transform = 'translate3d(0, 100%, 0)';
+        sheet.style.transition = 'none';
 
         const scroller = document.getElementById('transfer-to-scroller');
         if (scroller) {
@@ -9777,11 +9868,18 @@ function openToolTransferModal(toolId) {
             updateTransferToItemStyles(currentTransferToIndex);
         }
 
-        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.remove('pointer-events-none', 'opacity-0');
         overlay.setAttribute('aria-hidden', 'false');
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.32s ease-out';
+
         requestAnimationFrame(() => {
-            sheet.classList.remove('translate-y-[120%]');
-            syncDynamicStatusBar();
+            requestAnimationFrame(() => {
+                overlay.style.opacity = '1';
+                sheet.style.transition = 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)';
+                sheet.style.transform = 'translate3d(0, 0, 0)';
+                syncDynamicStatusBar();
+            });
         });
     }
 }
@@ -9809,19 +9907,39 @@ function onTransferQuantityChange(val) {
     updateTransferConfirmButtonLabel();
 }
 
-function closeToolTransferModal() {
+function closeToolTransferModal(fromDrag = false, startYOffset = 0, releaseVelocity = 0) {
     triggerHaptic('light');
     const overlay = document.getElementById('tool-transfer-modal-overlay');
     const sheet = document.getElementById('tool-transfer-sheet');
     if (!overlay || !sheet) return;
 
     sheet.classList.remove('is-dragging');
-    sheet.style.transition = '';
-    sheet.style.transform = '';
-    overlay.classList.add('opacity-0', 'pointer-events-none');
-    overlay.setAttribute('aria-hidden', 'true');
-    sheet.classList.add('translate-y-[120%]');
-    syncDynamicStatusBar();
+    const sheetH = sheet.offsetHeight || 500;
+    const exitTarget = sheetH + 50;
+
+    let duration = 0.32;
+    if (fromDrag) {
+        const remaining = Math.max(0, exitTarget - startYOffset);
+        const projectedSpeed = Math.max(releaseVelocity, 1.2);
+        duration = Math.min(Math.max(remaining / (projectedSpeed * 1000), 0.20), 0.32);
+    }
+
+    sheet.style.transition = `transform ${duration}s cubic-bezier(0.32, 0.72, 0, 1)`;
+    sheet.style.transform = `translate3d(0, ${exitTarget}px, 0)`;
+    overlay.style.transition = `opacity ${duration}s ease-out`;
+    overlay.style.opacity = '0';
+    overlay.classList.add('pointer-events-none');
+
+    setTimeout(() => {
+        overlay.classList.add('opacity-0');
+        overlay.setAttribute('aria-hidden', 'true');
+        sheet.classList.add('translate-y-[120%]');
+        sheet.style.transition = '';
+        sheet.style.transform = '';
+        overlay.style.opacity = '';
+        overlay.style.transition = '';
+        syncDynamicStatusBar();
+    }, duration * 1000 + 20);
 }
 
 function renderTransferToItems() {
@@ -9990,69 +10108,135 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Touch swipe down on handle / header (or at top of body scroller) to dismiss
+    // High-Performance Apple Bottom Sheet Drag-to-Dismiss for Tool Transfer Modal
     if (transferSheet) {
+        const DRAG_SLOP = 6;
+        const DISMISS_DISTANCE = 0.22;
+        const DISMISS_VELOCITY = 0.45;
         let startY = 0;
         let lastY = 0;
+        let lastT = 0;
+        let velocity = 0;
         let armed = false;
         let isDragging = false;
+        let rafId = null;
+        let currentTranslate = 0;
 
-        transferSheet.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 1) return;
-            const target = e.target;
-            if (target.closest('#transfer-to-scroller')) return; // Don't hijack roller touches
+        const rubberband = (overshoot, dimension, c = 0.45) =>
+            (overshoot * dimension * c) / (dimension + c * Math.abs(overshoot));
 
+        function scheduleTransferSheetRender() {
+            if (rafId) return;
+            rafId = requestAnimationFrame(() => {
+                rafId = null;
+                transferSheet.style.transform = `translate3d(0, ${currentTranslate}px, 0)`;
+                if (transferOverlay) {
+                    const sheetH = transferSheet.offsetHeight || 500;
+                    const progress = Math.min(Math.max(currentTranslate / sheetH, 0), 1);
+                    transferOverlay.style.opacity = `${Math.max(0, 1 - progress * 0.85)}`;
+                }
+            });
+        }
+
+        function onTransferDragStart(clientX, clientY, target) {
+            if (target && target.closest('#transfer-to-scroller')) return;
             const bodyScroller = document.getElementById('transfer-body-scroller');
             const touchedHeaderOrHandle = !bodyScroller || !bodyScroller.contains(target);
             armed = touchedHeaderOrHandle || (bodyScroller && bodyScroller.scrollTop <= 0);
             isDragging = false;
-            startY = lastY = e.touches[0].clientY;
-        }, { passive: true });
+            startY = lastY = clientY;
+            lastT = performance.now();
+            velocity = 0;
+            currentTranslate = 0;
+        }
 
-        transferSheet.addEventListener('touchmove', (e) => {
+        function onTransferDragMove(clientX, clientY, e) {
             if (!armed) return;
-            const currentY = e.touches[0].clientY;
-            const diffY = currentY - startY;
+            const diffY = clientY - startY;
 
             if (!isDragging) {
-                if (diffY > 8) {
+                if (diffY > DRAG_SLOP) {
                     isDragging = true;
                     transferSheet.classList.add('is-dragging');
-                } else if (diffY < -8) {
-                    armed = false; // scrolling upward inside sheet
+                } else if (diffY < -DRAG_SLOP) {
+                    armed = false;
                     return;
                 } else {
                     return;
                 }
             }
 
-            lastY = currentY;
-            if (diffY > 0) {
-                transferSheet.style.transform = `translate3d(0, ${diffY}px, 0)`;
-            }
-        }, { passive: true });
+            if (e && e.cancelable) e.preventDefault();
 
-        const endDrag = (e) => {
+            const now = performance.now();
+            const dt = Math.max(1, now - lastT);
+            velocity = 0.8 * ((clientY - lastY) / dt) + 0.2 * velocity;
+            lastY = clientY;
+            lastT = now;
+
+            const offset = diffY - DRAG_SLOP;
+            currentTranslate = offset >= 0
+                ? offset
+                : rubberband(offset, transferSheet.offsetHeight || 500);
+            scheduleTransferSheetRender();
+        }
+
+        function onTransferDragEnd() {
             if (!isDragging) { armed = false; return; }
             isDragging = false;
             armed = false;
+            if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+
             transferSheet.classList.remove('is-dragging');
-            const currentY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : lastY;
-            const diffY = currentY - startY;
+            const offset = lastY - startY - DRAG_SLOP;
+            const sheetH = transferSheet.offsetHeight || 500;
+            const shouldDismiss =
+                velocity > DISMISS_VELOCITY ||
+                (offset > sheetH * DISMISS_DISTANCE && velocity > -0.15);
 
-            if (diffY > 90) {
-                closeToolTransferModal();
+            if (shouldDismiss) {
+                closeToolTransferModal(true, currentTranslate, velocity);
             } else {
-                transferSheet.style.transition = 'transform 0.35s var(--ease-drawer)';
-                transferSheet.style.transform = '';
+                transferSheet.style.transition = 'transform 0.38s cubic-bezier(0.16, 1, 0.3, 1)';
+                transferSheet.style.transform = 'translate3d(0, 0, 0)';
+                if (transferOverlay) {
+                    transferOverlay.style.transition = 'opacity 0.32s ease-out';
+                    transferOverlay.style.opacity = '1';
+                }
                 setTimeout(() => {
-                    transferSheet.style.transition = '';
-                }, 360);
+                    if (!isDragging) {
+                        transferSheet.style.transition = '';
+                        transferSheet.style.transform = '';
+                        if (transferOverlay) transferOverlay.style.opacity = '';
+                    }
+                }, 380);
             }
-        };
+        }
 
-        transferSheet.addEventListener('touchend', endDrag, { passive: true });
-        transferSheet.addEventListener('touchcancel', endDrag, { passive: true });
+        // Touch Listeners
+        transferSheet.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) return;
+            onTransferDragStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+        }, { passive: true });
+
+        transferSheet.addEventListener('touchmove', (e) => {
+            onTransferDragMove(e.touches[0].clientX, e.touches[0].clientY, e);
+        }, { passive: false });
+
+        transferSheet.addEventListener('touchend', onTransferDragEnd, { passive: true });
+        transferSheet.addEventListener('touchcancel', onTransferDragEnd, { passive: true });
+
+        // Pointer Listeners for mouse/trackpad drag support
+        transferSheet.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            onTransferDragStart(e.clientX, e.clientY, e.target);
+        });
+        window.addEventListener('pointermove', (e) => {
+            if (!armed) return;
+            onTransferDragMove(e.clientX, e.clientY, e);
+        });
+        window.addEventListener('pointerup', onTransferDragEnd);
+        window.addEventListener('pointercancel', onTransferDragEnd);
     }
 });
 
