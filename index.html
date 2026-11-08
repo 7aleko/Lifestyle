@@ -4393,7 +4393,12 @@ function drawerNavigate(target) {
     // =========================================================================
     function createAssistantOrb(canvas, options = {}) {
         if (!canvas) return null;
-        const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
+        const gl = canvas.getContext('webgl', { 
+            alpha: true, 
+            premultipliedAlpha: true, 
+            antialias: true,
+            powerPreference: 'high-performance'
+        });
         if (!gl) {
             console.error('WebGL not supported');
             return null;
@@ -4403,7 +4408,7 @@ function drawerNavigate(target) {
             state: options.state || 'idle', // 'idle' | 'listening' | 'thinking'
             speed: options.speed ?? 0.8,
             creaseSharpness: options.creaseSharpness ?? 0.90,
-            scale: options.scale ?? 1.4,
+            scale: options.scale ?? 1.15,
             whiteIntensity: options.whiteIntensity ?? 0.35,
             colors: options.colors || {
                 c0: [0.01, 0.06, 0.36], // Deep Sapphire Pocket (#030f5c)
@@ -4467,10 +4472,11 @@ function drawerNavigate(target) {
                 vec2 p = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
                 float r = length(p);
 
-                float radius = 0.94;
-                if (r > radius) {
-                    gl_FragColor = vec4(0.0);
-                    return;
+                float radius = 0.93;
+                float pixelDelta = 2.0 / min(u_resolution.x, u_resolution.y);
+                float alpha = smoothstep(radius, radius - pixelDelta * 1.75, r);
+                if (alpha <= 0.0) {
+                    discard;
                 }
 
                 float z = sqrt(max(0.0, radius * radius - r * r));
@@ -4499,10 +4505,10 @@ function drawerNavigate(target) {
                 float n1 = cloudFBM(q + warp * 1.65 - vec3(0.0, t * 0.32, 0.0));
                 float n2 = cloudFBM(q * 1.15 - warp * 1.25 + vec3(t * 0.22, 0.0, -t * 0.28));
 
-                float equatorialBias = 1.0 - pow(abs(normal.y - 0.05), 1.45) * 0.95;
-                float cloudDensity = smoothstep(0.22, 0.70, n1 * 0.78 + equatorialBias * 0.44);
+                float latitudeBlend = 1.0 - abs(normal.y) * 0.35;
+                float cloudDensity = smoothstep(0.18, 0.72, n1 * 0.85 + latitudeBlend * 0.25);
 
-                float waveDiff1 = (n1 - n2) + normal.y * 0.20;
+                float waveDiff1 = (n1 - n2) + normal.y * 0.15;
                 float waveDiff2 = (warp.x - warp.y) * 0.80 - 0.06;
 
                 float crease1 = exp(-abs(waveDiff1) * 18.0) * smoothstep(0.12, 0.70, n1);
@@ -4514,24 +4520,24 @@ function drawerNavigate(target) {
 
                 vec3 col = u_color0;
                 col = mix(col, u_color1, smoothstep(0.10, 0.48, cloudDensity + totalHalo * 0.45));
-                col = mix(col, u_color2, smoothstep(0.32, 0.76, cloudDensity));
+                col = mix(col, u_color2, smoothstep(0.30, 0.75, cloudDensity));
 
-                float innerCloudGlow = smoothstep(0.62, 0.96, cloudDensity * n1 * 1.35);
+                float innerCloudGlow = smoothstep(0.60, 0.95, cloudDensity * n1 * 1.35);
                 col = mix(col, u_color3, innerCloudGlow * 0.75 * u_whiteAmount);
 
                 col = mix(col, u_color2, clamp(totalHalo, 0.0, 1.0) * 0.65);
                 col += mix(u_color2, u_color3, clamp(u_whiteAmount, 0.0, 1.0)) * totalCrease * (0.55 + 0.60 * u_whiteAmount);
 
-                float fresnel = pow(1.0 - max(normal.z, 0.0), 2.2);
-                vec3 rimColor = mix(u_color2, u_color3, 0.45 * u_whiteAmount);
-                col = mix(col, rimColor, fresnel * 0.68);
+                float fresnel = pow(1.0 - max(normal.z, 0.0), 2.8);
+                vec3 rimColor = mix(u_color2, u_color3, 0.65);
+                col = mix(col, rimColor, fresnel * 0.62);
 
-                vec3 lightDir = normalize(vec3(-0.4, 0.55, 0.75));
-                float spec = pow(max(dot(normal, lightDir), 0.0), 24.0) * 0.25 * u_glassGlare * (0.4 + 0.6 * u_whiteAmount);
+                vec3 lightDir = normalize(vec3(-0.35, 0.48, 0.80));
+                float spec = pow(max(dot(normal, lightDir), 0.0), 26.0) * 0.28 * u_glassGlare * (0.4 + 0.6 * u_whiteAmount);
                 col += u_color3 * spec;
 
-                float alpha = smoothstep(radius, radius - 0.018, r);
-                gl_FragColor = vec4(col, alpha);
+                // Hardware-accelerated premultiplied alpha for clean, halo-free iOS WebKit compositing
+                gl_FragColor = vec4(col * alpha, alpha);
             }
         `;
 
@@ -4579,6 +4585,17 @@ function drawerNavigate(target) {
             if (isDestroyed) return;
             const t = (performance.now() - start) * 0.001;
             const stateVal = config.state === 'thinking' ? 2.0 : (config.state === 'listening' ? 1.0 : 0.0);
+
+            // High-DPI Retina resolution sync (auto-adapts up to 3x on mobile OLED / Super Retina displays)
+            const dpr = Math.min(window.devicePixelRatio || 1, 3);
+            const displayW = canvas.clientWidth || 180;
+            const displayH = canvas.clientHeight || 180;
+            const targetW = Math.round(displayW * dpr);
+            const targetH = Math.round(displayH * dpr);
+            if (targetW > 0 && targetH > 0 && (canvas.width !== targetW || canvas.height !== targetH)) {
+                canvas.width = targetW;
+                canvas.height = targetH;
+            }
 
             gl.viewport(0, 0, canvas.width, canvas.height);
             gl.clearColor(0, 0, 0, 0);
@@ -7265,9 +7282,9 @@ function openTimesheetsModal() {
                              style="background: radial-gradient(circle, rgba(204, 255, 0, 0.55) 0%, rgba(0, 240, 255, 0.40) 45%, rgba(16, 185, 129, 0.22) 70%, transparent 88%); filter: blur(34px); animation: poppyGlowBreathing 3.5s ease-in-out infinite;"></div>
 
                         <!-- Big 3D WebGL Assistant Orb (Lush Lime-Green & Emerald-Cyan) -->
-                        <div class="relative w-48 h-44 flex items-center justify-center mb-1 overflow-visible">
+                        <div class="relative w-52 h-52 flex items-center justify-center mb-1 overflow-visible">
                             <div class="siri-caustic-floor"></div>
-                            <canvas id="modal-poppy-orb-canvas" width="280" height="280" class="w-[180px] h-[180px] pointer-events-none relative z-10 block"></canvas>
+                            <canvas id="modal-poppy-orb-canvas" width="540" height="540" class="w-[190px] h-[190px] pointer-events-none relative z-10 block rounded-full"></canvas>
                         </div>
 
                         <!-- Apple SF Pro Typography & Identity -->
@@ -7359,10 +7376,10 @@ function openTimesheetsModal() {
                 }
                 modalOrbInstance = createAssistantOrb(modalCanvas, {
                     state: 'listening',
-                    speed: 0.95,
-                    creaseSharpness: 0.92,
-                    scale: 1.35,
-                    whiteIntensity: 0.45
+                    speed: 0.85,
+                    creaseSharpness: 0.90,
+                    scale: 1.15,
+                    whiteIntensity: 0.35
                 });
             }
         }
