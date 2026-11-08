@@ -91,7 +91,8 @@
             html, body { background-color: #020617 !important; }
         }
         html.drawer-open, body.drawer-open {
-            background-color: #022c22 !important;
+            background-color: #064e3b !important;
+            background: radial-gradient(ellipse 110% 85% at 85% 0%, rgba(16, 185, 129, 0.45) 0%, rgba(4, 60, 44, 0.8) 42%, #022c22 75%, #011d16 100%) !important;
         }
         * {
             -webkit-tap-highlight-color: transparent;
@@ -1134,7 +1135,6 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 95% 70% at 85% 0%, rgba(16, 185, 129, 0.4) 0%, rgba(2, 44, 34, 0.8) 55%, transparent 100%);
             pointer-events: none;
             z-index: 0;
         }
@@ -1167,6 +1167,7 @@
         }
 
         #app-container {
+            background: radial-gradient(ellipse 110% 85% at 85% 0%, rgba(16, 185, 129, 0.45) 0%, rgba(4, 60, 44, 0.8) 42%, #022c22 75%, #011d16 100%) !important;
             background-color: #022c22 !important;
         }
         /* Mobile: fill the entire screen edge-to-edge with 100vw/100vh, no bottom padding or white gap */
@@ -1638,7 +1639,11 @@
     </script>
 
 <!-- Mobile Container Wrapper with Forest Green Background for 3D Drawer Effect -->
-<div id="app-container" class="content-container fixed inset-0 sm:relative sm:inset-auto sm:w-full sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl bg-[#022c22] bg-gradient-to-br from-emerald-950 via-[#061e14] to-slate-950 flex flex-col overflow-hidden border-0 sm:border border-slate-800/50 select-none">
+<div id="app-container" class="content-container fixed inset-0 sm:relative sm:inset-auto sm:w-full sm:h-[90vh] sm:max-w-[420px] sm:max-h-[880px] sm:rounded-[48px] sm:shadow-2xl flex flex-col overflow-hidden border-0 sm:border border-slate-800/50 select-none">
+
+    <!-- Seamless Full-Bleed Ambient Glow Orbs for 3D Drawer (Flows behind top status bar and drawer) -->
+    <div class="absolute -top-16 -right-16 w-64 h-64 bg-emerald-500/30 rounded-full blur-[80px] pointer-events-none z-0"></div>
+    <div class="absolute bottom-12 -right-8 w-52 h-52 bg-blue-600/20 rounded-full blur-[70px] pointer-events-none z-0"></div>
 
     <!-- iOS Native Navigation Top Bar (Persistent above 3D drawer stage) -->
     <header id="app-top-bar" class="custom-header w-full bg-[#F3F4F6] shrink-0 z-40 pt-3 sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all" style="margin-top: 0; padding-top: max(0.75rem, calc(env(safe-area-inset-top, 0px) + 0.35rem));">
@@ -3132,23 +3137,20 @@
                 <!-- Scrollable Modal Content (iOS Grouped Inset Stack) -->
                 <div id="transfer-body-scroller" class="relative z-10 flex-1 overflow-y-auto no-scrollbar px-4 sm:px-5 pb-2 space-y-2.5">
                     
-                    <!-- 1. Apple Inset Equipment Summary Card -->
-                    <div id="transfer-hero-card" class="relative overflow-hidden rounded-[20px] p-3.5 bg-white text-slate-900 border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300">
-                        <div id="transfer-hero-orb" class="absolute -top-8 -right-8 w-28 h-28 bg-slate-200/30 rounded-full blur-[24px] pointer-events-none"></div>
-                        <div class="relative z-10 flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-3 min-w-0">
-                                <div id="transfer-tool-icon-box" class="w-11 h-11 rounded-[14px] bg-slate-100 border border-slate-200/80 text-slate-800 flex items-center justify-center text-base shrink-0">
-                                    <i id="transfer-tool-icon" class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <h4 id="transfer-tool-name" class="text-[15px] font-black text-slate-900 tracking-tight truncate leading-snug">Equipment</h4>
-                                    <p id="transfer-tool-meta" class="text-xs text-slate-500 font-semibold truncate mt-0.5">Category • Location</p>
-                                </div>
+                    <!-- 1. Apple Glassmorphic Equipment Summary Card -->
+                    <div id="transfer-hero-card" class="relative overflow-hidden rounded-[24px] p-4 bg-white/75 backdrop-blur-2xl text-slate-900 border border-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.06),inset_0_1px_1.5px_rgba(255,255,255,0.95)] transition-all duration-300">
+                        <div id="transfer-hero-orb" class="absolute -top-10 -right-10 w-32 h-32 bg-slate-200/40 rounded-full blur-[32px] pointer-events-none transition-colors duration-500"></div>
+                        <div class="relative z-10 flex items-center gap-3.5 min-w-0">
+                            <div id="transfer-tool-icon-box" class="w-12 h-12 rounded-[16px] bg-white/85 backdrop-blur-md border border-white/90 text-slate-900 flex items-center justify-center text-lg shrink-0 shadow-[0_2px_8px_rgba(15,23,42,0.06),inset_0_1px_1px_rgba(255,255,255,1)]">
+                                <i id="transfer-tool-icon" class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
                             </div>
-                            <span id="transfer-tool-status" class="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-tight bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0">
-                                Available
-                            </span>
+                            <div class="min-w-0 flex-1">
+                                <h4 id="transfer-tool-name" class="text-[17px] sm:text-[18px] font-black text-slate-900 tracking-tight truncate leading-tight">Equipment</h4>
+                            </div>
                         </div>
+                        <!-- Hidden state anchors for JS compatibility -->
+                        <span id="transfer-tool-status" class="hidden" aria-hidden="true"></span>
+                        <span id="transfer-tool-meta" class="hidden" aria-hidden="true"></span>
                     </div>
 
                     <!-- Contextual Status Notice Banner (Shown for "Service" Workshop Holds) -->
@@ -3164,47 +3166,47 @@
                         </div>
                     </div>
 
-                    <!-- 2. Unified Apple Inset Route Picker Card (From -> To) -->
-                    <div id="transfer-route-wrapper" class="bg-white rounded-[22px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden transition-opacity duration-300">
-                        
-                        <!-- Integrated Column Headers -->
-                        <div class="grid grid-cols-2 items-center px-3.5 py-2.5 bg-slate-50/80 border-b border-slate-200/60">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" aria-hidden="true"></span>
-                                <span class="text-sm sm:text-base font-black text-slate-700 tracking-tight">From</span>
-                            </div>
-                            <div class="flex items-center gap-2 pl-2">
-                                <span id="transfer-to-dot" class="w-2.5 h-2.5 rounded-full bg-slate-900 shrink-0" aria-hidden="true"></span>
-                                <span id="transfer-to-header-label" class="text-sm sm:text-base font-black text-slate-900 tracking-tight">To Site</span>
-                            </div>
+                    <!-- Floating Route Headers: From (Before) & Transfer To / Request For (After) -->
+                    <div id="transfer-floating-headers" class="relative grid grid-cols-2 items-center px-3 sm:px-4 pt-1.5 pb-0.5 select-none transition-opacity duration-300">
+                        <!-- Left: From (Before) -->
+                        <div class="flex items-center pr-3">
+                            <span class="text-sm sm:text-base font-black text-slate-800 tracking-tight">From</span>
+                            <span id="transfer-from-dot" class="hidden" aria-hidden="true"></span>
                         </div>
 
+                        <!-- Center Dividing Line sitting directly above the arrow -->
+                        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-px h-4 bg-slate-300/80 rounded-full pointer-events-none" aria-hidden="true"></div>
+
+                        <!-- Right: Request / Transfer To (After) -->
+                        <div class="flex items-center pl-3">
+                            <span id="transfer-to-header-label" class="text-sm sm:text-base font-black text-slate-900 tracking-tight">Transfer To</span>
+                            <span id="transfer-to-dot" class="hidden" aria-hidden="true"></span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Apple Route Picker Stage (From -> To Selection) -->
+                    <div id="transfer-route-wrapper" class="relative bg-white/75 backdrop-blur-xl rounded-[24px] border border-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.05),inset_0_1px_1.5px_rgba(255,255,255,0.95)] overflow-hidden transition-opacity duration-300">
                         <!-- Dual Wheel / Column Selection Stage -->
-                        <div class="relative bg-white h-[176px] overflow-hidden">
+                        <div class="relative bg-white/60 h-[220px] overflow-hidden">
                             
                             <!-- Subtle Ambient Tint Behind Active Selection -->
-                            <div id="transfer-wheel-glow" class="absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-slate-200/35 rounded-full blur-2xl pointer-events-none"></div>
+                            <div id="transfer-wheel-glow" class="absolute top-1/2 right-4 -translate-y-1/2 w-32 h-24 bg-slate-200/35 rounded-full blur-2xl pointer-events-none"></div>
 
                             <!-- Central iOS Picker Selection Band (Clean neutral Apple selection glass) -->
-                            <div class="absolute top-[42px] left-2.5 right-2.5 h-[92px] bg-slate-100/75 border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_2px_10px_rgba(15,23,42,0.03),inset_0_1px_0_rgba(255,255,255,0.9)] z-0 flex items-center justify-center">
-                                <!-- Directional Arrow Badge pointing from From to To -->
-                                <div id="transfer-center-arrow" class="w-7 h-7 rounded-full bg-slate-900 text-brand-lime border-2 border-white flex items-center justify-center text-[11px] shadow-sm" aria-hidden="true">
-                                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                                </div>
-                            </div>
+                            <div class="absolute top-[54px] left-2.5 right-2.5 h-[112px] bg-slate-100/75 border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_2px_10px_rgba(15,23,42,0.03),inset_0_1px_0_rgba(255,255,255,0.9)] z-0"></div>
 
                             <!-- Dual Columns Grid -->
                             <div class="relative z-10 grid grid-cols-2 h-full">
                                 
                                 <!-- LEFT COLUMN: "FROM" (Locked to current site, 2-line Last log + by Name) -->
                                 <div class="flex items-center justify-center h-full px-3 border-r border-slate-200/50 select-none">
-                                    <div id="transfer-from-card" class="w-full flex flex-col items-center justify-center text-center p-1.5">
-                                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center text-sm mb-1 shadow-2xs" aria-hidden="true">
+                                    <div id="transfer-from-card" class="w-full flex flex-col items-center justify-center text-center p-2">
+                                        <div id="transfer-from-icon-box" class="w-11 h-11 rounded-2xl bg-slate-900 text-brand-lime shadow-sm flex items-center justify-center text-base mb-1.5 transition-all" aria-hidden="true">
                                             <i class="fa-solid fa-location-dot"></i>
                                         </div>
-                                        <span id="transfer-from-name" class="text-[13px] sm:text-sm font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
-                                        <span id="transfer-from-desc" class="text-[11px] text-slate-600 font-bold line-clamp-1 mt-0.5 leading-tight">Last log: 13 Oct</span>
-                                        <span id="transfer-from-by" class="text-[11px] text-slate-500 font-medium line-clamp-1 leading-tight">by David H.</span>
+                                        <span id="transfer-from-name" class="text-[15px] sm:text-[16px] font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
+                                        <span id="transfer-from-desc" class="text-[12px] sm:text-[13px] text-slate-600 font-bold line-clamp-1 mt-0.5 leading-tight">Last log: 13 Oct</span>
+                                        <span id="transfer-from-by" class="text-[12px] sm:text-[13px] text-slate-500 font-medium line-clamp-1 leading-tight">by David H.</span>
                                     </div>
                                 </div>
 
@@ -3215,14 +3217,21 @@
                                      aria-label="Destination site"
                                      onkeydown="onTransferScrollerKeydown(event)"
                                      onscroll="onTransferToScrolled(this)"
-                                     class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[42px] px-2 select-none focus:outline-none">
+                                     class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[54px] px-2 select-none focus:outline-none">
                                     <!-- Populated dynamically via JS -->
                                 </div>
                             </div>
 
+                            <!-- Directional Arrow Badge pointing from From to To (Floating ABOVE the divider line) -->
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+                                <div id="transfer-center-arrow" class="w-8 h-8 rounded-full bg-slate-900 text-brand-lime border-2 border-white flex items-center justify-center text-xs shadow-md" aria-hidden="true">
+                                    <i class="fa-solid fa-arrow-right text-[11px]"></i>
+                                </div>
+                            </div>
+
                             <!-- Top & Bottom Soft iOS Wheel Fade Masks -->
-                            <div class="absolute top-0 left-0 right-0 h-9 bg-gradient-to-b from-white via-white/70 to-transparent pointer-events-none z-20"></div>
-                            <div class="absolute bottom-0 left-0 right-0 h-9 bg-gradient-to-t from-white via-white/70 to-transparent pointer-events-none z-20"></div>
+                            <div class="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-white/95 via-white/70 to-transparent pointer-events-none z-20"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/95 via-white/70 to-transparent pointer-events-none z-20"></div>
                         </div>
                     </div>
 
@@ -4187,7 +4196,7 @@ function syncDynamicStatusBar() {
 
     const container = document.getElementById('app-container');
     if (container && container.classList.contains('drawer-open')) {
-        setStatusBarThemeColor('#022c22', true);
+        setStatusBarThemeColor('#064e3b', true);
         return;
     }
 
@@ -4310,7 +4319,7 @@ function openSideDrawer() {
     container.classList.add('drawer-open');
     document.documentElement.classList.add('drawer-open');
     document.body.classList.add('drawer-open');
-    setStatusBarThemeColor('#022c22', true);
+    setStatusBarThemeColor('#064e3b', true);
     if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
     if (drawer) drawer.setAttribute('aria-hidden', 'false');
 }
@@ -4800,7 +4809,7 @@ function drawerNavigate(target) {
         }
 
         if (p > 0.35) {
-            setStatusBarThemeColor('#022c22', true);
+            setStatusBarThemeColor('#064e3b', true);
             document.documentElement.classList.add('drawer-open');
             document.body.classList.add('drawer-open');
         } else {
@@ -4952,7 +4961,7 @@ function drawerNavigate(target) {
                     container.classList.add('drawer-open');
                     document.documentElement.classList.add('drawer-open');
                     document.body.classList.add('drawer-open');
-                    setStatusBarThemeColor('#022c22', true);
+                    setStatusBarThemeColor('#064e3b', true);
                     if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
                     if (drawer) drawer.setAttribute('aria-hidden', 'false');
                     // Clear overrides to let CSS class hold state
@@ -5034,7 +5043,7 @@ function drawerNavigate(target) {
                     container.classList.add('drawer-open');
                     document.documentElement.classList.add('drawer-open');
                     document.body.classList.add('drawer-open');
-                    setStatusBarThemeColor('#022c22', true);
+                    setStatusBarThemeColor('#064e3b', true);
                     if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
                     if (drawer) drawer.setAttribute('aria-hidden', 'false');
                     stage.style.transform = '';
@@ -5289,13 +5298,10 @@ window.addEventListener('resize', () => {
 
             overlay.classList.remove('pointer-events-none', 'opacity-0');
             overlay.setAttribute('aria-hidden', 'false');
-            overlay.style.opacity = '0';
-            overlay.style.transition = 'opacity 0.32s ease-out';
 
             // Double RAF guarantees frame 1 begins cleanly offscreen, animating with Apple spring curve
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    overlay.style.opacity = '1';
                     content.style.transition = 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)';
                     content.style.transform = 'translate3d(0, 0, 0)';
                     syncDynamicStatusBar();
@@ -5332,21 +5338,16 @@ window.addEventListener('resize', () => {
                 duration = Math.min(Math.max(remaining / (projectedSpeed * 1000), 0.20), 0.32);
             }
 
-            // Animate smoothly from current position off the screen (no jump / snap)
+            // Animate smoothly from current position off the screen (pure transform, no opacity fade out on sheet)
             content.style.transition = `transform ${duration}s cubic-bezier(0.32, 0.72, 0, 1)`;
             content.style.transform = `translate3d(0, ${exitTarget}px, 0)`;
-            overlay.style.transition = `opacity ${duration}s ease-out`;
-            overlay.style.opacity = '0';
-            overlay.classList.add('pointer-events-none');
+            overlay.classList.add('pointer-events-none', 'opacity-0');
+            overlay.setAttribute('aria-hidden', 'true');
 
             setTimeout(() => {
-                overlay.classList.add('opacity-0');
-                overlay.setAttribute('aria-hidden', 'true');
                 content.classList.add('translate-y-[120%]');
                 content.style.transition = '';
                 content.style.transform = '';
-                overlay.style.opacity = '';
-                overlay.style.transition = '';
                 syncDynamicStatusBar();
             }, duration * 1000 + 20);
         }
@@ -5367,7 +5368,7 @@ window.addEventListener('resize', () => {
             }
 
             // High-Performance Apple Bottom Sheet Drag-to-Dismiss
-            // 120fps rAF batching, velocity momentum release, subpixel rubberband past top, zero choppiness
+            // 120fps rAF batching, velocity momentum release, subpixel rubberband past top, zero choppiness, pure transform
             if (content) {
                 const DRAG_SLOP = 6;           // px before dragging commits
                 const DISMISS_DISTANCE = 0.22; // fraction of sheet height
@@ -5389,11 +5390,6 @@ window.addEventListener('resize', () => {
                     rafId = requestAnimationFrame(() => {
                         rafId = null;
                         content.style.transform = `translate3d(0, ${currentTranslate}px, 0)`;
-                        if (overlay) {
-                            const sheetH = content.offsetHeight || 500;
-                            const progress = Math.min(Math.max(currentTranslate / sheetH, 0), 1);
-                            overlay.style.opacity = `${Math.max(0, 1 - progress * 0.85)}`;
-                        }
                     });
                 }
 
@@ -5458,18 +5454,13 @@ window.addEventListener('resize', () => {
                     if (shouldDismiss) {
                         closeModal(true, currentTranslate, velocity);
                     } else {
-                        // Settle back up with critical damped Apple spring
+                        // Settle back up with critical damped Apple spring (pure transform, no opacity fade)
                         content.style.transition = 'transform 0.38s cubic-bezier(0.16, 1, 0.3, 1)';
                         content.style.transform = 'translate3d(0, 0, 0)';
-                        if (overlay) {
-                            overlay.style.transition = 'opacity 0.32s ease-out';
-                            overlay.style.opacity = '1';
-                        }
                         setTimeout(() => {
                             if (!dragging) {
                                 content.style.transition = '';
                                 content.style.transform = '';
-                                if (overlay) overlay.style.opacity = '';
                             }
                         }, 380);
                     }
@@ -9711,33 +9702,44 @@ function openToolTransferModal(toolId) {
     const descInput = document.getElementById('transfer-input-desc');
     const confirmBtn = document.getElementById('transfer-confirm-btn');
     const confirmIcon = document.getElementById('transfer-confirm-btn-icon');
+    const fromDot = document.getElementById('transfer-from-dot');
+    const fromIconBox = document.getElementById('transfer-from-icon-box');
     const toDot = document.getElementById('transfer-to-dot');
     const toHeaderLabel = document.getElementById('transfer-to-header-label');
     const wheelGlow = document.getElementById('transfer-wheel-glow');
     const centerArrow = document.getElementById('transfer-center-arrow');
+
+    const floatingHeaders = document.getElementById('transfer-floating-headers');
+    if (floatingHeaders) {
+        floatingHeaders.className = isService
+            ? 'relative grid grid-cols-2 items-center px-3 sm:px-4 pt-1.5 pb-0.5 select-none transition-opacity duration-300 opacity-45 pointer-events-none'
+            : 'relative grid grid-cols-2 items-center px-3 sm:px-4 pt-1.5 pb-0.5 select-none transition-opacity duration-300 opacity-100';
+    }
 
     if (isAvailable) {
         if (modalTitle) modalTitle.textContent = 'Transfer Details';
         if (modalSubtitle) modalSubtitle.textContent = isBulk ? 'Select destination & unit count for instant transfer' : 'Select destination site for instant movement';
         if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-emerald-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
         if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-slate-200/10 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3.5 bg-white text-slate-900 border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300';
-        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-emerald-400/20 rounded-full blur-[28px] pointer-events-none';
-        if (iconBox) iconBox.className = 'w-11 h-11 rounded-[14px] bg-slate-100 border border-slate-200/80 text-slate-800 flex items-center justify-center text-base shrink-0 shadow-2xs';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[24px] p-4 bg-white/75 backdrop-blur-2xl text-slate-900 border border-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.06),inset_0_1px_1.5px_rgba(255,255,255,0.95)] transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-32 h-32 bg-emerald-400/20 rounded-full blur-[32px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-12 h-12 rounded-[16px] bg-white/85 backdrop-blur-md border border-white/90 text-slate-900 flex items-center justify-center text-lg shrink-0 shadow-[0_2px_8px_rgba(15,23,42,0.06),inset_0_1px_1px_rgba(255,255,255,1)]';
         if (statusEl) {
             statusEl.textContent = 'Available';
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold tracking-tight bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0';
+            statusEl.className = 'hidden';
         }
         if (statusBanner) statusBanner.classList.add('hidden');
-        if (routeWrapper) routeWrapper.className = 'bg-white rounded-[22px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden transition-opacity duration-300 opacity-100';
+        if (routeWrapper) routeWrapper.className = 'relative bg-white/75 backdrop-blur-xl rounded-[24px] border border-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.05),inset_0_1px_1.5px_rgba(255,255,255,0.95)] overflow-hidden transition-opacity duration-300 opacity-100';
         if (inputsWrapper) inputsWrapper.classList.remove('hidden');
         if (notesSection) notesSection.classList.remove('hidden');
         if (notesLabel) notesLabel.textContent = 'Note';
         if (descInput) descInput.placeholder = 'Optional (e.g. framing stage)';
-        if (toDot) toDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0';
-        if (toHeaderLabel) toHeaderLabel.textContent = 'To Site';
-        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-emerald-400/15 rounded-full blur-2xl pointer-events-none';
-        if (centerArrow) centerArrow.className = 'w-7 h-7 rounded-full bg-slate-900 text-brand-lime border-2 border-white flex items-center justify-center text-[11px] shadow-sm';
+        if (fromDot) fromDot.className = 'hidden';
+        if (fromIconBox) fromIconBox.className = 'w-11 h-11 rounded-2xl bg-slate-900 text-brand-lime shadow-sm flex items-center justify-center text-base mb-1.5 transition-all';
+        if (toDot) toDot.className = 'hidden';
+        if (toHeaderLabel) toHeaderLabel.textContent = 'Transfer To';
+        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-32 h-24 bg-emerald-400/15 rounded-full blur-2xl pointer-events-none';
+        if (centerArrow) centerArrow.className = 'w-8 h-8 rounded-full bg-slate-900 text-brand-lime border-2 border-white flex items-center justify-center text-xs shadow-md';
         if (confirmBtn) {
             confirmBtn.disabled = false;
             confirmBtn.className = 'w-full min-h-[50px] py-3.5 rounded-[18px] bg-slate-900 hover:bg-black active:scale-[0.98] text-brand-lime font-bold text-[16px] tracking-tight shadow-[0_8px_20px_-6px_rgba(15,23,42,0.35)] border border-slate-800 transition-all flex items-center justify-center gap-2.5 cursor-pointer';
@@ -9748,23 +9750,25 @@ function openToolTransferModal(toolId) {
         if (modalSubtitle) modalSubtitle.textContent = 'Currently active on site — request release & transfer';
         if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-sky-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
         if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-slate-200/10 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3.5 bg-white text-slate-900 border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300';
-        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-sky-400/20 rounded-full blur-[28px] pointer-events-none';
-        if (iconBox) iconBox.className = 'w-11 h-11 rounded-[14px] bg-slate-100 border border-slate-200/80 text-slate-800 flex items-center justify-center text-base shrink-0 shadow-2xs';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[24px] p-4 bg-white/75 backdrop-blur-2xl text-slate-900 border border-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.06),inset_0_1px_1.5px_rgba(255,255,255,0.95)] transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-32 h-32 bg-sky-400/20 rounded-full blur-[32px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-12 h-12 rounded-[16px] bg-white/85 backdrop-blur-md border border-white/90 text-slate-900 flex items-center justify-center text-lg shrink-0 shadow-[0_2px_8px_rgba(15,23,42,0.06),inset_0_1px_1px_rgba(255,255,255,1)]';
         if (statusEl) {
             statusEl.textContent = 'In Use';
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold tracking-tight bg-blue-50 text-blue-700 border border-blue-200/80 shrink-0';
+            statusEl.className = 'hidden';
         }
         if (statusBanner) statusBanner.classList.add('hidden');
-        if (routeWrapper) routeWrapper.className = 'bg-white rounded-[22px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden transition-opacity duration-300 opacity-100';
+        if (routeWrapper) routeWrapper.className = 'relative bg-white/75 backdrop-blur-xl rounded-[24px] border border-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.05),inset_0_1px_1.5px_rgba(255,255,255,0.95)] overflow-hidden transition-opacity duration-300 opacity-100';
         if (inputsWrapper) inputsWrapper.classList.remove('hidden');
         if (notesSection) notesSection.classList.remove('hidden');
         if (notesLabel) notesLabel.textContent = 'Request Note';
         if (descInput) descInput.placeholder = 'Optional (e.g. needed by 7:00 AM)';
-        if (toDot) toDot.className = 'w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0';
+        if (fromDot) fromDot.className = 'hidden';
+        if (fromIconBox) fromIconBox.className = 'w-11 h-11 rounded-2xl bg-slate-900 text-sky-400 shadow-sm flex items-center justify-center text-base mb-1.5 transition-all';
+        if (toDot) toDot.className = 'hidden';
         if (toHeaderLabel) toHeaderLabel.textContent = 'Request For';
-        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-sky-400/15 rounded-full blur-2xl pointer-events-none';
-        if (centerArrow) centerArrow.className = 'w-7 h-7 rounded-full bg-slate-900 text-sky-400 border-2 border-white flex items-center justify-center text-[11px] shadow-sm';
+        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-32 h-24 bg-sky-400/15 rounded-full blur-2xl pointer-events-none';
+        if (centerArrow) centerArrow.className = 'w-8 h-8 rounded-full bg-slate-900 text-sky-400 border-2 border-white flex items-center justify-center text-xs shadow-md';
         if (confirmBtn) {
             confirmBtn.disabled = false;
             confirmBtn.className = 'w-full min-h-[50px] py-3.5 rounded-[18px] bg-slate-900 hover:bg-black active:scale-[0.98] text-sky-400 font-bold text-[16px] tracking-tight shadow-[0_8px_20px_-6px_rgba(15,23,42,0.35)] border border-slate-800 transition-all flex items-center justify-center gap-2.5 cursor-pointer';
@@ -9776,12 +9780,12 @@ function openToolTransferModal(toolId) {
         if (modalSubtitle) modalSubtitle.textContent = 'Unavailable until workshop pickup is ready';
         if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-amber-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
         if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-slate-200/10 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3.5 bg-white text-slate-900 border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300';
-        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-amber-400/20 rounded-full blur-[28px] pointer-events-none';
-        if (iconBox) iconBox.className = 'w-11 h-11 rounded-[14px] bg-slate-100 border border-slate-200/80 text-slate-800 flex items-center justify-center text-base shrink-0 shadow-2xs';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[24px] p-4 bg-white/75 backdrop-blur-2xl text-slate-900 border border-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.06),inset_0_1px_1.5px_rgba(255,255,255,0.95)] transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-32 h-32 bg-amber-400/20 rounded-full blur-[32px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-12 h-12 rounded-[16px] bg-white/85 backdrop-blur-md border border-white/90 text-slate-900 flex items-center justify-center text-lg shrink-0 shadow-[0_2px_8px_rgba(15,23,42,0.06),inset_0_1px_1px_rgba(255,255,255,1)]';
         if (statusEl) {
             statusEl.textContent = 'In Service';
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold tracking-tight bg-amber-50 text-amber-700 border border-amber-200/80 shrink-0';
+            statusEl.className = 'hidden';
         }
         if (statusBanner) {
             statusBanner.className = 'rounded-[20px] p-3.5 bg-white border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all';
@@ -9790,11 +9794,13 @@ function openToolTransferModal(toolId) {
             if (bannerTitle) bannerTitle.textContent = 'Unavailable Until Pickup Is Ready';
             if (bannerDesc) bannerDesc.textContent = `Logged ${tool.lastLogged || 'by Workshop'}. This item is undergoing maintenance and cannot be transferred until workshop pickup is ready.`;
         }
-        if (toDot) toDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0';
-        if (toHeaderLabel) toHeaderLabel.textContent = 'To Site';
-        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-amber-400/15 rounded-full blur-2xl pointer-events-none';
-        if (centerArrow) centerArrow.className = 'w-7 h-7 rounded-full bg-slate-900 text-amber-400 border-2 border-white flex items-center justify-center text-[11px] shadow-sm';
-        if (routeWrapper) routeWrapper.className = 'bg-white rounded-[22px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden transition-opacity duration-300 opacity-45 pointer-events-none select-none';
+        if (fromDot) fromDot.className = 'hidden';
+        if (fromIconBox) fromIconBox.className = 'w-11 h-11 rounded-2xl bg-slate-900 text-amber-400 shadow-sm flex items-center justify-center text-base mb-1.5 transition-all';
+        if (toDot) toDot.className = 'hidden';
+        if (toHeaderLabel) toHeaderLabel.textContent = 'Transfer To';
+        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-32 h-24 bg-amber-400/15 rounded-full blur-2xl pointer-events-none';
+        if (centerArrow) centerArrow.className = 'w-8 h-8 rounded-full bg-slate-900 text-amber-400 border-2 border-white flex items-center justify-center text-xs shadow-md';
+        if (routeWrapper) routeWrapper.className = 'relative bg-white/75 backdrop-blur-xl rounded-[24px] border border-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.05),inset_0_1px_1.5px_rgba(255,255,255,0.95)] overflow-hidden transition-opacity duration-300 opacity-45 pointer-events-none select-none';
         if (inputsWrapper) inputsWrapper.classList.add('hidden');
         if (confirmBtn) {
             confirmBtn.disabled = true;
@@ -9864,18 +9870,15 @@ function openToolTransferModal(toolId) {
 
         const scroller = document.getElementById('transfer-to-scroller');
         if (scroller) {
-            scroller.scrollTop = currentTransferToIndex * 92;
+            scroller.scrollTop = currentTransferToIndex * 112;
             updateTransferToItemStyles(currentTransferToIndex);
         }
 
         overlay.classList.remove('pointer-events-none', 'opacity-0');
         overlay.setAttribute('aria-hidden', 'false');
-        overlay.style.opacity = '0';
-        overlay.style.transition = 'opacity 0.32s ease-out';
 
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                overlay.style.opacity = '1';
                 sheet.style.transition = 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)';
                 sheet.style.transform = 'translate3d(0, 0, 0)';
                 syncDynamicStatusBar();
@@ -9926,18 +9929,13 @@ function closeToolTransferModal(fromDrag = false, startYOffset = 0, releaseVeloc
 
     sheet.style.transition = `transform ${duration}s cubic-bezier(0.32, 0.72, 0, 1)`;
     sheet.style.transform = `translate3d(0, ${exitTarget}px, 0)`;
-    overlay.style.transition = `opacity ${duration}s ease-out`;
-    overlay.style.opacity = '0';
-    overlay.classList.add('pointer-events-none');
+    overlay.classList.add('pointer-events-none', 'opacity-0');
+    overlay.setAttribute('aria-hidden', 'true');
 
     setTimeout(() => {
-        overlay.classList.add('opacity-0');
-        overlay.setAttribute('aria-hidden', 'true');
         sheet.classList.add('translate-y-[120%]');
         sheet.style.transition = '';
         sheet.style.transform = '';
-        overlay.style.opacity = '';
-        overlay.style.transition = '';
         syncDynamicStatusBar();
     }, duration * 1000 + 20);
 }
@@ -9948,10 +9946,10 @@ function renderTransferToItems() {
 
     const status = currentTransferTool ? currentTransferTool.status : 'Available';
     const selectedIconClass = status === 'In Use'
-        ? 'bg-slate-900 text-sky-400 shadow-xs'
+        ? 'w-11 h-11 rounded-2xl bg-slate-900 text-sky-400 shadow-sm flex items-center justify-center text-base mb-1.5 transition-all'
         : (status === 'Service'
-            ? 'bg-slate-900 text-amber-400 shadow-xs'
-            : 'bg-slate-900 text-brand-lime shadow-xs');
+            ? 'bg-slate-900 text-amber-400 shadow-sm'
+            : 'bg-slate-900 text-brand-lime shadow-sm');
 
     scroller.innerHTML = ALL_TRANSFER_SITES.map((site, idx) => {
         const isSelected = idx === currentTransferToIndex;
@@ -9960,12 +9958,12 @@ function renderTransferToItems() {
                  id="transfer-to-item-${idx}" 
                  role="option"
                  aria-selected="${isSelected ? 'true' : 'false'}"
-                 class="h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2 py-1 cursor-pointer transition-all duration-200 ${isSelected ? 'opacity-100 scale-100' : 'opacity-55 hover:opacity-85 scale-95'}">
-                <div id="transfer-to-icon-${idx}" class="w-9 h-9 rounded-xl ${isSelected ? selectedIconClass : 'bg-slate-200/80 text-slate-600'} flex items-center justify-center text-sm mb-1 transition-all">
+                 class="h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2.5 py-1.5 cursor-pointer transition-all duration-200 ${isSelected ? 'opacity-100 scale-100' : 'opacity-55 hover:opacity-85 scale-95'}">
+                <div id="transfer-to-icon-${idx}" class="w-11 h-11 rounded-2xl ${isSelected ? selectedIconClass : 'bg-slate-200/80 text-slate-600'} flex items-center justify-center text-base mb-1.5 transition-all">
                     <i class="${site.icon}" aria-hidden="true"></i>
                 </div>
-                <span id="transfer-to-name-${idx}" class="text-[13px] font-bold ${isSelected ? 'text-slate-900' : 'text-slate-600'} tracking-tight line-clamp-1 leading-tight">${site.name}</span>
-                <span id="transfer-to-addr-${idx}" class="text-[11px] ${isSelected ? 'text-slate-600 font-semibold' : 'text-slate-500 font-medium'} line-clamp-1 mt-0.5 leading-tight">${site.address}</span>
+                <span id="transfer-to-name-${idx}" class="text-[15px] sm:text-[16px] font-black ${isSelected ? 'text-slate-900' : 'text-slate-600'} tracking-tight line-clamp-1 leading-tight">${site.name}</span>
+                <span id="transfer-to-addr-${idx}" class="text-[12px] sm:text-[13px] ${isSelected ? 'text-slate-600 font-bold' : 'text-slate-500 font-medium'} line-clamp-1 mt-0.5 leading-tight">${site.address}</span>
             </div>
         `;
     }).join('');
@@ -9974,7 +9972,7 @@ function renderTransferToItems() {
 function onTransferToScrolled(scroller) {
     if (!scroller) return;
     const scrollTop = scroller.scrollTop;
-    const activeIndex = Math.max(0, Math.min(ALL_TRANSFER_SITES.length - 1, Math.round(scrollTop / 92)));
+    const activeIndex = Math.max(0, Math.min(ALL_TRANSFER_SITES.length - 1, Math.round(scrollTop / 112)));
     
     if (activeIndex !== currentTransferToIndex) {
         currentTransferToIndex = activeIndex;
@@ -9989,7 +9987,7 @@ function selectTransferToSite(index) {
     triggerHaptic('light');
     const scroller = document.getElementById('transfer-to-scroller');
     if (scroller) {
-        scroller.scrollTo({ top: clampedIndex * 92, behavior: 'smooth' });
+        scroller.scrollTo({ top: clampedIndex * 112, behavior: 'smooth' });
     }
     updateTransferToItemStyles(clampedIndex);
 }
@@ -10012,11 +10010,11 @@ function onTransferScrollerKeydown(event) {
 function updateTransferToItemStyles(activeIndex) {
     const status = currentTransferTool ? currentTransferTool.status : 'Available';
     const selectedIconClass = status === 'In Use'
-        ? "w-9 h-9 rounded-xl bg-slate-900 text-sky-400 shadow-xs flex items-center justify-center text-sm mb-1 transition-all"
+        ? "w-11 h-11 rounded-2xl bg-slate-900 text-sky-400 shadow-sm flex items-center justify-center text-base mb-1.5 transition-all"
         : (status === 'Service'
-            ? "w-9 h-9 rounded-xl bg-slate-900 text-amber-400 shadow-xs flex items-center justify-center text-sm mb-1 transition-all"
-            : "w-9 h-9 rounded-xl bg-slate-900 text-brand-lime shadow-xs flex items-center justify-center text-sm mb-1 transition-all");
-    const selectedAddrClass = "text-[11px] text-slate-600 font-semibold line-clamp-1 mt-0.5 leading-tight";
+            ? "w-11 h-11 rounded-2xl bg-slate-900 text-amber-400 shadow-sm flex items-center justify-center text-base mb-1.5 transition-all"
+            : "w-11 h-11 rounded-2xl bg-slate-900 text-brand-lime shadow-sm flex items-center justify-center text-base mb-1.5 transition-all");
+    const selectedAddrClass = "text-[12px] sm:text-[13px] text-slate-600 font-bold line-clamp-1 mt-0.5 leading-tight";
 
     ALL_TRANSFER_SITES.forEach((site, idx) => {
         const item = document.getElementById(`transfer-to-item-${idx}`);
@@ -10029,15 +10027,15 @@ function updateTransferToItemStyles(activeIndex) {
         const isSelected = idx === activeIndex;
         item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
         if (isSelected) {
-            item.className = "h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2 py-1 cursor-pointer transition-all duration-200 opacity-100 scale-100";
+            item.className = "h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2.5 py-1.5 cursor-pointer transition-all duration-200 opacity-100 scale-100";
             if (icon) icon.className = selectedIconClass;
-            if (name) name.className = "text-[13px] font-bold text-slate-900 tracking-tight line-clamp-1 leading-tight";
+            if (name) name.className = "text-[15px] sm:text-[16px] font-black text-slate-900 tracking-tight line-clamp-1 leading-tight";
             if (addr) addr.className = selectedAddrClass;
         } else {
-            item.className = "h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2 py-1 cursor-pointer transition-all duration-200 opacity-55 hover:opacity-85 scale-95";
-            if (icon) icon.className = "w-9 h-9 rounded-xl bg-slate-200/80 text-slate-600 flex items-center justify-center text-sm mb-1 transition-all";
-            if (name) name.className = "text-[13px] font-bold text-slate-600 tracking-tight line-clamp-1 leading-tight";
-            if (addr) addr.className = "text-[11px] text-slate-500 font-medium line-clamp-1 mt-0.5 leading-tight";
+            item.className = "h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2.5 py-1.5 cursor-pointer transition-all duration-200 opacity-55 hover:opacity-85 scale-95";
+            if (icon) icon.className = "w-11 h-11 rounded-2xl bg-slate-200/80 text-slate-600 flex items-center justify-center text-base mb-1.5 transition-all";
+            if (name) name.className = "text-[14px] sm:text-[15px] font-bold text-slate-600 tracking-tight line-clamp-1 leading-tight";
+            if (addr) addr.className = "text-[12px] text-slate-500 font-medium line-clamp-1 mt-0.5 leading-tight";
         }
     });
 
@@ -10130,11 +10128,6 @@ document.addEventListener('DOMContentLoaded', () => {
             rafId = requestAnimationFrame(() => {
                 rafId = null;
                 transferSheet.style.transform = `translate3d(0, ${currentTranslate}px, 0)`;
-                if (transferOverlay) {
-                    const sheetH = transferSheet.offsetHeight || 500;
-                    const progress = Math.min(Math.max(currentTranslate / sheetH, 0), 1);
-                    transferOverlay.style.opacity = `${Math.max(0, 1 - progress * 0.85)}`;
-                }
             });
         }
 
@@ -10199,15 +10192,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 transferSheet.style.transition = 'transform 0.38s cubic-bezier(0.16, 1, 0.3, 1)';
                 transferSheet.style.transform = 'translate3d(0, 0, 0)';
-                if (transferOverlay) {
-                    transferOverlay.style.transition = 'opacity 0.32s ease-out';
-                    transferOverlay.style.opacity = '1';
-                }
                 setTimeout(() => {
                     if (!isDragging) {
                         transferSheet.style.transition = '';
                         transferSheet.style.transform = '';
-                        if (transferOverlay) transferOverlay.style.opacity = '';
                     }
                 }, 380);
             }
