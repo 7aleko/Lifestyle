@@ -587,6 +587,22 @@
         }
         
 
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background-color: #020617;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            transition: opacity 0.24s var(--ease-out);
+        }
         #preloader.fade-out {
             opacity: 0;
             pointer-events: none;
@@ -1253,10 +1269,10 @@
 <body class="bg-slate-950 sm:bg-slate-950 text-gray-900 sm:h-full sm:flex sm:justify-center sm:items-center font-sans antialiased selection:bg-brand-lime selection:text-black">
     
     <!-- PRELOADER -->
-    <div id="preloader" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out">
-        <div class="flex items-center animate-pulse">
-            <span class="text-3xl font-black tracking-tight text-white">lifestyle</span>
-            <span class="w-2 h-2 rounded-full bg-limeAccent inline-block ml-[2px] translate-y-2"></span>
+    <div id="preloader" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background-color: #020617; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div class="flex items-center animate-pulse" style="display: flex; align-items: center; height: 2.25rem;">
+            <span class="text-3xl font-black tracking-tight text-white" style="font-size: 1.875rem; line-height: 2.25rem; font-weight: 900; letter-spacing: -0.025em; color: #ffffff;">lifestyle</span>
+            <span class="w-2 h-2 rounded-full bg-limeAccent inline-block ml-[2px] translate-y-2" style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #D2F818; display: inline-block; margin-left: 2px; transform: translateY(0.5rem);"></span>
         </div>
     </div>
 
@@ -2917,7 +2933,8 @@
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        // ================= REAL READINESS-GATED PRELOADER & BOOT ENGINE =================
+        function hydrateAppViews() {
             renderRosterCards();
             renderJobsView();
             renderTeamDirectory(TEAM_DIRECTORY_DATA);
@@ -2929,28 +2946,86 @@
             if (typeof renderNotificationsFeed === 'function') {
                 renderNotificationsFeed('all');
             }
-        });
+        }
 
-window.addEventListener('load', () => {
+        function waitForTailwindAndLayout() {
+            return new Promise((resolve) => {
+                const start = performance.now();
+                function checkLayout() {
+                    const stage = document.getElementById('app-main-stage');
+                    const navBar = document.getElementById('floating-nav');
+                    const homeTab = document.getElementById('tab-home');
+                    const tailwindReady = stage && window.getComputedStyle(stage).display === 'flex';
+                    const navMeasured = navBar && navBar.offsetWidth > 0 && homeTab && homeTab.offsetWidth > 0;
+
+                    if ((tailwindReady && navMeasured) || (performance.now() - start > 900)) {
+                        updateNavPillPosition(getActiveNavTab());
+                        requestAnimationFrame(() => {
+                            updateNavPillPosition(getActiveNavTab());
+                            resolve();
+                        });
+                    } else {
+                        requestAnimationFrame(checkLayout);
+                    }
+                }
+                checkLayout();
+            });
+        }
+
+        function dismissPreloaderWhenReady() {
             const preloader = document.getElementById('preloader');
-            if (preloader) {
-                setTimeout(() => {
-                    preloader.classList.add('fade-out');
-                    syncDynamicStatusBar();
-                    setTimeout(() => {
-                        preloader.remove();
-                        syncDynamicStatusBar();
-                        
-                        const heroProgress = document.querySelector('.hero-ambient-progress');
-                        if (heroProgress) {
-                            heroProgress.classList.add('animate-progress');
-                        }
-                    }, 500);
-                }, 400);
-            } else {
+            let isWarmSession = false;
+            try {
+                isWarmSession = sessionStorage.getItem('lifestyle_app_booted') === '1';
+                sessionStorage.setItem('lifestyle_app_booted', '1');
+            } catch (_) {}
+
+            const domReadyPromise = new Promise((resolve) => {
+                if (document.readyState === 'loading') {
+                    window.addEventListener('DOMContentLoaded', () => {
+                        hydrateAppViews();
+                        resolve();
+                    }, { once: true });
+                } else {
+                    hydrateAppViews();
+                    resolve();
+                }
+            });
+
+            const fontsReadyPromise = (document.fonts && document.fonts.ready)
+                ? document.fonts.ready.catch(() => {})
+                : Promise.resolve();
+
+            const allChecksPromise = domReadyPromise.then(() =>
+                Promise.all([waitForTailwindAndLayout(), fontsReadyPromise])
+            );
+
+            // Safety cap so slow cellular/CDN assets never trap the user on the splash screen
+            const maxWaitMs = isWarmSession ? 450 : 1200;
+            const safetyTimeoutPromise = new Promise((resolve) => setTimeout(resolve, maxWaitMs));
+
+            Promise.race([allChecksPromise, safetyTimeoutPromise]).then(() => {
                 syncDynamicStatusBar();
-            }
-        });
+                if (!preloader) return;
+
+                if (isWarmSession) {
+                    preloader.style.transitionDuration = '0.16s';
+                }
+                preloader.classList.add('fade-out');
+
+                const removeDelay = isWarmSession ? 170 : 250;
+                setTimeout(() => {
+                    preloader.remove();
+                    syncDynamicStatusBar();
+                    const heroProgress = document.querySelector('.hero-ambient-progress');
+                    if (heroProgress) {
+                        heroProgress.classList.add('animate-progress');
+                    }
+                }, removeDelay);
+            });
+        }
+
+        dismissPreloaderWhenReady();
 
 
         // Site Sign In / Sign Out Attendance State Management
