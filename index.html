@@ -2791,7 +2791,7 @@
             </div>
         </div>
 
-        <!-- Tool Transfer Modal Overlay (Light Frosted Backdrop & Apple Gradient Glass Sheet) -->
+        <!-- Tool Transfer Modal Overlay (Light Frosted Backdrop & Apple HIG Accessible Sheet) -->
         <div id="tool-transfer-modal-overlay" 
              aria-hidden="true" 
              class="absolute inset-0 bg-slate-400/20 backdrop-blur-md z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 px-0 pb-0 pt-14 sm:p-4 select-none"
@@ -2801,92 +2801,111 @@
                  role="dialog" 
                  aria-modal="true" 
                  aria-labelledby="transfer-modal-title" 
-                 class="relative w-full sm:max-w-md bg-white/95 bg-gradient-to-b from-white via-slate-50/95 to-slate-100/95 backdrop-blur-3xl text-slate-900 rounded-t-[32px] sm:rounded-[32px] shadow-[0_-14px_44px_rgba(15,23,42,0.14),0_0_1px_rgba(15,23,42,0.08),inset_0_1px_1px_rgba(255,255,255,1)] border-t border-x sm:border border-white/90 transform translate-y-[120%] max-h-[82dvh] sm:max-h-[86vh] flex flex-col overflow-hidden will-change-transform pb-3" style="padding-bottom: max(0.85rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem));">
+                 aria-describedby="transfer-modal-subtitle"
+                 class="relative w-full sm:max-w-md bg-[#F2F2F7]/95 backdrop-blur-3xl text-slate-900 rounded-t-[32px] sm:rounded-[32px] shadow-[0_-14px_44px_rgba(15,23,42,0.14),0_0_1px_rgba(15,23,42,0.08),inset_0_1px_1px_rgba(255,255,255,1)] border-t border-x sm:border border-white/90 transform translate-y-[120%] max-h-[84dvh] sm:max-h-[86vh] flex flex-col overflow-hidden will-change-transform pb-3" style="background-color: rgba(242, 242, 247, 0.97); padding-bottom: max(0.85rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem));">
                 
-                <!-- Dynamic Apple Ambient Glow Orbs (Color-matched to Available / In Use / Service) -->
-                <div id="transfer-sheet-glow-1" class="absolute -top-16 -left-10 w-52 h-52 bg-emerald-500/20 rounded-full blur-[65px] pointer-events-none transition-colors duration-500"></div>
-                <div id="transfer-sheet-glow-2" class="absolute top-36 -right-12 w-52 h-52 bg-blue-500/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500"></div>
+                <!-- Dynamic Apple Ambient Glow Orbs -->
+                <div id="transfer-sheet-glow-1" class="absolute -top-16 -left-10 w-52 h-52 bg-slate-300/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500"></div>
+                <div id="transfer-sheet-glow-2" class="absolute top-36 -right-12 w-52 h-52 bg-slate-200/10 rounded-full blur-[65px] pointer-events-none transition-colors duration-500"></div>
 
                 <!-- iOS Drag Handle Zone -->
-                <div id="transfer-drag-zone" class="relative z-10 w-full pt-2.5 pb-1.5 flex justify-center cursor-grab select-none shrink-0" onclick="closeToolTransferModal()">
-                    <div class="w-10 h-1 bg-slate-300/90 rounded-full transition-colors hover:bg-slate-400"></div>
+                <div id="transfer-drag-zone" class="relative z-10 w-full pt-2.5 pb-1 flex justify-center cursor-grab select-none shrink-0" onclick="closeToolTransferModal()">
+                    <div class="w-9 h-1.5 bg-slate-300/90 rounded-full transition-colors hover:bg-slate-400"></div>
                 </div>
 
-                <!-- Apple Sheet Header: Title on Left, X Close on Right -->
-                <div class="relative z-10 flex items-center justify-between pb-2.5 px-4 sm:px-5 border-b border-slate-200/60 shrink-0">
-                    <div>
-                        <h3 id="transfer-modal-title" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-tight">Transfer Details</h3>
-                        <p id="transfer-modal-subtitle" class="text-[11px] sm:text-xs font-semibold text-slate-500 mt-0.5">Select destination site for instant movement</p>
+                <!-- Apple Sheet Header: Title on Left, 44x44px Accessible Close Button on Right -->
+                <div class="relative z-10 flex items-center justify-between pt-0.5 pb-2.5 px-4 sm:px-5 shrink-0">
+                    <div class="min-w-0 pr-3">
+                        <h3 id="transfer-modal-title" class="text-[20px] font-black text-slate-900 tracking-tight leading-tight">Transfer Details</h3>
+                        <p id="transfer-modal-subtitle" class="text-[13px] font-medium text-slate-500 mt-0.5 truncate">Choose destination site</p>
                     </div>
                     
-                    <!-- Circular Close Button (X) on Top-Right -->
+                    <!-- iOS Circular Close Button (44x44px accessible touch target) -->
                     <button type="button" 
                             onclick="closeToolTransferModal()" 
-                            aria-label="Close transfer modal" 
-                            class="w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] rounded-full bg-white/90 hover:bg-slate-100 active:scale-90 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer transition-all border border-slate-200/80 shadow-2xs shrink-0">
-                        <i class="fa-solid fa-xmark text-xs"></i>
+                            aria-label="Close transfer sheet" 
+                            class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-slate-200/80 hover:bg-slate-300/80 active:scale-90 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-slate-400">
+                        <i class="fa-solid fa-xmark text-sm" aria-hidden="true"></i>
                     </button>
                 </div>
 
-                <!-- Scrollable Modal Content -->
-                <div id="transfer-body-scroller" class="relative z-10 flex-1 overflow-y-auto no-scrollbar px-4 sm:px-5 py-3 space-y-2.5">
+                <!-- Scrollable Modal Content (iOS Grouped Inset Stack) -->
+                <div id="transfer-body-scroller" class="relative z-10 flex-1 overflow-y-auto no-scrollbar px-4 sm:px-5 pb-2 space-y-2.5">
                     
-                    <!-- Light Apple Gradient Equipment Hero Card -->
-                    <div id="transfer-hero-card" class="relative overflow-hidden rounded-[20px] p-3 sm:p-3.5 bg-gradient-to-br from-emerald-50/95 via-white to-teal-50/60 text-slate-900 border border-emerald-200/80 shadow-apple transition-all duration-300">
-                        <div id="transfer-hero-orb" class="absolute -top-10 -right-10 w-28 h-28 bg-emerald-400/20 rounded-full blur-[28px] pointer-events-none"></div>
-                        <div class="relative z-10 flex items-center justify-between gap-2.5">
+                    <!-- 1. Apple Inset Equipment Summary Card -->
+                    <div id="transfer-hero-card" class="relative overflow-hidden rounded-[20px] p-3.5 bg-white text-slate-900 border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300">
+                        <div id="transfer-hero-orb" class="absolute -top-8 -right-8 w-28 h-28 bg-slate-200/30 rounded-full blur-[24px] pointer-events-none"></div>
+                        <div class="relative z-10 flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div id="transfer-tool-icon-box" class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/25 text-emerald-700 flex items-center justify-center text-sm shrink-0 shadow-2xs">
-                                    <i id="transfer-tool-icon" class="fa-solid fa-screwdriver-wrench"></i>
+                                <div id="transfer-tool-icon-box" class="w-11 h-11 rounded-[14px] bg-slate-100 border border-slate-200/80 text-slate-800 flex items-center justify-center text-base shrink-0">
+                                    <i id="transfer-tool-icon" class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
                                 </div>
                                 <div class="min-w-0">
-                                    <h4 id="transfer-tool-name" class="text-sm font-black text-slate-900 tracking-tight truncate">Equipment</h4>
-                                    <p id="transfer-tool-meta" class="text-[11px] text-slate-500 font-semibold truncate mt-0.5">Category • Status</p>
+                                    <h4 id="transfer-tool-name" class="text-[15px] font-black text-slate-900 tracking-tight truncate leading-snug">Equipment</h4>
+                                    <p id="transfer-tool-meta" class="text-xs text-slate-500 font-semibold truncate mt-0.5">Category • Location</p>
                                 </div>
                             </div>
-                            <span id="transfer-tool-status" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100/90 text-emerald-800 border border-emerald-300/80 shrink-0 shadow-2xs">
+                            <span id="transfer-tool-status" class="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-tight bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0">
                                 Available
                             </span>
                         </div>
                     </div>
 
                     <!-- Contextual Status Notice Banner (Shown for "Service" Workshop Holds) -->
-                    <div id="transfer-status-banner" class="hidden rounded-2xl p-3 border transition-all">
-                        <div class="flex items-start gap-2.5">
-                            <div id="transfer-status-banner-icon" class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 mt-0.5">
+                    <div id="transfer-status-banner" role="status" class="hidden rounded-[20px] p-3.5 border transition-all">
+                        <div class="flex items-start gap-3">
+                            <div id="transfer-status-banner-icon" class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shrink-0 mt-0.5" aria-hidden="true">
                                 <i class="fa-solid fa-circle-info"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p id="transfer-status-banner-title" class="text-xs font-black tracking-tight text-slate-900">Status Notice</p>
-                                <p id="transfer-status-banner-desc" class="text-[11px] font-medium text-slate-600 mt-0.5 leading-snug">Details about this item's transfer availability.</p>
+                                <p id="transfer-status-banner-title" class="text-[13px] font-black tracking-tight text-slate-900">Status Notice</p>
+                                <p id="transfer-status-banner-desc" class="text-xs font-medium text-slate-600 mt-0.5 leading-relaxed">Details about this item's transfer availability.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Route Selector Wrapper (Dimmed/Locked when in Workshop Service) -->
-                    <div id="transfer-route-wrapper" class="space-y-2 transition-opacity duration-300">
-                        <!-- Clean "FROM" & "TO" Segmented Bar with Apple Gradients -->
-                        <div class="grid grid-cols-2 bg-slate-200/65 backdrop-blur-xl rounded-xl p-1 border border-white/80 text-center text-xs font-black uppercase tracking-wider select-none gap-1.5 shadow-inner">
-                            <div class="py-1.5 rounded-lg bg-gradient-to-b from-white to-slate-50/90 shadow-xs text-slate-800 flex items-center justify-center gap-1.5 border border-white">
-                                <span class="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)] shrink-0"></span>
-                                <span class="text-[10px] sm:text-[11px] font-black tracking-wider">From Site</span>
+                    <!-- 2. Unified Apple Inset Route Picker Card (From -> To) -->
+                    <div id="transfer-route-wrapper" class="bg-white rounded-[22px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden transition-opacity duration-300">
+                        
+                        <!-- Integrated Column Headers + Accessible Stepper Buttons -->
+                        <div class="grid grid-cols-2 items-center px-3.5 py-2 bg-slate-50/80 border-b border-slate-200/60">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0" aria-hidden="true"></span>
+                                <span class="text-xs font-extrabold text-slate-600 tracking-tight">From Site</span>
                             </div>
-                            <div class="py-1.5 rounded-lg bg-gradient-to-b from-white to-slate-50/90 shadow-xs text-slate-900 flex items-center justify-center gap-1.5 border border-white">
-                                <span id="transfer-to-dot" class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] shrink-0"></span>
-                                <span id="transfer-to-header-label" class="text-[10px] sm:text-[11px] font-black tracking-wider">To Site</span>
+                            <div class="flex items-center justify-between pl-2">
+                                <div class="flex items-center gap-2">
+                                    <span id="transfer-to-dot" class="w-2 h-2 rounded-full bg-slate-900 shrink-0" aria-hidden="true"></span>
+                                    <span id="transfer-to-header-label" class="text-xs font-extrabold text-slate-800 tracking-tight">To Site</span>
+                                </div>
+                                <!-- Accessible Stepper Controls for One-Tap Site Selection -->
+                                <div class="flex items-center gap-1" role="group" aria-label="Step through destination sites">
+                                    <button type="button"
+                                            onclick="stepTransferSite(-1)"
+                                            aria-label="Previous destination site"
+                                            class="w-7 h-7 rounded-lg bg-white hover:bg-slate-100 active:scale-90 border border-slate-200/80 text-slate-600 hover:text-slate-900 flex items-center justify-center cursor-pointer transition-all shadow-2xs focus:outline-none focus:ring-2 focus:ring-slate-400">
+                                        <i class="fa-solid fa-chevron-up text-[10px]" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button"
+                                            onclick="stepTransferSite(1)"
+                                            aria-label="Next destination site"
+                                            class="w-7 h-7 rounded-lg bg-white hover:bg-slate-100 active:scale-90 border border-slate-200/80 text-slate-600 hover:text-slate-900 flex items-center justify-center cursor-pointer transition-all shadow-2xs focus:outline-none focus:ring-2 focus:ring-slate-400">
+                                        <i class="fa-solid fa-chevron-down text-[10px]" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Dual Wheel / Column Selection Stage in Apple Style (Compact & Mobile-Friendly) -->
-                        <div class="relative bg-gradient-to-b from-slate-100/90 via-white/80 to-slate-100/90 rounded-[24px] border border-slate-200/80 overflow-hidden shadow-[inset_0_2px_10px_rgba(15,23,42,0.05)] h-[188px]">
+                        <!-- Dual Wheel / Column Selection Stage -->
+                        <div class="relative bg-white h-[176px] overflow-hidden">
                             
                             <!-- Subtle Ambient Tint Behind Active Selection -->
-                            <div id="transfer-wheel-glow" class="absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                            <div id="transfer-wheel-glow" class="absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-slate-200/35 rounded-full blur-2xl pointer-events-none"></div>
 
-                            <!-- Central Focus Band (Spans across both columns behind the selected items) -->
-                            <div class="absolute top-[48px] left-2 right-2 h-[92px] bg-gradient-to-r from-amber-50/40 via-white to-emerald-50/45 border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06),0_2px_6px_rgba(15,23,42,0.03),inset_0_1px_0_rgba(255,255,255,1)] z-0 flex items-center justify-center">
-                                <!-- Glowing Arrow Badge pointing from From to To -->
-                                <div id="transfer-center-arrow" class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white border border-emerald-400/50 flex items-center justify-center text-xs shadow-sm">
+                            <!-- Central iOS Picker Selection Band (Clean neutral Apple selection glass) -->
+                            <div class="absolute top-[42px] left-2.5 right-2.5 h-[92px] bg-slate-100/75 border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_2px_10px_rgba(15,23,42,0.03),inset_0_1px_0_rgba(255,255,255,0.9)] z-0 flex items-center justify-center">
+                                <!-- Directional Arrow Badge pointing from From to To -->
+                                <div id="transfer-center-arrow" class="w-7 h-7 rounded-full bg-slate-900 text-brand-lime border-2 border-white flex items-center justify-center text-[11px] shadow-sm" aria-hidden="true">
                                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                 </div>
                             </div>
@@ -2894,87 +2913,89 @@
                             <!-- Dual Columns Grid -->
                             <div class="relative z-10 grid grid-cols-2 h-full">
                                 
-                                <!-- LEFT COLUMN: "FROM" (Locked to current site, generous touch & text hierarchy) -->
-                                <div class="flex items-center justify-center h-full px-2.5 border-r border-slate-200/60 select-none">
+                                <!-- LEFT COLUMN: "FROM" (Locked to current site, 2-line Last log + by Name) -->
+                                <div class="flex items-center justify-center h-full px-3 border-r border-slate-200/50 select-none">
                                     <div id="transfer-from-card" class="w-full flex flex-col items-center justify-center text-center p-1.5">
-                                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 text-amber-600 border border-amber-500/30 flex items-center justify-center text-base mb-1 shadow-2xs">
+                                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center text-sm mb-1 shadow-2xs" aria-hidden="true">
                                             <i class="fa-solid fa-location-dot"></i>
                                         </div>
-                                        <span id="transfer-from-name" class="text-xs sm:text-sm font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
-                                        <span id="transfer-from-desc" class="text-[10px] text-slate-600 font-bold line-clamp-1 mt-0.5 leading-tight">Last log: 13 Oct</span>
-                                        <span id="transfer-from-by" class="text-[10px] text-slate-400 font-semibold line-clamp-1 leading-tight">by David H.</span>
+                                        <span id="transfer-from-name" class="text-[13px] sm:text-sm font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
+                                        <span id="transfer-from-desc" class="text-[11px] text-slate-600 font-bold line-clamp-1 mt-0.5 leading-tight">Last log: 13 Oct</span>
+                                        <span id="transfer-from-by" class="text-[11px] text-slate-500 font-medium line-clamp-1 leading-tight">by David H.</span>
                                     </div>
                                 </div>
 
-                                <!-- RIGHT COLUMN: "TO" (Scrollable list of all sites) -->
+                                <!-- RIGHT COLUMN: "TO" (Accessible Scrollable Picker Listbox) -->
                                 <div id="transfer-to-scroller" 
+                                     role="listbox"
+                                     tabindex="0"
+                                     aria-label="Destination site"
+                                     onkeydown="onTransferScrollerKeydown(event)"
                                      onscroll="onTransferToScrolled(this)"
-                                     class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[48px] px-2 select-none">
+                                     class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[42px] px-2 select-none focus:outline-none">
                                     <!-- Populated dynamically via JS -->
                                 </div>
                             </div>
 
-                            <!-- Top & Bottom Gradient Vignettes to soften unselected items like a 3D wheel -->
-                            <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-slate-100/95 via-slate-100/50 to-transparent pointer-events-none z-20"></div>
-                            <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-slate-100/95 via-slate-100/50 to-transparent pointer-events-none z-20"></div>
+                            <!-- Top & Bottom Soft iOS Wheel Fade Masks -->
+                            <div class="absolute top-0 left-0 right-0 h-9 bg-gradient-to-b from-white via-white/70 to-transparent pointer-events-none z-20"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-9 bg-gradient-to-t from-white via-white/70 to-transparent pointer-events-none z-20"></div>
                         </div>
-
-                        <!-- Guidance Hint -->
-                        <p id="transfer-wheel-hint" class="text-[11px] text-center text-slate-500 font-medium">
-                            Scroll or tap the <strong class="text-slate-800 font-bold">To Site</strong> column to choose destination.
-                        </p>
                     </div>
 
-                    <!-- Inputs (Apple App Style Clean Form Fields) -->
-                    <div id="transfer-inputs-wrapper" class="space-y-2">
-                        <!-- Multi-Unit Amount Stepper ( ONLY shown when tool has multiple units, e.g. Acro Props ) -->
-                        <div id="transfer-quantity-section" class="hidden bg-white/80 backdrop-blur-xl rounded-2xl p-2.5 border border-slate-200/80 shadow-2xs">
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label for="transfer-input-qty" class="block text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Units to Move</label>
-                                <span id="transfer-amount-available" class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-[10px] font-extrabold">Available: 24 Props</span>
+                    <!-- 3. Apple Inset Grouped Form Card (Units + Note with 16px text-base to prevent iOS zoom) -->
+                    <div id="transfer-inputs-wrapper" class="bg-white rounded-[20px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.04)] divide-y divide-slate-100 overflow-hidden">
+                        
+                        <!-- Row 1: Multi-Unit Stepper (ONLY shown when tool has multiple units, e.g. Acro Props) -->
+                        <div id="transfer-quantity-section" class="hidden px-3.5 py-2.5 flex items-center justify-between gap-3">
+                            <div class="min-w-0">
+                                <label for="transfer-input-qty" class="block text-[13px] font-bold text-slate-900 tracking-tight">Units to Move</label>
+                                <span id="transfer-amount-available" class="block text-[11px] font-semibold text-slate-500">Available: 24 Props</span>
                             </div>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1.5 shrink-0">
                                 <button type="button" 
                                         onclick="adjustTransferQuantity(-1)" 
-                                        aria-label="Decrease quantity" 
-                                        class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-700 font-black border border-slate-200/80 cursor-pointer transition-all shrink-0">
-                                    <i class="fa-solid fa-minus text-xs"></i>
+                                        aria-label="Decrease units" 
+                                        class="w-11 h-10 min-w-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-700 font-black border border-slate-200/80 cursor-pointer transition-all">
+                                    <i class="fa-solid fa-minus text-xs" aria-hidden="true"></i>
                                 </button>
-                                <div class="relative flex-1">
+                                <div class="relative w-20">
                                     <input type="number" 
                                            id="transfer-input-qty" 
                                            min="1" 
                                            max="999" 
                                            value="10" 
                                            oninput="onTransferQuantityChange(this.value)"
-                                           class="w-full h-9 px-3 text-center rounded-xl bg-slate-50 border border-slate-200/80 text-slate-900 font-extrabold text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all">
-                                    <span id="transfer-input-unit" class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-slate-400 pointer-events-none select-none">Props</span>
+                                           class="w-full h-10 px-2 text-center rounded-xl bg-slate-50 border border-slate-200/80 text-slate-900 font-black text-base focus:outline-none focus:ring-2 focus:ring-slate-400/30 focus:border-slate-400 focus:bg-white transition-all">
+                                    <span id="transfer-input-unit" class="sr-only">Props</span>
                                 </div>
                                 <button type="button" 
                                         onclick="adjustTransferQuantity(1)" 
-                                        aria-label="Increase quantity" 
-                                        class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-700 font-black border border-slate-200/80 cursor-pointer transition-all shrink-0">
-                                    <i class="fa-solid fa-plus text-xs"></i>
+                                        aria-label="Increase units" 
+                                        class="w-11 h-10 min-w-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-700 font-black border border-slate-200/80 cursor-pointer transition-all">
+                                    <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Description / Notes Line -->
-                        <div id="transfer-notes-section">
-                            <label id="transfer-notes-label" for="transfer-input-desc" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Transfer Notes</label>
-                            <input type="text" id="transfer-input-desc" placeholder="Optional notes (e.g. needed for framing stage)" 
-                                   class="w-full px-3.5 py-2 rounded-xl bg-white/90 border border-slate-200/90 text-slate-900 placeholder:text-slate-400 font-semibold text-xs sm:text-sm shadow-2xs focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all">
+                        <!-- Row 2: Inline iOS Note Field (16px text-base prevents mobile Safari auto-zoom) -->
+                        <div id="transfer-notes-section" class="flex items-center gap-3 px-3.5 py-2.5 min-h-[48px]">
+                            <label id="transfer-notes-label" for="transfer-input-desc" class="text-[13px] font-bold text-slate-700 shrink-0">Note</label>
+                            <input type="text" 
+                                   id="transfer-input-desc" 
+                                   placeholder="Optional (e.g. framing stage)" 
+                                   class="w-full bg-transparent text-base text-slate-900 placeholder:text-slate-400 font-medium focus:outline-none">
                         </div>
                     </div>
 
-                    <!-- Bottom Action Button in Light Apple Gradient Style -->
-                    <div class="pt-1">
+                    <!-- 4. Apple HIG 50px Primary Action Button (Black & Green for Transfer, Black & Blue for Request) -->
+                    <div class="pt-0.5">
                         <button type="button" 
                                 id="transfer-confirm-btn"
                                 onclick="confirmToolTransfer()" 
-                                class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:brightness-105 active:scale-[0.98] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_10px_24px_-6px_rgba(16,185,129,0.45)] border border-emerald-400/40 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                class="w-full min-h-[50px] py-3.5 rounded-[18px] bg-slate-900 hover:bg-black active:scale-[0.98] text-brand-lime font-bold text-[16px] tracking-tight shadow-[0_8px_20px_-6px_rgba(15,23,42,0.35)] border border-slate-800 transition-all flex items-center justify-center gap-2.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
                             <span id="transfer-confirm-btn-label">Transfer Equipment</span>
-                            <i id="transfer-confirm-btn-icon" class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+                            <i id="transfer-confirm-btn-icon" class="fa-solid fa-arrow-right-arrow-left text-xs" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -7720,7 +7741,7 @@ const TEAM_DIRECTORY_DATA = [
         const isService = t.status === 'Service';
         const logInfo = parseToolLastLog(t.lastLogged);
         
-        // Corner gradient colors strictly radiating from top-right apex
+        // Corner gradient colors strictly radiating from top-right apex (identical intensity across all 3 states)
         const theme = isAvailable ? {
             name: 'Available',
             cornerColor: 'rgba(16, 185, 129, 0.40)',
@@ -7729,8 +7750,8 @@ const TEAM_DIRECTORY_DATA = [
             statusText: 'text-emerald-600'
         } : (isService ? {
             name: 'Service',
-            cornerColor: 'rgba(245, 158, 11, 0.45)',
-            cornerSoft: 'rgba(245, 158, 11, 0.12)',
+            cornerColor: 'rgba(245, 158, 11, 0.40)',
+            cornerSoft: 'rgba(245, 158, 11, 0.10)',
             border: 'border-amber-500/25 hover:border-amber-500/40',
             statusText: 'text-amber-600'
         } : {
@@ -7802,15 +7823,15 @@ const TEAM_DIRECTORY_DATA = [
                         <button type="button"
                                 onclick="event.stopPropagation(); openToolTransferModal('${t.id}')" 
                                 aria-label="${t.name} in service, unavailable until pickup ready"
-                                class="px-3.5 py-2.5 rounded-xl bg-amber-100/90 group-hover:bg-amber-200/80 text-amber-800 border border-amber-300/80 font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer text-xs min-h-[44px] shrink-0">
-                            <i class="fa-solid fa-lock text-[11px] text-amber-600"></i>
+                                class="px-4 py-2.5 rounded-xl bg-slate-900 group-hover:bg-black text-amber-400 font-black transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer text-xs shadow-sm min-h-[44px] shrink-0">
                             <span>Pickup Pending</span>
+                            <i class="fa-solid fa-lock text-[11px]"></i>
                         </button>
                     ` : `
                         <button type="button"
                                 onclick="event.stopPropagation(); openToolTransferModal('${t.id}')" 
                                 aria-label="Request move for ${t.name}"
-                                class="px-4 py-2.5 rounded-xl bg-slate-900 group-hover:bg-black text-brand-lime font-black transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer text-xs shadow-sm min-h-[44px] shrink-0">
+                                class="px-4 py-2.5 rounded-xl bg-slate-900 group-hover:bg-black text-sky-400 font-black transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer text-xs shadow-sm min-h-[44px] shrink-0">
                             <span>Request Move</span>
                             <i class="fa-solid fa-paper-plane text-[11px]"></i>
                         </button>
@@ -7947,84 +7968,88 @@ function openToolTransferModal(toolId) {
     if (isAvailable) {
         if (modalTitle) modalTitle.textContent = 'Transfer Details';
         if (modalSubtitle) modalSubtitle.textContent = isBulk ? 'Select destination & unit count for instant transfer' : 'Select destination site for instant movement';
-        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-emerald-400/20 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-teal-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3 sm:p-3.5 bg-gradient-to-br from-emerald-50/95 via-white to-teal-50/60 text-slate-900 border border-emerald-200/80 shadow-apple transition-all duration-300';
-        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-emerald-400/25 rounded-full blur-[28px] pointer-events-none';
-        if (iconBox) iconBox.className = 'w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/25 text-emerald-700 flex items-center justify-center text-sm shrink-0 shadow-2xs';
+        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-emerald-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-slate-200/10 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3.5 bg-white text-slate-900 border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-emerald-400/20 rounded-full blur-[28px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-11 h-11 rounded-[14px] bg-slate-100 border border-slate-200/80 text-slate-800 flex items-center justify-center text-base shrink-0 shadow-2xs';
         if (statusEl) {
             statusEl.textContent = 'Available';
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100/90 text-emerald-800 border border-emerald-300/80 shrink-0 shadow-2xs';
+            statusEl.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold tracking-tight bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0';
         }
         if (statusBanner) statusBanner.classList.add('hidden');
-        if (routeWrapper) routeWrapper.className = 'space-y-2 transition-opacity duration-300 opacity-100';
+        if (routeWrapper) routeWrapper.className = 'bg-white rounded-[22px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden transition-opacity duration-300 opacity-100';
         if (inputsWrapper) inputsWrapper.classList.remove('hidden');
         if (notesSection) notesSection.classList.remove('hidden');
-        if (notesLabel) notesLabel.textContent = 'Transfer Notes';
-        if (descInput) descInput.placeholder = 'Optional notes (e.g. needed for framing stage)';
-        if (toDot) toDot.className = 'w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] shrink-0';
+        if (notesLabel) notesLabel.textContent = 'Note';
+        if (descInput) descInput.placeholder = 'Optional (e.g. framing stage)';
+        if (toDot) toDot.className = 'w-2 h-2 rounded-full bg-emerald-500 shrink-0';
         if (toHeaderLabel) toHeaderLabel.textContent = 'To Site';
-        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none';
-        if (centerArrow) centerArrow.className = 'w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white border border-emerald-400/50 flex items-center justify-center text-xs shadow-sm';
+        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-emerald-400/15 rounded-full blur-2xl pointer-events-none';
+        if (centerArrow) centerArrow.className = 'w-7 h-7 rounded-full bg-slate-900 text-brand-lime border-2 border-white flex items-center justify-center text-[11px] shadow-sm';
         if (confirmBtn) {
             confirmBtn.disabled = false;
-            confirmBtn.className = 'w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:brightness-105 active:scale-[0.98] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_10px_24px_-6px_rgba(16,185,129,0.45)] border border-emerald-400/40 transition-all flex items-center justify-center gap-2 cursor-pointer';
+            confirmBtn.className = 'w-full min-h-[50px] py-3.5 rounded-[18px] bg-slate-900 hover:bg-black active:scale-[0.98] text-brand-lime font-bold text-[16px] tracking-tight shadow-[0_8px_20px_-6px_rgba(15,23,42,0.35)] border border-slate-800 transition-all flex items-center justify-center gap-2.5 cursor-pointer';
         }
         if (confirmIcon) confirmIcon.className = 'fa-solid fa-arrow-right-arrow-left text-xs';
     } else if (isInUse) {
         if (modalTitle) modalTitle.textContent = 'Request Equipment Move';
         if (modalSubtitle) modalSubtitle.textContent = 'Currently active on site — request release & transfer';
-        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-blue-400/20 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-indigo-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3 sm:p-3.5 bg-gradient-to-br from-blue-50/95 via-white to-indigo-50/60 text-slate-900 border border-blue-200/80 shadow-apple transition-all duration-300';
-        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-blue-400/25 rounded-full blur-[28px] pointer-events-none';
-        if (iconBox) iconBox.className = 'w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/25 text-blue-700 flex items-center justify-center text-sm shrink-0 shadow-2xs';
+        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-sky-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-slate-200/10 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3.5 bg-white text-slate-900 border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-sky-400/20 rounded-full blur-[28px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-11 h-11 rounded-[14px] bg-slate-100 border border-slate-200/80 text-slate-800 flex items-center justify-center text-base shrink-0 shadow-2xs';
         if (statusEl) {
             statusEl.textContent = 'In Use';
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-100/90 text-blue-800 border border-blue-300/80 shrink-0 shadow-2xs';
+            statusEl.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold tracking-tight bg-blue-50 text-blue-700 border border-blue-200/80 shrink-0';
         }
         if (statusBanner) statusBanner.classList.add('hidden');
-        if (routeWrapper) routeWrapper.className = 'space-y-2 transition-opacity duration-300 opacity-100';
+        if (routeWrapper) routeWrapper.className = 'bg-white rounded-[22px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden transition-opacity duration-300 opacity-100';
         if (inputsWrapper) inputsWrapper.classList.remove('hidden');
         if (notesSection) notesSection.classList.remove('hidden');
-        if (notesLabel) notesLabel.textContent = 'Move Request Note';
-        if (descInput) descInput.placeholder = 'When needed? (e.g. Required at Lugarno by 7:00 AM)';
-        if (toDot) toDot.className = 'w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)] shrink-0';
+        if (notesLabel) notesLabel.textContent = 'Request Note';
+        if (descInput) descInput.placeholder = 'Optional (e.g. needed by 7:00 AM)';
+        if (toDot) toDot.className = 'w-2 h-2 rounded-full bg-sky-500 shrink-0';
         if (toHeaderLabel) toHeaderLabel.textContent = 'Request For';
-        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-blue-500/15 rounded-full blur-2xl pointer-events-none';
-        if (centerArrow) centerArrow.className = 'w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white border border-blue-400/50 flex items-center justify-center text-xs shadow-sm';
+        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-sky-400/15 rounded-full blur-2xl pointer-events-none';
+        if (centerArrow) centerArrow.className = 'w-7 h-7 rounded-full bg-slate-900 text-sky-400 border-2 border-white flex items-center justify-center text-[11px] shadow-sm';
         if (confirmBtn) {
             confirmBtn.disabled = false;
-            confirmBtn.className = 'w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 hover:brightness-105 active:scale-[0.98] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_10px_24px_-6px_rgba(59,130,246,0.45)] border border-blue-400/40 transition-all flex items-center justify-center gap-2 cursor-pointer';
+            confirmBtn.className = 'w-full min-h-[50px] py-3.5 rounded-[18px] bg-slate-900 hover:bg-black active:scale-[0.98] text-sky-400 font-bold text-[16px] tracking-tight shadow-[0_8px_20px_-6px_rgba(15,23,42,0.35)] border border-slate-800 transition-all flex items-center justify-center gap-2.5 cursor-pointer';
         }
         if (confirmIcon) confirmIcon.className = 'fa-solid fa-paper-plane text-xs';
     } else {
-        // 'Service' status — Unavailable until workshop pickup is ready
+        // 'Service' status — Unavailable until workshop pickup is ready (same gradient structure + Black & Orange button)
         if (modalTitle) modalTitle.textContent = 'Workshop Service Hold';
         if (modalSubtitle) modalSubtitle.textContent = 'Unavailable until workshop pickup is ready';
-        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-amber-400/20 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-orange-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
-        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3 sm:p-3.5 bg-gradient-to-br from-amber-50/95 via-white to-orange-50/60 text-slate-900 border border-amber-200/85 shadow-apple transition-all duration-300';
-        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-amber-400/25 rounded-full blur-[28px] pointer-events-none';
-        if (iconBox) iconBox.className = 'w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/25 text-amber-700 flex items-center justify-center text-sm shrink-0 shadow-2xs';
+        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-amber-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-slate-200/10 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[20px] p-3.5 bg-white text-slate-900 border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-28 h-28 bg-amber-400/20 rounded-full blur-[28px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-11 h-11 rounded-[14px] bg-slate-100 border border-slate-200/80 text-slate-800 flex items-center justify-center text-base shrink-0 shadow-2xs';
         if (statusEl) {
             statusEl.textContent = 'In Service';
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100/90 text-amber-800 border border-amber-300/80 shrink-0 shadow-2xs';
+            statusEl.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold tracking-tight bg-amber-50 text-amber-700 border border-amber-200/80 shrink-0';
         }
         if (statusBanner) {
-            statusBanner.className = 'rounded-2xl p-3 bg-gradient-to-r from-amber-50/95 via-orange-50/75 to-white/95 border border-amber-200/90 shadow-2xs transition-all';
-            if (bannerIcon) bannerIcon.className = 'w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-xs';
+            statusBanner.className = 'rounded-[20px] p-3.5 bg-white border border-black/[0.06] shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all';
+            if (bannerIcon) bannerIcon.className = 'w-9 h-9 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-2xs';
             if (bannerIcon) bannerIcon.innerHTML = '<i class="fa-solid fa-screwdriver-wrench"></i>';
             if (bannerTitle) bannerTitle.textContent = 'Unavailable Until Pickup Is Ready';
             if (bannerDesc) bannerDesc.textContent = `Logged ${tool.lastLogged || 'by Workshop'}. This item is undergoing maintenance and cannot be transferred until workshop pickup is ready.`;
         }
-        if (routeWrapper) routeWrapper.className = 'space-y-2 transition-opacity duration-300 opacity-45 pointer-events-none select-none';
+        if (toDot) toDot.className = 'w-2 h-2 rounded-full bg-amber-500 shrink-0';
+        if (toHeaderLabel) toHeaderLabel.textContent = 'To Site';
+        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-28 h-20 bg-amber-400/15 rounded-full blur-2xl pointer-events-none';
+        if (centerArrow) centerArrow.className = 'w-7 h-7 rounded-full bg-slate-900 text-amber-400 border-2 border-white flex items-center justify-center text-[11px] shadow-sm';
+        if (routeWrapper) routeWrapper.className = 'bg-white rounded-[22px] border border-black/[0.05] shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden transition-opacity duration-300 opacity-45 pointer-events-none select-none';
         if (inputsWrapper) inputsWrapper.classList.add('hidden');
         if (confirmBtn) {
             confirmBtn.disabled = true;
-            confirmBtn.className = 'w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-100/90 via-orange-50/90 to-amber-100/90 text-amber-800 font-black text-xs sm:text-sm uppercase tracking-wider border border-amber-300/80 transition-all flex items-center justify-center gap-2 cursor-not-allowed';
+            confirmBtn.className = 'w-full min-h-[50px] py-3.5 rounded-[18px] bg-slate-900 text-amber-400 font-bold text-[16px] tracking-tight shadow-[0_8px_20px_-6px_rgba(15,23,42,0.35)] border border-slate-800 transition-all flex items-center justify-center gap-2.5 cursor-not-allowed';
         }
-        if (confirmIcon) confirmIcon.className = 'fa-solid fa-lock text-xs text-amber-700';
+        if (confirmIcon) confirmIcon.className = 'fa-solid fa-lock text-xs text-amber-400';
     }
 
     // "From" card is locked to the last site it was logged to (date on line 1, "by Name" below it)
@@ -8142,22 +8167,26 @@ function renderTransferToItems() {
     const scroller = document.getElementById('transfer-to-scroller');
     if (!scroller) return;
 
-    const isInUse = currentTransferTool && currentTransferTool.status === 'In Use';
-    const selectedIconClass = isInUse
-        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm'
-        : 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm';
+    const status = currentTransferTool ? currentTransferTool.status : 'Available';
+    const selectedIconClass = status === 'In Use'
+        ? 'bg-slate-900 text-sky-400 shadow-xs'
+        : (status === 'Service'
+            ? 'bg-slate-900 text-amber-400 shadow-xs'
+            : 'bg-slate-900 text-brand-lime shadow-xs');
 
     scroller.innerHTML = ALL_TRANSFER_SITES.map((site, idx) => {
         const isSelected = idx === currentTransferToIndex;
         return `
             <div onclick="selectTransferToSite(${idx})" 
                  id="transfer-to-item-${idx}" 
-                 class="h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-1.5 cursor-pointer transition-all duration-200 ${isSelected ? 'opacity-100 scale-100' : 'opacity-40 hover:opacity-75 scale-95'}">
-                <div id="transfer-to-icon-${idx}" class="w-10 h-10 rounded-xl ${isSelected ? selectedIconClass : 'bg-slate-200/90 text-slate-500'} flex items-center justify-center text-base mb-1 transition-all">
-                    <i class="${site.icon}"></i>
+                 role="option"
+                 aria-selected="${isSelected ? 'true' : 'false'}"
+                 class="h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2 py-1 cursor-pointer transition-all duration-200 ${isSelected ? 'opacity-100 scale-100' : 'opacity-55 hover:opacity-85 scale-95'}">
+                <div id="transfer-to-icon-${idx}" class="w-9 h-9 rounded-xl ${isSelected ? selectedIconClass : 'bg-slate-200/80 text-slate-600'} flex items-center justify-center text-sm mb-1 transition-all">
+                    <i class="${site.icon}" aria-hidden="true"></i>
                 </div>
-                <span id="transfer-to-name-${idx}" class="text-xs sm:text-sm font-black ${isSelected ? 'text-slate-900' : 'text-slate-500'} tracking-tight line-clamp-1">${site.name}</span>
-                <span id="transfer-to-addr-${idx}" class="text-[11px] ${isSelected ? (isInUse ? 'text-blue-600 font-black' : 'text-emerald-600 font-black') : 'text-slate-400 font-semibold'} line-clamp-1 mt-0.5 leading-tight">${site.address}</span>
+                <span id="transfer-to-name-${idx}" class="text-[13px] font-bold ${isSelected ? 'text-slate-900' : 'text-slate-600'} tracking-tight line-clamp-1 leading-tight">${site.name}</span>
+                <span id="transfer-to-addr-${idx}" class="text-[11px] ${isSelected ? 'text-slate-600 font-semibold' : 'text-slate-500 font-medium'} line-clamp-1 mt-0.5 leading-tight">${site.address}</span>
             </div>
         `;
     }).join('');
@@ -8176,23 +8205,39 @@ function onTransferToScrolled(scroller) {
 }
 
 function selectTransferToSite(index) {
-    currentTransferToIndex = index;
+    const clampedIndex = Math.max(0, Math.min(ALL_TRANSFER_SITES.length - 1, index));
+    currentTransferToIndex = clampedIndex;
     triggerHaptic('light');
     const scroller = document.getElementById('transfer-to-scroller');
     if (scroller) {
-        scroller.scrollTo({ top: index * 92, behavior: 'smooth' });
+        scroller.scrollTo({ top: clampedIndex * 92, behavior: 'smooth' });
     }
-    updateTransferToItemStyles(index);
+    updateTransferToItemStyles(clampedIndex);
+}
+
+function stepTransferSite(delta) {
+    const nextIndex = Math.max(0, Math.min(ALL_TRANSFER_SITES.length - 1, currentTransferToIndex + delta));
+    selectTransferToSite(nextIndex);
+}
+
+function onTransferScrollerKeydown(event) {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        stepTransferSite(1);
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        stepTransferSite(-1);
+    }
 }
 
 function updateTransferToItemStyles(activeIndex) {
-    const isInUse = currentTransferTool && currentTransferTool.status === 'In Use';
-    const selectedIconClass = isInUse
-        ? "w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm flex items-center justify-center text-base mb-1 transition-all"
-        : "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm flex items-center justify-center text-base mb-1 transition-all";
-    const selectedAddrClass = isInUse
-        ? "text-[11px] text-blue-600 font-black line-clamp-1 mt-0.5 leading-tight"
-        : "text-[11px] text-emerald-600 font-black line-clamp-1 mt-0.5 leading-tight";
+    const status = currentTransferTool ? currentTransferTool.status : 'Available';
+    const selectedIconClass = status === 'In Use'
+        ? "w-9 h-9 rounded-xl bg-slate-900 text-sky-400 shadow-xs flex items-center justify-center text-sm mb-1 transition-all"
+        : (status === 'Service'
+            ? "w-9 h-9 rounded-xl bg-slate-900 text-amber-400 shadow-xs flex items-center justify-center text-sm mb-1 transition-all"
+            : "w-9 h-9 rounded-xl bg-slate-900 text-brand-lime shadow-xs flex items-center justify-center text-sm mb-1 transition-all");
+    const selectedAddrClass = "text-[11px] text-slate-600 font-semibold line-clamp-1 mt-0.5 leading-tight";
 
     ALL_TRANSFER_SITES.forEach((site, idx) => {
         const item = document.getElementById(`transfer-to-item-${idx}`);
@@ -8203,16 +8248,17 @@ function updateTransferToItemStyles(activeIndex) {
         if (!item) return;
 
         const isSelected = idx === activeIndex;
+        item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
         if (isSelected) {
-            item.className = "h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-1.5 cursor-pointer transition-all duration-200 opacity-100 scale-100";
+            item.className = "h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2 py-1 cursor-pointer transition-all duration-200 opacity-100 scale-100";
             if (icon) icon.className = selectedIconClass;
-            if (name) name.className = "text-xs sm:text-sm font-black text-slate-900 tracking-tight line-clamp-1";
+            if (name) name.className = "text-[13px] font-bold text-slate-900 tracking-tight line-clamp-1 leading-tight";
             if (addr) addr.className = selectedAddrClass;
         } else {
-            item.className = "h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-1.5 cursor-pointer transition-all duration-200 opacity-40 hover:opacity-75 scale-95";
-            if (icon) icon.className = "w-10 h-10 rounded-xl bg-slate-200/90 text-slate-500 flex items-center justify-center text-base mb-1 transition-all";
-            if (name) name.className = "text-xs sm:text-sm font-black text-slate-500 tracking-tight line-clamp-1";
-            if (addr) addr.className = "text-[11px] text-slate-400 font-semibold line-clamp-1 mt-0.5 leading-tight";
+            item.className = "h-[92px] snap-center shrink-0 flex flex-col items-center justify-center text-center px-2 py-1 cursor-pointer transition-all duration-200 opacity-55 hover:opacity-85 scale-95";
+            if (icon) icon.className = "w-9 h-9 rounded-xl bg-slate-200/80 text-slate-600 flex items-center justify-center text-sm mb-1 transition-all";
+            if (name) name.className = "text-[13px] font-bold text-slate-600 tracking-tight line-clamp-1 leading-tight";
+            if (addr) addr.className = "text-[11px] text-slate-500 font-medium line-clamp-1 mt-0.5 leading-tight";
         }
     });
 
