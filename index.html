@@ -319,9 +319,9 @@
             cursor: pointer;
         }
 
-        /* Spacious Fixed-Height Roster Cards + Snappy Measured Accordion */
+        /* Spacious Fixed-Height Roster Cards + Fluid Apple Accordion */
         .roster-card-header {
-            transition: transform 140ms var(--ease-out);
+            transition: transform 160ms var(--ease-out);
         }
         .roster-card-header:active {
             transform: scale(0.988);
@@ -329,19 +329,20 @@
         .roster-expandable-drawer {
             height: 0px;
             overflow: hidden;
-            transition: height 240ms var(--ease-out);
+            transition: height 340ms var(--ease-drawer);
+            will-change: height;
         }
         .roster-drawer-inner {
             opacity: 0;
             transform: translate3d(0, -6px, 0);
-            transition: opacity 200ms var(--ease-out), transform 220ms var(--ease-out);
+            transition: opacity 240ms var(--ease-out), transform 300ms var(--ease-drawer);
         }
         .roster-expandable-drawer.is-expanded .roster-drawer-inner {
             opacity: 1;
             transform: translate3d(0, 0, 0);
         }
         .roster-chevron {
-            transition: transform 240ms var(--ease-out);
+            transition: transform 340ms var(--ease-drawer);
         }
 
         /* ================= APPLE-ESQUE RAIN MODE MOTION ================= */
@@ -643,7 +644,8 @@
             transition: opacity 0.3s var(--ease-out);
         }
         #modal-content, #tool-transfer-sheet {
-            /* enter: iOS spring sheet curve */
+            /* enter: iOS spring sheet curve + guaranteed crisp light surface */
+            background-color: rgba(255, 255, 255, 0.97);
             transition: transform 0.42s var(--ease-drawer);
             will-change: transform;
             transform-origin: 50% 100%;
@@ -675,22 +677,96 @@
         }
 
         /* 4. Smooth Apple Tab Switch Fade & Spring Scale */
+        /* ================= APPLE TAB SWITCH & SUBPAGE SLIDE-AWAY CHOREOGRAPHY ================= */
+        .view-section {
+            background-color: #F3F4F6;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform-origin: center center;
+        }
+        .view-transition-overlay {
+            position: absolute !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            pointer-events: none !important;
+        }
+
+        /* 1. Floating Navbar Tab Switch (Original Apple Fade + Subtle Scale Lift, Tuned Slightly More Obvious & Smooth) */
         @keyframes appleTabSwitch {
             0% {
                 opacity: 0;
-                transform: scale(0.975) translateY(5px);
+                transform: scale(0.958) translate3d(0, 10px, 0);
             }
             100% {
                 opacity: 1;
-                transform: scale(1) translateY(0);
+                transform: scale(1) translate3d(0, 0, 0);
             }
         }
-        .view-section {
-            animation: appleTabSwitch 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
         .view-tab-animate {
-            animation: appleTabSwitch 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+            animation: appleTabSwitch 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
             will-change: opacity, transform;
+        }
+
+        /* 2. Back-Arrow Secondary Pages: Apple Push & Slide-Away Effect (UINavigationController) */
+        @keyframes appleSubpagePushEnter {
+            0% {
+                transform: translate3d(100%, 0, 0);
+            }
+            100% {
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        @keyframes appleSubpagePushUnderlayExit {
+            0% {
+                transform: translate3d(0, 0, 0) scale(1);
+                filter: brightness(1);
+            }
+            100% {
+                transform: translate3d(-28%, 0, 0) scale(0.97);
+                filter: brightness(0.91);
+            }
+        }
+        @keyframes appleSubpageSlideAway {
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+            100% {
+                transform: translate3d(104%, 0, 0);
+            }
+        }
+        @keyframes appleSubpagePopUnderlayEnter {
+            0% {
+                transform: translate3d(-28%, 0, 0) scale(0.97);
+                filter: brightness(0.91);
+            }
+            100% {
+                transform: translate3d(0, 0, 0) scale(1);
+                filter: brightness(1);
+            }
+        }
+
+        .view-apple-push-enter {
+            z-index: 25 !important;
+            box-shadow: -20px 0 44px -8px rgba(15, 23, 42, 0.22), -2px 0 10px 0 rgba(15, 23, 42, 0.08);
+            animation: appleSubpagePushEnter 0.44s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+            will-change: transform;
+        }
+        .view-apple-push-underlay-exit {
+            z-index: 14 !important;
+            animation: appleSubpagePushUnderlayExit 0.44s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+            will-change: transform, filter;
+        }
+        .view-apple-pop-slide-away {
+            z-index: 26 !important;
+            box-shadow: -20px 0 44px -8px rgba(15, 23, 42, 0.24), -2px 0 10px 0 rgba(15, 23, 42, 0.08);
+            animation: appleSubpageSlideAway 0.43s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+            will-change: transform;
+        }
+        .view-apple-pop-underlay-enter {
+            z-index: 15 !important;
+            animation: appleSubpagePopUnderlayEnter 0.43s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+            will-change: transform, filter;
         }
 
         /* Apple-esque Spring Spin Animation */
@@ -853,8 +929,18 @@
             #app-side-drawer, #drawer-layer-card, #app-main-stage {
                 transition-duration: 0.01ms !important;
             }
-            .roster-expandable-drawer, .roster-chevron, .roster-card-header {
+            .roster-card-header {
                 transition-duration: 0.01ms !important;
+            }
+            .roster-expandable-drawer, .roster-chevron {
+                transition-duration: 240ms !important;
+            }
+            .view-tab-animate,
+            .view-apple-push-enter, .view-apple-push-underlay-exit, .view-apple-pop-slide-away, .view-apple-pop-underlay-enter {
+                animation-duration: 0.32s !important;
+            }
+            .nav-pill-indicator {
+                transition-duration: 0.32s !important;
             }
             .roster-drawer-inner {
                 transform: none !important;
@@ -1384,7 +1470,7 @@
 <div id="app-main-stage" class="content-container w-full h-full bg-appBg flex flex-col overflow-hidden relative z-30">
 
         <!-- iOS Native Navigation Top Bar (Edge-to-edge under status bar with frosted glass) -->
-        <header id="app-top-bar" class="custom-header w-full bg-appBg/90 backdrop-blur-xl shrink-0 z-20 pt-3 sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all" style="margin-top: 0; padding-top: max(0.75rem, calc(env(safe-area-inset-top, 0px) + 0.35rem));">
+        <header id="app-top-bar" class="custom-header w-full bg-appBg/90 backdrop-blur-xl shrink-0 z-30 pt-3 sm:pt-4 pb-2.5 px-5 sm:px-6 border-b border-black/[0.04] transition-all" style="margin-top: 0; padding-top: max(0.75rem, calc(env(safe-area-inset-top, 0px) + 0.35rem));">
             <div class="flex justify-between items-center py-0.5">
                 <div class="flex items-center gap-0.5">
                     <span id="app-top-bar-title" class="text-2xl font-black tracking-tight text-slate-900 transition-colors duration-300">lifestyle</span>
@@ -1425,7 +1511,7 @@
     <!-- Apple Navigation Header -->
     <div class="relative z-10 flex items-center justify-between pt-1">
         <div class="flex items-center gap-3">
-            <button onclick="switchTab('sitehub')" aria-label="Back to Site Hub" class="w-12 h-12 rounded-2xl bg-white/85 backdrop-blur-3xl shadow-apple border border-white/90 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
+            <button onclick="navigateSubpageBack('sitehub')" aria-label="Back to Site Hub" class="w-12 h-12 rounded-2xl bg-white/85 backdrop-blur-3xl shadow-apple border border-white/90 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
                 <i class="fa-solid fa-arrow-left text-base" aria-hidden="true"></i>
             </button>
             <div>
@@ -1869,7 +1955,7 @@
 
     <!-- Header with Back Button -->
     <div class="relative z-10 flex items-center justify-between px-1">
-        <button onclick="switchTab('home')" aria-label="Back to Home" class="w-12 h-12 rounded-full bg-white/85 backdrop-blur-2xl shadow-apple border border-white/70 flex items-center justify-center text-slate-900 cursor-pointer active:scale-90 transition-all hover:bg-white/95 shrink-0">
+        <button onclick="navigateSubpageBack('home')" aria-label="Back to Home" class="w-12 h-12 rounded-full bg-white/85 backdrop-blur-2xl shadow-apple border border-white/70 flex items-center justify-center text-slate-900 cursor-pointer active:scale-90 transition-all hover:bg-white/95 shrink-0">
             <i class="fa-solid fa-chevron-left text-base" aria-hidden="true"></i>
         </button>
         <div>
@@ -2042,7 +2128,7 @@
     </div>
 </main>
 <!-- ================= VIEW 2: ROSTER TAB (SPACIOUS FIXED CARDS + 120HZ ACCORDION) ================= -->
-<main id="view-week" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-5 py-4 space-y-4 pb-20 relative max-w-full">
+<main id="view-week" class="view-section hidden flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-5 py-4 space-y-4 pb-28 relative max-w-full" style="padding-bottom: calc(6.75rem + env(safe-area-inset-bottom, 0px));">
     <!-- Lightweight Ambient Background Glows (Matched with Active Sites) -->
     <div class="absolute -top-10 left-6 w-40 h-40 bg-emerald-500/15 rounded-full blur-[60px] pointer-events-none"></div>
     <div class="absolute top-48 right-4 w-40 h-40 bg-blue-500/15 rounded-full blur-[60px] pointer-events-none"></div>
@@ -2089,6 +2175,8 @@
         <div id="card-thu" class="roster-day-row"></div>
         <div id="card-fri" class="roster-day-row"></div>
     </div>
+    <!-- Dynamic scroll runway spacer prevents browser scrollTop clamping during drawer expand/collapse -->
+    <div id="roster-scroll-spacer" aria-hidden="true" style="height: 0px; margin-top: 0px !important; margin-bottom: 0px !important; pointer-events: none;"></div>
 </main>
 
         <!-- ================= VIEW 3: SITE HUB TAB (APPLE-ESQUE MODERN UI) ================= -->
@@ -2101,7 +2189,7 @@
             <!-- Apple-esque Glassmorphic Header (With matched 48px/12 size button) -->
             <div class="relative z-10 flex items-center justify-between px-1">
                 <div class="flex items-center gap-3">
-                    <button onclick="switchTab('home')" aria-label="Back to Home" class="w-12 h-12 rounded-2xl bg-white/85 backdrop-blur-xl shadow-apple border border-white/60 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
+                    <button onclick="navigateSubpageBack('home')" aria-label="Back to Home" class="w-12 h-12 rounded-2xl bg-white/85 backdrop-blur-xl shadow-apple border border-white/60 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
                         <i class="fa-solid fa-arrow-left text-base"></i>
                     </button>
                     <div>
@@ -2508,7 +2596,7 @@
             <!-- Apple Navigation Header -->
             <div class="relative z-10 flex items-center justify-between px-1">
                 <div class="flex items-center gap-3">
-                    <button onclick="switchTab('home')" aria-label="Back to Home" class="w-12 h-12 rounded-2xl bg-white/85 backdrop-blur-xl shadow-apple border border-white/60 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
+                    <button onclick="navigateSubpageBack('home')" aria-label="Back to Home" class="w-12 h-12 rounded-2xl bg-white/85 backdrop-blur-xl shadow-apple border border-white/60 flex items-center justify-center text-slate-800 cursor-pointer active:scale-90 transition-all hover:bg-white shrink-0">
                         <i class="fa-solid fa-arrow-left text-base"></i>
                     </button>
                     <div>
@@ -2683,9 +2771,9 @@
         <div id="drawer-dismiss-overlay" onclick="handleDrawerDismissOverlayClick(event)" class="absolute inset-0 z-50 cursor-pointer pointer-events-none opacity-0 bg-slate-950/20"></div>
     </div> <!-- /#app-main-stage -->
 
-        <!-- Universal Modal Overlay with Apple Bottom Sheet -->
-        <div id="modal-overlay" aria-hidden="true" class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-0 sm:p-4">
-            <div id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl rounded-t-[32px] rounded-b-none sm:rounded-[32px] p-5 pt-2.5 pb-6 shadow-[0_-12px_40px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border-t border-x sm:border border-white/80 transform translate-y-[120%] transition-transform duration-350 max-h-[88vh] flex flex-col overflow-hidden will-change-transform" style="padding-bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + 1.25rem));">
+        <!-- Universal Modal Overlay with Apple Bottom Sheet (Light Frosted Backdrop) -->
+        <div id="modal-overlay" aria-hidden="true" class="absolute inset-0 bg-slate-400/20 backdrop-blur-md z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-0 sm:p-4">
+            <div id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl rounded-t-[32px] rounded-b-none sm:rounded-[32px] p-5 pt-2.5 pb-6 shadow-[0_-14px_44px_rgba(15,23,42,0.14),0_0_1px_rgba(15,23,42,0.08),inset_0_1px_1px_rgba(255,255,255,0.95)] border-t border-x sm:border border-white/90 transform translate-y-[120%] transition-transform duration-350 max-h-[88vh] flex flex-col overflow-hidden will-change-transform" style="padding-bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + 1.25rem));">
                 <!-- iOS Drag Handle Pill Zone (Large hit area) -->
                 <div id="modal-drag-zone" class="w-full pt-1 pb-2.5 flex justify-center cursor-grab active:cursor-grabbing select-none shrink-0 group">
                     <div class="w-10 h-1 bg-slate-300/90 group-hover:bg-slate-400 group-active:bg-slate-500 rounded-full transition-colors"></div>
@@ -2703,116 +2791,148 @@
             </div>
         </div>
 
-        <!-- Tool Transfer Modal Overlay (White Apple-Style Dual Roller Selector) -->
+        <!-- Tool Transfer Modal Overlay (Light Frosted Backdrop & Apple Gradient Glass Sheet) -->
         <div id="tool-transfer-modal-overlay" 
              aria-hidden="true" 
-             class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-0 sm:p-4 select-none">
+             class="absolute inset-0 bg-slate-400/20 backdrop-blur-md z-50 flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-0 sm:p-4 select-none">
             
             <div id="tool-transfer-sheet" 
                  role="dialog" 
                  aria-modal="true" 
                  aria-labelledby="transfer-modal-title" 
-                 class="w-full sm:max-w-md bg-white/95 backdrop-blur-3xl text-slate-900 rounded-t-[32px] sm:rounded-[32px] shadow-[0_-12px_40px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,0.9)] border-t border-x sm:border border-white/80 transform translate-y-[120%] max-h-[90vh] flex flex-col overflow-hidden will-change-transform pb-5" style="padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 1rem));">
+                 class="relative w-full sm:max-w-md bg-white/95 bg-gradient-to-b from-white via-slate-50/95 to-slate-100/95 backdrop-blur-3xl text-slate-900 rounded-t-[34px] sm:rounded-[34px] shadow-[0_-14px_44px_rgba(15,23,42,0.14),0_0_1px_rgba(15,23,42,0.08),inset_0_1px_1px_rgba(255,255,255,1)] border-t border-x sm:border border-white/90 transform translate-y-[120%] max-h-[90vh] flex flex-col overflow-hidden will-change-transform pb-5" style="padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 1rem));">
                 
+                <!-- Dynamic Apple Ambient Glow Orbs (Color-matched to Available / In Use / Service) -->
+                <div id="transfer-sheet-glow-1" class="absolute -top-16 -left-10 w-52 h-52 bg-emerald-500/20 rounded-full blur-[65px] pointer-events-none transition-colors duration-500"></div>
+                <div id="transfer-sheet-glow-2" class="absolute top-36 -right-12 w-52 h-52 bg-blue-500/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500"></div>
+
                 <!-- iOS Drag Handle Zone -->
-                <div id="transfer-drag-zone" class="w-full pt-2 pb-1.5 flex justify-center cursor-grab select-none shrink-0" onclick="closeToolTransferModal()">
+                <div id="transfer-drag-zone" class="relative z-10 w-full pt-2.5 pb-1.5 flex justify-center cursor-grab select-none shrink-0" onclick="closeToolTransferModal()">
+                <div id="transfer-drag-zone" class="relative z-10 w-full pt-3.5 pb-2.5 flex justify-center cursor-grab select-none shrink-0" onclick="closeToolTransferModal()">
                     <div class="w-10 h-1 bg-slate-300/90 rounded-full transition-colors hover:bg-slate-400"></div>
                 </div>
 
                 <!-- Apple Sheet Header: Title on Left, X Close on Right -->
-                <div class="flex items-center justify-between pb-3 px-5 border-b border-slate-100 shrink-0">
-                    <h3 id="transfer-modal-title" class="text-xl font-black text-slate-900 tracking-tight">Transfer Details</h3>
+                <div class="relative z-10 flex items-center justify-between pb-3 px-5 border-b border-slate-200/60 shrink-0">
+                <div class="relative z-10 flex items-center justify-between pt-1 pb-3.5 px-5 border-b border-slate-200/60 shrink-0">
+                    <div>
+                        <h3 id="transfer-modal-title" class="text-xl font-black text-slate-900 tracking-tight">Transfer Details</h3>
+                        <p id="transfer-modal-subtitle" class="text-xs font-semibold text-slate-500 mt-0.5">Select destination site for instant movement</p>
+                    </div>
                     
                     <!-- Circular Close Button (X) on Top-Right -->
                     <button type="button" 
                             onclick="closeToolTransferModal()" 
                             aria-label="Close transfer modal" 
-                            class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-slate-100/90 hover:bg-slate-200 active:scale-90 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer transition-all border border-slate-200/50 shrink-0">
+                            class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-white/90 hover:bg-slate-100 active:scale-90 flex items-center justify-center text-slate-600 hover:text-slate-900 cursor-pointer transition-all border border-slate-200/80 shadow-2xs shrink-0">
                         <i class="fa-solid fa-xmark text-xs"></i>
                     </button>
                 </div>
 
                 <!-- Scrollable Modal Content -->
-                <div class="flex-1 overflow-y-auto no-scrollbar px-5 py-4 space-y-3.5">
+                <div class="relative z-10 flex-1 overflow-y-auto no-scrollbar px-5 py-4 space-y-3.5">
                     
-                    <!-- Equipment Highlight Strip -->
-                    <div class="bg-slate-50/90 border border-slate-200/70 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-2xs">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div class="w-10 h-10 rounded-xl bg-slate-900 text-brand-lime flex items-center justify-center text-base shrink-0 shadow-xs">
-                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <!-- Light Apple Gradient Equipment Hero Card -->
+                    <div id="transfer-hero-card" class="relative overflow-hidden rounded-[24px] p-4 bg-gradient-to-br from-emerald-50/95 via-white to-teal-50/60 text-slate-900 border border-emerald-200/80 shadow-apple transition-all duration-300">
+                        <div id="transfer-hero-orb" class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-400/20 rounded-full blur-[30px] pointer-events-none"></div>
+                        <div class="relative z-10 flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3.5 min-w-0">
+                                <div id="transfer-tool-icon-box" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/25 text-emerald-700 flex items-center justify-center text-base shrink-0 shadow-2xs">
+                                    <i id="transfer-tool-icon" class="fa-solid fa-screwdriver-wrench"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 id="transfer-tool-name" class="text-sm sm:text-base font-black text-slate-900 tracking-tight truncate">Equipment</h4>
+                                    <p id="transfer-tool-meta" class="text-xs text-slate-500 font-semibold truncate mt-0.5">Category • Status</p>
+                                </div>
                             </div>
-                            <div class="min-w-0">
-                                <h4 id="transfer-tool-name" class="text-sm font-black text-slate-900 truncate">Equipment</h4>
-                                <p id="transfer-tool-meta" class="text-xs text-slate-500 font-medium truncate">Category • Status</p>
-                            </div>
-                        </div>
-                        <span id="transfer-tool-status" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                            Available
-                        </span>
-                    </div>
-
-                    <!-- Clean "FROM" & "TO" Segmented Bar in App Style -->
-                    <div class="grid grid-cols-2 bg-slate-100/90 rounded-2xl p-1.5 border border-slate-200/60 text-center text-xs font-black uppercase tracking-wider select-none gap-1.5">
-                        <div class="py-2 rounded-xl bg-white shadow-xs text-slate-900 flex items-center justify-center gap-2 border border-slate-200/40">
-                            <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
-                            <span class="text-xs font-black tracking-wider">From</span>
-                        </div>
-                        <div class="py-2 rounded-xl bg-white shadow-xs text-slate-900 flex items-center justify-center gap-2 border border-slate-200/40">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                            <span class="text-xs font-black tracking-wider">To</span>
+                            <span id="transfer-tool-status" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100/90 text-emerald-800 border border-emerald-300/80 shrink-0 shadow-2xs">
+                                Available
+                            </span>
                         </div>
                     </div>
 
-                    <!-- Dual Wheel / Column Selection Stage in Apple Style (Accessible & Spacious) -->
-                    <div class="relative bg-slate-100/70 rounded-[26px] border border-slate-200/80 overflow-hidden shadow-inner h-[260px]">
-                        
-                        <!-- Central Focus Band (Spans across both columns behind the selected items) -->
-                        <div class="absolute top-[74px] left-2 right-2 h-[112px] bg-white border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_4px_16px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] z-0 flex items-center justify-center">
-                            <!-- Subtle Right Arrow Indicator pointing from From to To -->
-                            <div class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200/90 flex items-center justify-center text-slate-500 text-xs shadow-2xs">
-                                <i class="fa-solid fa-chevron-right ml-0.5"></i>
+                    <!-- Contextual Status Notice Banner (Shown for "In Use" Move Requests & "Service" Workshop Holds) -->
+                    <div id="transfer-status-banner" class="hidden rounded-2xl p-3.5 border transition-all">
+                        <div class="flex items-start gap-3">
+                            <div id="transfer-status-banner-icon" class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shrink-0 mt-0.5">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p id="transfer-status-banner-title" class="text-xs font-black tracking-tight text-slate-900">Status Notice</p>
+                                <p id="transfer-status-banner-desc" class="text-xs font-medium text-slate-600 mt-0.5 leading-relaxed">Details about this item's transfer availability.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route Selector Wrapper (Dimmed/Locked when in Workshop Service) -->
+                    <div id="transfer-route-wrapper" class="space-y-3 transition-opacity duration-300">
+                        <!-- Clean "FROM" & "TO" Segmented Bar with Apple Gradients -->
+                        <div class="grid grid-cols-2 bg-slate-200/65 backdrop-blur-xl rounded-2xl p-1.5 border border-white/80 text-center text-xs font-black uppercase tracking-wider select-none gap-1.5 shadow-inner">
+                            <div class="py-2 rounded-xl bg-gradient-to-b from-white to-slate-50/90 shadow-xs text-slate-800 flex items-center justify-center gap-2 border border-white">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)] shrink-0"></span>
+                                <span class="text-[11px] font-black tracking-wider">From Site</span>
+                            </div>
+                            <div class="py-2 rounded-xl bg-gradient-to-b from-white to-slate-50/90 shadow-xs text-slate-900 flex items-center justify-center gap-2 border border-white">
+                                <span id="transfer-to-dot" class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] shrink-0"></span>
+                                <span id="transfer-to-header-label" class="text-[11px] font-black tracking-wider">To Site</span>
                             </div>
                         </div>
 
-                        <!-- Dual Columns Grid -->
-                        <div class="relative z-10 grid grid-cols-2 h-full">
+                        <!-- Dual Wheel / Column Selection Stage in Apple Style (Accessible & Spacious) -->
+                        <div class="relative bg-gradient-to-b from-slate-100/90 via-white/80 to-slate-100/90 rounded-[28px] border border-slate-200/80 overflow-hidden shadow-[inset_0_2px_10px_rgba(15,23,42,0.05)] h-[248px]">
                             
-                            <!-- LEFT COLUMN: "FROM" (Locked to current site, generous touch & text hierarchy) -->
-                            <div class="flex items-center justify-center h-full px-3 border-r border-slate-200/60 select-none">
-                                <div id="transfer-from-card" class="w-full flex flex-col items-center justify-center text-center p-2.5">
-                                    <div class="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-600 border border-amber-500/25 flex items-center justify-center text-xl mb-1.5 shadow-2xs">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                    </div>
-                                    <span id="transfer-from-name" class="text-sm sm:text-base font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
-                                    <span id="transfer-from-desc" class="text-xs text-slate-600 font-extrabold line-clamp-1 mt-0.5">Current Location</span>
+                            <!-- Subtle Ambient Tint Behind Active Selection -->
+                            <div id="transfer-wheel-glow" class="absolute top-1/2 right-4 -translate-y-1/2 w-32 h-24 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                            <!-- Central Focus Band (Spans across both columns behind the selected items) -->
+                            <div class="absolute top-[68px] left-2 right-2 h-[112px] bg-gradient-to-r from-amber-50/40 via-white to-emerald-50/45 border border-slate-200/90 rounded-2xl pointer-events-none shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06),0_2px_6px_rgba(15,23,42,0.03),inset_0_1px_0_rgba(255,255,255,1)] z-0 flex items-center justify-center">
+                                <!-- Glowing Arrow Badge pointing from From to To -->
+                                <div id="transfer-center-arrow" class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white border border-emerald-400/50 flex items-center justify-center text-xs shadow-sm">
+                                    <i class="fa-solid fa-arrow-right text-[11px]"></i>
                                 </div>
                             </div>
 
-                            <!-- RIGHT COLUMN: "TO" (Scrollable list of all sites) -->
-                            <div id="transfer-to-scroller" 
-                                 onscroll="onTransferToScrolled(this)"
-                                 class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[74px] px-2 select-none">
-                                <!-- Populated dynamically via JS -->
+                            <!-- Dual Columns Grid -->
+                            <div class="relative z-10 grid grid-cols-2 h-full">
+                                
+                                <!-- LEFT COLUMN: "FROM" (Locked to current site, generous touch & text hierarchy) -->
+                                <div class="flex items-center justify-center h-full px-3 border-r border-slate-200/60 select-none">
+                                    <div id="transfer-from-card" class="w-full flex flex-col items-center justify-center text-center p-2.5">
+                                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 text-amber-600 border border-amber-500/30 flex items-center justify-center text-xl mb-1.5 shadow-2xs">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                        </div>
+                                        <span id="transfer-from-name" class="text-sm sm:text-base font-black text-slate-900 tracking-tight line-clamp-1">Lugarno Site</span>
+                                        <span id="transfer-from-desc" class="text-[11px] text-slate-600 font-bold line-clamp-1 mt-0.5">Last log: 13 Oct</span>
+                                        <span id="transfer-from-by" class="text-[10px] text-slate-400 font-semibold line-clamp-1 leading-tight">by David H.</span>
+                                    </div>
+                                </div>
+
+                                <!-- RIGHT COLUMN: "TO" (Scrollable list of all sites) -->
+                                <div id="transfer-to-scroller" 
+                                     onscroll="onTransferToScrolled(this)"
+                                     class="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar py-[68px] px-2 select-none">
+                                    <!-- Populated dynamically via JS -->
+                                </div>
                             </div>
+
+                            <!-- Top & Bottom Gradient Vignettes to soften unselected items like a 3D wheel -->
+                            <div class="absolute top-0 left-0 right-0 h-14 bg-gradient-to-b from-slate-100/95 via-slate-100/60 to-transparent pointer-events-none z-20"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-slate-100/95 via-slate-100/60 to-transparent pointer-events-none z-20"></div>
                         </div>
 
-                        <!-- Top & Bottom Gradient Vignettes to soften unselected items like a 3D wheel -->
-                        <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-slate-100/95 to-transparent pointer-events-none z-20"></div>
-                        <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-100/95 to-transparent pointer-events-none z-20"></div>
+                        <!-- Guidance Hint -->
+                        <p id="transfer-wheel-hint" class="text-xs text-center text-slate-500 font-medium">
+                            Scroll or tap the <strong class="text-slate-800 font-bold">To Site</strong> column to choose destination.
+                        </p>
                     </div>
 
-                    <!-- Guidance Hint -->
-                    <p class="text-xs text-center text-slate-500 font-medium">
-                        Scroll or tap the <strong class="text-slate-800 font-bold">To</strong> column to select destination site.
-                    </p>
-
                     <!-- Inputs (Apple App Style Clean Form Fields) -->
-                    <div class="space-y-3 pt-1">
-                        <!-- Amount / Units Line with Stepper & Input -->
-                        <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Transfer Amount</label>
-                                <span id="transfer-amount-available" class="text-xs font-bold text-slate-400">Available: 24 Props</span>
+                    <div id="transfer-inputs-wrapper" class="space-y-3 pt-0.5">
+                        <!-- Multi-Unit Amount Stepper ( ONLY shown when tool has multiple units, e.g. Acro Props ) -->
+                        <div id="transfer-quantity-section" class="hidden bg-white/80 backdrop-blur-xl rounded-2xl p-3 border border-slate-200/80 shadow-2xs">
+                            <div class="flex items-center justify-between mb-2">
+                                <label for="transfer-input-qty" class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider">Units to Move</label>
+                                <span id="transfer-amount-available" class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-[11px] font-extrabold">Available: 24 Props</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <button type="button" 
@@ -2840,22 +2960,22 @@
                             </div>
                         </div>
 
-                        <!-- Description Line -->
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Description / Notes</label>
-                            <input type="text" id="transfer-input-desc" placeholder="Optional notes (e.g. framing stage)" 
-                                   class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-900 placeholder:text-slate-400 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all">
+                        <!-- Description / Notes Line -->
+                        <div id="transfer-notes-section">
+                            <label id="transfer-notes-label" for="transfer-input-desc" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Transfer Notes</label>
+                            <input type="text" id="transfer-input-desc" placeholder="Optional notes (e.g. needed for framing stage)" 
+                                   class="w-full px-3.5 py-2.5 rounded-xl bg-white/90 border border-slate-200/90 text-slate-900 placeholder:text-slate-400 font-semibold text-sm shadow-2xs focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all">
                         </div>
                     </div>
 
-                    <!-- Bottom Action Button in App's Signature Style -->
-                    <div class="pt-2">
+                    <!-- Bottom Action Button in Light Apple Gradient Style -->
+                    <div class="pt-1.5">
                         <button type="button" 
                                 id="transfer-confirm-btn"
                                 onclick="confirmToolTransfer()" 
-                                class="w-full py-4 rounded-2xl bg-slate-900 hover:bg-black active:scale-[0.98] text-brand-lime font-black text-sm uppercase tracking-wider shadow-apple transition-all flex items-center justify-center gap-2.5 cursor-pointer">
+                                class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:brightness-105 active:scale-[0.98] text-white font-black text-sm uppercase tracking-wider shadow-[0_10px_24px_-6px_rgba(16,185,129,0.45)] border border-emerald-400/40 transition-all flex items-center justify-center gap-2.5 cursor-pointer">
                             <span id="transfer-confirm-btn-label">Transfer Equipment</span>
-                            <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+                            <i id="transfer-confirm-btn-icon" class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
                         </button>
                     </div>
 
@@ -3159,6 +3279,8 @@
 // Instagram Floating Frosted Glass Pill & Apple Bezier Physics
 let isNavDragging = false;
 let currentHoveredTab = 'home';
+let lastPillLeftOffset = null;
+let pillSettleTimer = null;
 
 function updateNavPillPosition(tabName, isClick = false) {
     if (isNavDragging) return;
@@ -3173,8 +3295,15 @@ function updateNavPillPosition(tabName, isClick = false) {
 
     const leftOffset = activeTab.offsetLeft;
     const width = activeTab.offsetWidth;
+    const travelDist = (lastPillLeftOffset !== null) ? Math.abs(leftOffset - lastPillLeftOffset) : 0;
+    lastPillLeftOffset = leftOffset;
 
     pill.style.width = `${width}px`;
+
+    if (pillSettleTimer) {
+        clearTimeout(pillSettleTimer);
+        pillSettleTimer = null;
+    }
     
     if (isClick) {
         // Gets bigger momentarily during the Apple Bezier glide
@@ -3183,7 +3312,8 @@ function updateNavPillPosition(tabName, isClick = false) {
         void pill.offsetWidth;
         pill.classList.add('pill-flash');
 
-        setTimeout(() => {
+        pillSettleTimer = setTimeout(() => {
+            pillSettleTimer = null;
             if (!isNavDragging) {
                 pill.style.transform = `translate3d(${leftOffset}px, 0, 0) scale(1)`;
             }
@@ -3196,7 +3326,7 @@ function updateNavPillPosition(tabName, isClick = false) {
 }
 
 // Gesture model (Apple "Designing Fluid Interfaces"):
-//  - pointer-down: instant feedback, the pill swells under the finger
+//  - pointer-down: arm gesture without snapping the pill (so a tap plays the full 420ms Bezier glide)
 //  - ~8px of horizontal travel commits to a drag, then capture the pointer and track 1:1
 //  - a plain tap is left to the button's own click, so switchTab never fires twice
 //  - cancel / leave without a committed drag snaps back to the current tab
@@ -3216,55 +3346,61 @@ function onNavPointerDown(e) {
     navPointerId = e.pointerId;
     navStartX = e.clientX;
     navDragCommitted = false;
-    isNavDragging = true;
-    const navBar = document.getElementById('floating-nav');
-    if (navBar) navBar.classList.add('is-dragging');
-    trackPillToPointer(e);
 }
 
 function onNavPointerMove(e) {
-    if (!isNavDragging || e.pointerId !== navPointerId) return;
+    if (navPointerId === null || e.pointerId !== navPointerId) return;
     if (!navDragCommitted && Math.abs(e.clientX - navStartX) > NAV_DRAG_THRESHOLD) {
         navDragCommitted = true;
+        isNavDragging = true;
         const navBar = document.getElementById('floating-nav');
-        // Capture only once it's a real drag; capturing on a tap would retarget the click away from the button
-        if (navBar && navBar.setPointerCapture) {
-            try { navBar.setPointerCapture(e.pointerId); } catch (_) {}
+        if (navBar) {
+            navBar.classList.add('is-dragging');
+            // Capture only once it's a real drag; capturing on a tap would retarget the click away from the button
+            if (navBar.setPointerCapture) {
+                try { navBar.setPointerCapture(e.pointerId); } catch (_) {}
+            }
         }
     }
-    trackPillToPointer(e);
+    if (navDragCommitted) {
+        trackPillToPointer(e);
+    }
 }
 
 function endNavGesture() {
     isNavDragging = false;
     navPointerId = null;
+    navDragCommitted = false;
     const navBar = document.getElementById('floating-nav');
     if (navBar) navBar.classList.remove('is-dragging');
 }
 
 function onNavPointerUp(e) {
-    if (!isNavDragging || (e && e.pointerId !== navPointerId)) return;
+    if (navPointerId === null || (e && e.pointerId !== navPointerId)) return;
     const committed = navDragCommitted;
     endNavGesture();
 
     if (committed && currentHoveredTab) {
         // Drag release: magnetically snap to whichever tab the finger let go over
-        if (currentHoveredTab !== getActiveNavTab()) {
+        if (currentHoveredTab !== currentActiveViewName) {
             switchTab(currentHoveredTab);
         } else {
             updateNavPillPosition(currentHoveredTab, true);
         }
-    } else if (!e || e.type !== 'pointerup') {
-        // Leave / cancel without a drag: glide home
+    } else if (committed && (!e || e.type !== 'pointerup')) {
+        // Leave / cancel without finishing drag: glide home
         updateNavPillPosition(getActiveNavTab());
     }
-    // Plain tap: the button's onclick runs switchTab
+    // Plain tap: the button's onclick runs switchTab and glides the pill with full Apple Bezier curve
 }
 
 function onNavPointerCancel() {
-    if (!isNavDragging) return;
+    if (navPointerId === null) return;
+    const committed = navDragCommitted;
     endNavGesture();
-    updateNavPillPosition(getActiveNavTab());
+    if (committed) {
+        updateNavPillPosition(getActiveNavTab());
+    }
 }
 
 function trackPillToPointer(e) {
@@ -3305,18 +3441,76 @@ function trackPillToPointer(e) {
     }
 }
 
-function switchTab(tabName) {
+const ALL_APP_VIEWS = ['home', 'week', 'sitehub', 'chat', 'jobs', 'team', 'tools', 'user-account', 'schedule', 'notifications'];
+const PRIMARY_NAV_TABS = ['home', 'week', 'chat', 'jobs', 'team'];
+const VIEW_HIERARCHY_DEPTH = {
+    'home': 0,
+    'week': 0,
+    'chat': 0,
+    'jobs': 0,
+    'team': 0,
+    'user-account': 1,
+    'sitehub': 1,
+    'tools': 1,
+    'notifications': 1,
+    'schedule': 2
+};
+const VIEW_ANIMATION_CLASSES = [
+    'view-transition-overlay',
+    'view-tab-animate',
+    'view-apple-push-enter',
+    'view-apple-push-underlay-exit',
+    'view-apple-pop-slide-away',
+    'view-apple-pop-underlay-enter'
+];
+
+let currentActiveViewName = 'home';
+let activeViewTransitionCleanup = null;
+const subpageParentMap = {
+    'sitehub': 'home',
+    'schedule': 'sitehub',
+    'tools': 'home',
+    'user-account': 'home',
+    'notifications': 'home'
+};
+
+function clearViewTransitionStyles(view) {
+    if (!view) return;
+    VIEW_ANIMATION_CLASSES.forEach(cls => view.classList.remove(cls));
+    view.style.top = '';
+    view.style.height = '';
+    view.style.transform = '';
+    view.style.opacity = '';
+    view.style.filter = '';
+    view.style.transition = '';
+    view.style.boxShadow = '';
+    view.style.zIndex = '';
+}
+
+function getBackTargetForSubpage(viewName, fallback = 'home') {
+    if (viewName === 'schedule') return 'sitehub';
+    if (viewName === 'notifications') return (typeof viewBeforeNotifications === 'string' && viewBeforeNotifications) ? viewBeforeNotifications : 'home';
+    return subpageParentMap[viewName] || fallback || 'home';
+}
+
+function navigateSubpageBack(fallbackTab = 'home') {
+    triggerHaptic('light');
+    const targetTab = getBackTargetForSubpage(currentActiveViewName, fallbackTab);
+    switchTab(targetTab, { forceMode: 'pop' });
+}
+
+function switchTab(tabName, options = {}) {
     closeSideDrawer();
-    triggerHaptic('medium');
+    if (!options.silentHaptic) {
+        triggerHaptic('medium');
+    }
+
     const navBar = document.getElementById('floating-nav');
-    if (navBar) {
+    if (navBar && PRIMARY_NAV_TABS.includes(tabName)) {
         navBar.classList.remove('nav-pop-active');
         void navBar.offsetWidth;
         navBar.classList.add('nav-pop-active');
     }
-
-    const allViews = ['home', 'week', 'sitehub', 'chat', 'jobs', 'team', 'tools', 'user-account', 'schedule', 'notifications'];
-    const navTabs = ['home', 'week', 'chat', 'jobs', 'team'];
 
     // De-highlight notifications button if switching to another view
     const notifBtn = document.getElementById('btn-notifications');
@@ -3324,29 +3518,133 @@ function switchTab(tabName) {
         notifBtn.classList.remove('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
     }
 
-    // Toggle views with guaranteed Apple-esque transition replay
-    allViews.forEach(t => {
-        const view = document.getElementById(`view-${t}`);
-        if (view) {
-            const isTarget = (t === tabName);
-            if (isTarget) {
-                view.classList.remove('hidden');
-                // Force animation restart across all browsers (including Safari)
-                view.classList.remove('view-tab-animate');
-                void view.offsetWidth; // Force reflow
-                view.classList.add('view-tab-animate');
-                view.addEventListener('animationend', () => {
-                    view.classList.remove('view-tab-animate');
+    // Clean up any in-flight view transition immediately (interruptible at any frame)
+    if (activeViewTransitionCleanup) {
+        activeViewTransitionCleanup();
+        activeViewTransitionCleanup = null;
+    }
+
+    const fromViewName = currentActiveViewName;
+    const toViewName = tabName;
+    const outgoingView = document.getElementById(`view-${fromViewName}`);
+    const incomingView = document.getElementById(`view-${toViewName}`);
+
+    if (!incomingView) return;
+
+    // Determine transition choreography: 'push' (subpage enters), 'pop' (Apple slide-away), or 'tab' (directional navbar switch)
+    let transitionMode = options.forceMode || null;
+    const fromDepth = VIEW_HIERARCHY_DEPTH[fromViewName] ?? 0;
+    const toDepth = VIEW_HIERARCHY_DEPTH[toViewName] ?? 0;
+
+    if (!transitionMode) {
+        if (fromViewName === toViewName) {
+            transitionMode = 'none';
+        } else if (toDepth > fromDepth) {
+            transitionMode = 'push';
+            subpageParentMap[toViewName] = fromViewName;
+        } else if (fromDepth > toDepth) {
+            transitionMode = 'pop';
+        } else if (fromDepth > 0 && toDepth > 0) {
+            if (subpageParentMap[fromViewName] === toViewName) {
+                transitionMode = 'pop';
+            } else {
+                transitionMode = 'push';
+                subpageParentMap[toViewName] = fromViewName;
+            }
+        } else {
+            transitionMode = 'tab';
+        }
+    }
+
+    currentActiveViewName = toViewName;
+
+    if (fromViewName !== toViewName && outgoingView && (transitionMode === 'push' || transitionMode === 'pop')) {
+        const stage = document.getElementById('app-main-stage');
+        const topBar = document.getElementById('app-top-bar');
+        const stageTop = outgoingView.offsetTop || (topBar ? topBar.offsetHeight : 0);
+        const stageHeight = outgoingView.offsetHeight || (stage ? stage.clientHeight - stageTop : 0);
+        const savedOutgoingScroll = outgoingView.scrollTop;
+
+        // Hide any unrelated views
+        ALL_APP_VIEWS.forEach(v => {
+            if (v !== fromViewName && v !== toViewName) {
+                const el = document.getElementById(`view-${v}`);
+                if (el) {
+                    clearViewTransitionStyles(el);
+                    el.classList.add('hidden');
+                }
+            }
+        });
+
+        clearViewTransitionStyles(outgoingView);
+        clearViewTransitionStyles(incomingView);
+
+        // Pin outgoing view into the exact stage viewport layer so both views animate simultaneously
+        outgoingView.classList.remove('hidden');
+        outgoingView.classList.add('view-transition-overlay');
+        outgoingView.style.top = `${stageTop}px`;
+        outgoingView.style.height = `${stageHeight}px`;
+        outgoingView.scrollTop = savedOutgoingScroll;
+
+        // Reveal incoming view in normal flex flow
+        incomingView.classList.remove('hidden');
+
+        // Force reflow so animations start cleanly on frame 1 across Safari/iOS/Chrome
+        void incomingView.offsetWidth;
+
+        let durationMs = 440;
+
+        if (transitionMode === 'push') {
+            incomingView.classList.add('view-apple-push-enter');
+            outgoingView.classList.add('view-apple-push-underlay-exit');
+            durationMs = 450;
+        } else {
+            outgoingView.classList.add('view-apple-pop-slide-away');
+            incomingView.classList.add('view-apple-pop-underlay-enter');
+            durationMs = 440;
+        }
+
+        let transitionTimer = null;
+        const cleanup = () => {
+            if (transitionTimer) {
+                clearTimeout(transitionTimer);
+                transitionTimer = null;
+            }
+            ALL_APP_VIEWS.forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (!el) return;
+                clearViewTransitionStyles(el);
+                if (v === currentActiveViewName) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+            activeViewTransitionCleanup = null;
+        };
+
+        activeViewTransitionCleanup = cleanup;
+        transitionTimer = setTimeout(cleanup, durationMs);
+    } else {
+        ALL_APP_VIEWS.forEach(v => {
+            const el = document.getElementById(`view-${v}`);
+            if (!el) return;
+            clearViewTransitionStyles(el);
+            if (v === toViewName) {
+                el.classList.remove('hidden');
+                void el.offsetWidth; // Force reflow
+                el.classList.add('view-tab-animate');
+                el.addEventListener('animationend', () => {
+                    el.classList.remove('view-tab-animate');
                 }, { once: true });
             } else {
-                view.classList.add('hidden');
-                view.classList.remove('view-tab-animate');
+                el.classList.add('hidden');
             }
-        }
-    });
+        });
+    }
 
     // Toggle active text and icon colors with spring burst
-    navTabs.forEach(t => {
+    PRIMARY_NAV_TABS.forEach(t => {
         const btn = document.getElementById(`tab-${t}`);
         if (btn) {
             const icon = btn.querySelector('i');
@@ -3380,9 +3678,6 @@ function switchTab(tabName) {
     // Smooth Apple Bezier glide + momentary expansion & color flash
     updateNavPillPosition(tabName, true);
     requestAnimationFrame(syncDynamicStatusBar);
-
-    // No toast on navigation: the pill + view change already confirm it, and a toast
-    // on every tab switch trains people to ignore the toasts that matter.
 }
 
 // ================= DYNAMIC IOS STATUS BAR & TOP HEADER ENGINE =================
@@ -3477,12 +3772,12 @@ function syncDynamicStatusBar() {
     const isModalOpen = (modalOverlay && !modalOverlay.classList.contains('opacity-0')) ||
                         (transferOverlay && !transferOverlay.classList.contains('opacity-0'));
     if (isModalOpen) {
-        setStatusBarThemeColor('#5b5e66', true);
+        setStatusBarThemeColor('#e4e6ec', false);
         return;
     }
 
     const topBar = document.getElementById('app-top-bar');
-    const activeView = document.querySelector('.view-section:not(.hidden)');
+    const activeView = document.getElementById(`view-${currentActiveViewName}`) || document.querySelector('.view-section:not(.hidden):not(.view-transition-overlay)');
     if (!topBar || !activeView) {
         applyTopBarSurface('light-top');
         return;
@@ -4029,6 +4324,180 @@ function drawerNavigate(target) {
         container.addEventListener('touchmove', onDrawerTouchMove, { passive: false });
         container.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
         container.addEventListener('touchcancel', onDrawerTouchEnd, { passive: true });
+    }
+
+    // Interactive iOS left-edge swipe-to-slide-away gesture for Back-Arrow secondary pages
+    let edgePopArmed = false;
+    let edgePopDragging = false;
+    let edgePopStartX = 0;
+    let edgePopStartY = 0;
+    let edgePopLastX = 0;
+    let edgePopLastT = 0;
+    let edgePopVelocity = 0;
+    let edgePopOutgoing = null;
+    let edgePopIncoming = null;
+    let edgePopTargetName = null;
+
+    function onSubpageEdgeTouchStart(e) {
+        if (e.touches.length !== 1 || !stage || !container) return;
+        if (container.classList.contains('drawer-open')) return;
+        const depth = VIEW_HIERARCHY_DEPTH[currentActiveViewName] ?? 0;
+        if (depth <= 0) return;
+
+        const modalOverlay = document.getElementById('modal-overlay');
+        if (modalOverlay && !modalOverlay.classList.contains('opacity-0')) return;
+
+        const touch = e.touches[0];
+        const stageRect = stage.getBoundingClientRect();
+        const relX = touch.clientX - stageRect.left;
+
+        // Arm when touch starts near the left edge (<= 30px)
+        if (relX <= 30 && !e.target.closest('input, textarea, select')) {
+            edgePopArmed = true;
+            edgePopDragging = false;
+            edgePopStartX = touch.clientX;
+            edgePopStartY = touch.clientY;
+            edgePopLastX = touch.clientX;
+            edgePopLastT = performance.now();
+            edgePopVelocity = 0;
+        }
+    }
+
+    function onSubpageEdgeTouchMove(e) {
+        if (!edgePopArmed || !stage) return;
+        const touch = e.touches[0];
+        const dx = touch.clientX - edgePopStartX;
+        const dy = touch.clientY - edgePopStartY;
+
+        if (!edgePopDragging) {
+            if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) {
+                edgePopArmed = false;
+                return;
+            }
+            if (dx > 10 && dx > Math.abs(dy) * 1.15) {
+                edgePopDragging = true;
+                if (activeViewTransitionCleanup) {
+                    activeViewTransitionCleanup();
+                    activeViewTransitionCleanup = null;
+                }
+                edgePopTargetName = getBackTargetForSubpage(currentActiveViewName, 'home');
+                edgePopOutgoing = document.getElementById(`view-${currentActiveViewName}`);
+                edgePopIncoming = document.getElementById(`view-${edgePopTargetName}`);
+
+                if (!edgePopOutgoing || !edgePopIncoming || edgePopOutgoing === edgePopIncoming) {
+                    edgePopArmed = false;
+                    edgePopDragging = false;
+                    return;
+                }
+
+                const topBar = document.getElementById('app-top-bar');
+                const stageTop = edgePopOutgoing.offsetTop || (topBar ? topBar.offsetHeight : 0);
+                const stageHeight = edgePopOutgoing.offsetHeight || (stage.clientHeight - stageTop);
+                const savedScroll = edgePopOutgoing.scrollTop;
+
+                clearViewTransitionStyles(edgePopOutgoing);
+                clearViewTransitionStyles(edgePopIncoming);
+
+                edgePopOutgoing.classList.remove('hidden');
+                edgePopOutgoing.classList.add('view-transition-overlay');
+                edgePopOutgoing.style.top = `${stageTop}px`;
+                edgePopOutgoing.style.height = `${stageHeight}px`;
+                edgePopOutgoing.style.zIndex = '26';
+                edgePopOutgoing.style.boxShadow = '-20px 0 44px -8px rgba(15, 23, 42, 0.24), -2px 0 10px 0 rgba(15, 23, 42, 0.08)';
+                edgePopOutgoing.scrollTop = savedScroll;
+
+                edgePopIncoming.classList.remove('hidden');
+                edgePopIncoming.style.zIndex = '15';
+            }
+        }
+
+        if (edgePopDragging && edgePopOutgoing && edgePopIncoming) {
+            if (e.cancelable) e.preventDefault();
+            const stageWidth = Math.max(1, stage.clientWidth);
+            const clampedDx = Math.max(0, dx);
+            const p = Math.min(1, clampedDx / stageWidth);
+
+            const now = performance.now();
+            const dt = Math.max(1, now - edgePopLastT);
+            edgePopVelocity = 0.75 * ((touch.clientX - edgePopLastX) / dt) + 0.25 * edgePopVelocity;
+            edgePopLastX = touch.clientX;
+            edgePopLastT = now;
+
+            edgePopOutgoing.style.transform = `translate3d(${clampedDx}px, 0, 0)`;
+            const underlayShift = -28 * (1 - p);
+            const underlayScale = 0.97 + (0.03 * p);
+            const underlayBrightness = 0.91 + (0.09 * p);
+            edgePopIncoming.style.transform = `translate3d(${underlayShift.toFixed(2)}%, 0, 0) scale(${underlayScale.toFixed(4)})`;
+            edgePopIncoming.style.filter = `brightness(${underlayBrightness.toFixed(3)})`;
+        }
+    }
+
+    function onSubpageEdgeTouchEnd() {
+        if (!edgePopArmed) return;
+        edgePopArmed = false;
+        if (!edgePopDragging || !edgePopOutgoing || !edgePopIncoming) {
+            edgePopDragging = false;
+            return;
+        }
+        edgePopDragging = false;
+
+        const stageWidth = Math.max(1, stage ? stage.clientWidth : 375);
+        const currentDx = Math.max(0, edgePopLastX - edgePopStartX);
+        const progress = currentDx / stageWidth;
+        const shouldCompletePop = (progress > 0.28) || (edgePopVelocity > 0.35);
+
+        const outEl = edgePopOutgoing;
+        const inEl = edgePopIncoming;
+        const targetTab = edgePopTargetName;
+        edgePopOutgoing = null;
+        edgePopIncoming = null;
+        edgePopTargetName = null;
+
+        const transitionCurve = 'cubic-bezier(0.32, 0.72, 0, 1)';
+        outEl.style.transition = `transform 0.32s ${transitionCurve}`;
+        inEl.style.transition = `transform 0.32s ${transitionCurve}, filter 0.32s ${transitionCurve}`;
+
+        if (shouldCompletePop) {
+            triggerHaptic('light');
+            outEl.style.transform = 'translate3d(104%, 0, 0)';
+            inEl.style.transform = 'translate3d(0%, 0, 0) scale(1)';
+            inEl.style.filter = 'brightness(1)';
+
+            currentActiveViewName = targetTab;
+            const notifBtn = document.getElementById('btn-notifications');
+            if (targetTab !== 'notifications' && notifBtn) {
+                notifBtn.classList.remove('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
+            }
+            updateNavPillPosition(targetTab, true);
+            requestAnimationFrame(syncDynamicStatusBar);
+
+            setTimeout(() => {
+                clearViewTransitionStyles(outEl);
+                clearViewTransitionStyles(inEl);
+                if (currentActiveViewName === targetTab) {
+                    outEl.classList.add('hidden');
+                    inEl.classList.remove('hidden');
+                }
+            }, 330);
+        } else {
+            outEl.style.transform = 'translate3d(0px, 0, 0)';
+            inEl.style.transform = 'translate3d(-28%, 0, 0) scale(0.97)';
+            inEl.style.filter = 'brightness(0.91)';
+
+            setTimeout(() => {
+                clearViewTransitionStyles(outEl);
+                clearViewTransitionStyles(inEl);
+                outEl.classList.remove('hidden');
+                inEl.classList.add('hidden');
+            }, 330);
+        }
+    }
+
+    if (stage) {
+        stage.addEventListener('touchstart', onSubpageEdgeTouchStart, { passive: true });
+        stage.addEventListener('touchmove', onSubpageEdgeTouchMove, { passive: false });
+        stage.addEventListener('touchend', onSubpageEdgeTouchEnd, { passive: true });
+        stage.addEventListener('touchcancel', onSubpageEdgeTouchEnd, { passive: true });
     }
 
     // Bind passive scroll listeners to all view scrollers so the top header & status bar dynamically adapt
@@ -4646,15 +5115,15 @@ function openTimesheetsModal() {
     openModal("Weekly Timesheets", `
         <div class="space-y-4 py-2 text-xs">
             <!-- Period Header Banner -->
-            <div class="p-4 rounded-2xl bg-slate-900 text-white flex items-center justify-between shadow-sm">
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-50/95 via-white to-teal-50/60 border border-emerald-200/80 text-slate-900 flex items-center justify-between shadow-2xs">
                 <div>
-                    <span class="text-[10px] font-black uppercase tracking-wider text-brand-lime block">Pay Period</span>
-                    <h4 class="text-sm font-black tracking-tight text-white mt-0.5">Week Ending Sun 18 Oct</h4>
-                    <p class="text-xs text-slate-400 font-medium">Lugarno Site • Residential Build</p>
+                    <span class="text-[10px] font-black uppercase tracking-wider text-emerald-700 block">Pay Period</span>
+                    <h4 class="text-sm font-black tracking-tight text-slate-900 mt-0.5">Week Ending Sun 18 Oct</h4>
+                    <p class="text-xs text-slate-500 font-medium">Lugarno Site • Residential Build</p>
                 </div>
                 <div class="text-right">
-                    <span class="text-2xl font-black text-brand-lime">32.0<span class="text-xs text-slate-400 font-bold"> / 40h</span></span>
-                    <span class="block text-[10px] font-bold text-amber-400 mt-0.5">4 Days to verify</span>
+                    <span class="text-2xl font-black text-emerald-700">32.0<span class="text-xs text-slate-400 font-bold"> / 40h</span></span>
+                    <span class="block text-[10px] font-bold text-amber-600 mt-0.5">4 Days to verify</span>
                 </div>
             </div>
 
@@ -4820,96 +5289,212 @@ function openTimesheetsModal() {
             applyRosterWeek(getMondayForDate(picked), picked);
         }
 
-        function scrollRosterCardIntoView(cardId, drawerEl = null, animated = true, collapseOffsetAbove = 0) {
+        function getExpectedRosterDrawerHeight(cardId, drawer) {
+            if (!drawer || !expandedRosterCards[cardId]) return 0;
+            const inner = drawer.querySelector('.roster-drawer-inner');
+            if (!inner) return drawer.getBoundingClientRect().height;
+
+            let height = inner.scrollHeight;
+            const pillSlot = inner.querySelector('.rain-protocol-pill-slot');
+            if (pillSlot) {
+                const currentPillH = pillSlot.getBoundingClientRect().height;
+                if (pillSlot.classList.contains('is-active')) {
+                    const pillContent = pillSlot.querySelector('.rain-protocol-pill-content');
+                    const targetPillH = (pillContent ? pillContent.offsetHeight : 0) + 10;
+                    height += Math.max(0, targetPillH - currentPillH);
+                } else {
+                    height = Math.max(0, height - currentPillH);
+                }
+            }
+            return height;
+        }
+
+        // Exact cubic-bezier(0.32, 0.72, 0, 1) solver matching var(--ease-drawer)
+        function evaluateRosterDrawerEase(t) {
+            if (t <= 0) return 0;
+            if (t >= 1) return 1;
+            let u = t;
+            for (let i = 0; i < 5; i++) {
+                const x = ((1.96 * u - 1.92) * u + 0.96) * u - t;
+                if (Math.abs(x) < 1e-6) break;
+                const dx = (5.88 * u - 3.84) * u + 0.96;
+                if (Math.abs(dx) < 1e-6) break;
+                u -= x / dx;
+            }
+            return ((0.16 * u - 1.32) * u + 2.16) * u;
+        }
+
+        function scrollRosterCardIntoView(
+            cardId,
+            drawerEl = null,
+            animated = true,
+            collapseOffsetAbove = 0,
+            durationMs = 340,
+            startHeightOverride = null,
+            collapseOffsetBelow = 0
+        ) {
             const container = document.getElementById('view-week');
             const rowEl = document.getElementById(cardId);
             if (!container || !rowEl) return;
 
+            const spacer = document.getElementById('roster-scroll-spacer');
             const drawer = drawerEl || rowEl.querySelector('.roster-expandable-drawer');
-            const inner = drawer ? drawer.querySelector('.roster-drawer-inner') : null;
-
-            // Expected drawer height when open
-            let drawerHeight = 0;
-            if (drawer) {
-                if (inner && expandedRosterCards[cardId]) {
-                    drawerHeight = inner.scrollHeight;
-                } else {
-                    drawerHeight = drawer.getBoundingClientRect().height;
-                }
-            }
+            const currentDrawerHeight = (startHeightOverride !== null)
+                ? startHeightOverride
+                : (drawer ? drawer.getBoundingClientRect().height : 0);
+            const targetDrawerHeight = getExpectedRosterDrawerHeight(cardId, drawer);
+            const isCardExpanded = !!expandedRosterCards[cardId];
 
             const containerRect = container.getBoundingClientRect();
             const rowRect = rowEl.getBoundingClientRect();
             const navBar = document.getElementById('floating-nav');
 
-            // Bottom boundary to clear above floating island nav
-            let safeBottom = containerRect.bottom - 16;
+            // Bottom boundary to clear above floating island nav (18px breathing room above pill)
+            let safeBottom = containerRect.bottom - 20;
             if (navBar) {
                 const navRect = navBar.getBoundingClientRect();
-                safeBottom = navRect.top - 16; // 16px clearance above floating island
+                if (navRect.height > 0) {
+                    safeBottom = navRect.top - 18;
+                }
             }
 
             const safeTop = containerRect.top + 12;
+            const safeBottomOffset = safeBottom - containerRect.top;
+            const safeTopOffset = 12;
 
-            // Projected row top and bottom in viewport coordinates
+            const headerEl = rowEl.querySelector('.roster-card-header');
+            const rowHeaderHeight = headerEl ? headerEl.getBoundingClientRect().height : 72;
+
+            // Projected row top & bottom in viewport coordinates and in unscrolled container coordinates
             const projectedRowTop = rowRect.top - collapseOffsetAbove;
-            const rowHeaderHeight = 72;
-            const projectedBottom = projectedRowTop + rowHeaderHeight + drawerHeight;
+            const projectedBottom = projectedRowTop + rowHeaderHeight + targetDrawerHeight;
 
-            let scrollDelta = 0;
+            const currentScrollTop = container.scrollTop;
+            const projectedContentTop = (rowRect.top - containerRect.top) + currentScrollTop - collapseOffsetAbove;
+            const projectedContentBottom = projectedContentTop + rowHeaderHeight + targetDrawerHeight;
 
-            if (projectedBottom > safeBottom) {
-                scrollDelta = projectedBottom - safeBottom;
+            // Calculate unspaced scrollHeight and projected maxScroll after all drawers settle
+            const currentSpacerHeight = spacer ? spacer.getBoundingClientRect().height : 0;
+            const initialUnspacedScrollHeight = Math.max(
+                container.clientHeight,
+                container.scrollHeight - currentSpacerHeight
+            );
+            const netHeightGrowth = (targetDrawerHeight - currentDrawerHeight) - collapseOffsetAbove - collapseOffsetBelow;
+            const projectedScrollHeight = initialUnspacedScrollHeight + netHeightGrowth;
+            const projectedMaxScroll = Math.max(0, projectedScrollHeight - container.clientHeight);
+
+            let desiredScrollTop = currentScrollTop;
+
+            if (isCardExpanded) {
+                let scrollDelta = 0;
+                if (projectedBottom > safeBottom) {
+                    scrollDelta = projectedBottom - safeBottom;
+                }
+                if (projectedRowTop - scrollDelta < safeTop) {
+                    scrollDelta = projectedRowTop - safeTop;
+                }
+
+                if (Math.abs(scrollDelta) >= 1) {
+                    desiredScrollTop = currentScrollTop + scrollDelta;
+                } else if (collapseOffsetBelow > 0) {
+                    // A lower card was open and is now collapsing; glide smoothly back to the minimum scroll needed for this card
+                    const minScrollNeeded = Math.max(0, projectedContentBottom - safeBottomOffset);
+                    const maxScrollAllowed = Math.max(0, projectedContentTop - safeTopOffset);
+                    desiredScrollTop = Math.min(minScrollNeeded, maxScrollAllowed);
+                }
+            } else {
+                // Card is closing and no card remains open: glide smoothly to projectedMaxScroll (0 on standard viewports)
+                desiredScrollTop = projectedMaxScroll < 48 ? 0 : Math.min(currentScrollTop, projectedMaxScroll);
             }
 
-            // Ensure the top header doesn't get pushed above the safe top area
-            if (projectedRowTop - scrollDelta < safeTop) {
-                scrollDelta = projectedRowTop - safeTop;
-            }
+            const targetScrollTop = Math.max(0, Math.min(projectedMaxScroll, desiredScrollTop));
 
-            if (Math.abs(scrollDelta) < 2) return;
-
-            const maxScroll = Math.max(0, container.scrollHeight - container.clientHeight);
-            const targetScrollTop = Math.max(0, Math.min(maxScroll, container.scrollTop + scrollDelta));
-
-            if (!animated) {
-                container.scrollTop = targetScrollTop;
-                return;
-            }
-
-            // Smooth cubic ease-out scroll synchronized with drawer expansion
             if (container._scrollRafId) {
                 cancelAnimationFrame(container._scrollRafId);
                 container._scrollRafId = null;
             }
+            if (container._scrollCancelCleanup) {
+                container._scrollCancelCleanup();
+                container._scrollCancelCleanup = null;
+            }
 
-            const startScroll = container.scrollTop;
+            if (!animated) {
+                if (spacer) spacer.style.height = '0px';
+                container.scrollTop = targetScrollTop;
+                return;
+            }
+
+            const startScroll = currentScrollTop;
             const totalDiff = targetScrollTop - startScroll;
-            if (Math.abs(totalDiff) < 1) return;
 
-            const duration = 240;
+            if (Math.abs(totalDiff) < 1 && currentSpacerHeight < 1) {
+                if (spacer) spacer.style.height = '0px';
+                return;
+            }
+
             const startTime = performance.now();
             let isCancelled = false;
+            let lastAppliedSpacer = currentSpacerHeight;
 
-            const cancelHandler = () => { isCancelled = true; };
+            const cleanupListeners = () => {
+                container.removeEventListener('touchstart', cancelHandler);
+                container.removeEventListener('wheel', cancelHandler);
+            };
+            const cancelHandler = () => {
+                isCancelled = true;
+                if (spacer) spacer.style.height = '0px';
+                cleanupListeners();
+                container._scrollCancelCleanup = null;
+            };
             container.addEventListener('touchstart', cancelHandler, { passive: true, once: true });
             container.addEventListener('wheel', cancelHandler, { passive: true, once: true });
+            container._scrollCancelCleanup = cleanupListeners;
+
+            function applyScrollFrame(elapsed) {
+                const progress = Math.min(Math.max(elapsed / durationMs, 0), 1);
+                const ease = evaluateRosterDrawerEase(progress);
+                const nextScrollTop = startScroll + (totalDiff * ease);
+
+                if (spacer) {
+                    if (progress < 1 && nextScrollTop > 0.5) {
+                        // Guard against 1-2 frames of CSS transition lead/lag so browser never clamps scrollTop
+                        const guardProgress = netHeightGrowth < 0
+                            ? Math.min((elapsed + 28) / durationMs, 1)
+                            : Math.max((elapsed - 28) / durationMs, 0);
+                        const guardEase = evaluateRosterDrawerEase(guardProgress);
+                        const modeledUnspacedHeight = initialUnspacedScrollHeight + (netHeightGrowth * guardEase);
+                        const liveUnspacedHeight = container.scrollHeight - lastAppliedSpacer;
+                        const conservativeUnspacedHeight = Math.min(modeledUnspacedHeight, liveUnspacedHeight);
+                        const requiredTotalHeight = container.clientHeight + Math.ceil(nextScrollTop) + 2;
+                        const neededSpacer = Math.max(0, requiredTotalHeight - conservativeUnspacedHeight);
+                        spacer.style.height = `${neededSpacer}px`;
+                        lastAppliedSpacer = neededSpacer;
+                    } else {
+                        spacer.style.height = '0px';
+                        lastAppliedSpacer = 0;
+                    }
+                }
+
+                container.scrollTop = nextScrollTop;
+                return progress;
+            }
+
+            // Apply initial runway immediately before first paint so frame 1 cannot snap
+            applyScrollFrame(0);
 
             function step(now) {
                 if (isCancelled) return;
                 const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                // Apple-style cubic ease-out: matches var(--ease-out)
-                const ease = 1 - Math.pow(1 - progress, 3);
-
-                container.scrollTop = startScroll + (totalDiff * ease);
+                const progress = applyScrollFrame(elapsed);
 
                 if (progress < 1) {
                     container._scrollRafId = requestAnimationFrame(step);
                 } else {
+                    if (spacer) spacer.style.height = '0px';
+                    container.scrollTop = targetScrollTop;
                     container._scrollRafId = null;
-                    container.removeEventListener('touchstart', cancelHandler);
-                    container.removeEventListener('wheel', cancelHandler);
+                    cleanupListeners();
+                    container._scrollCancelCleanup = null;
                 }
             }
 
@@ -5089,14 +5674,15 @@ function openTimesheetsModal() {
                 });
             }
 
-            // 7. If drawer is currently expanded, ensure seamless sizing & visibility
+            // 7. If drawer is currently expanded, ensure seamless sizing & visibility above floating navbar
             if (expandedRosterCards[cardId]) {
                 const drawer = document.getElementById(`drawer-${cardId}`);
                 if (drawer) {
+                    const startDrawerHeight = drawer.getBoundingClientRect().height;
                     drawer.style.height = 'auto';
-                    setTimeout(() => {
-                        scrollRosterCardIntoView(cardId, drawer);
-                    }, 120);
+                    requestAnimationFrame(() => {
+                        scrollRosterCardIntoView(cardId, drawer, true, 0, 360, startDrawerHeight, 0);
+                    });
                 }
             }
         }
@@ -5108,6 +5694,7 @@ function openTimesheetsModal() {
             if (!rowEl) return;
 
             let collapseOffsetAbove = 0;
+            let collapseOffsetBelow = 0;
 
             if (willExpand) {
                 const thisIdx = ROSTER_DAY_IDS.indexOf(cardId);
@@ -5121,27 +5708,37 @@ function openTimesheetsModal() {
                             if (otherChevron) otherChevron.classList.remove('rotate-180');
                             const otherDrawer = otherRow.querySelector('.roster-expandable-drawer');
                             if (otherDrawer) {
+                                const otherHeight = otherDrawer.getBoundingClientRect().height;
                                 if (otherIdx < thisIdx) {
-                                    collapseOffsetAbove += otherDrawer.getBoundingClientRect().height;
+                                    collapseOffsetAbove += otherHeight;
+                                } else {
+                                    collapseOffsetBelow += otherHeight;
                                 }
-                                animateRosterDrawerHeight(otherId, otherDrawer, false);
+                                animateRosterDrawerHeight(otherId, otherDrawer, false, otherHeight);
                             }
                         }
                     }
                 });
             }
 
-            expandedRosterCards[cardId] = willExpand;
-
             const drawer = rowEl.querySelector('.roster-expandable-drawer');
             const chevron = rowEl.querySelector('.roster-chevron');
+            const startDrawerHeight = drawer ? drawer.getBoundingClientRect().height : 0;
+
+            expandedRosterCards[cardId] = willExpand;
 
             if (chevron) chevron.classList.toggle('rotate-180', willExpand);
-            animateRosterDrawerHeight(cardId, drawer, willExpand);
+            animateRosterDrawerHeight(cardId, drawer, willExpand, startDrawerHeight);
 
-            if (willExpand) {
-                scrollRosterCardIntoView(cardId, drawer, true, collapseOffsetAbove);
-            }
+            scrollRosterCardIntoView(
+                cardId,
+                drawer,
+                true,
+                collapseOffsetAbove,
+                340,
+                startDrawerHeight,
+                collapseOffsetBelow
+            );
         }
 
         function openMapsForAddress(address) {
@@ -5901,16 +6498,16 @@ function openTimesheetsModal() {
             openModal("Poppy Bot AI", `
                 <div class="space-y-4 py-1 select-none">
                     <!-- Apple Intelligence Glow Card -->
-                    <div class="relative rounded-2xl p-4 bg-gradient-to-br from-slate-950 via-[#0d1624] to-slate-900 text-white border border-slate-800 shadow-apple-lg overflow-hidden group">
-                        <div class="absolute -top-10 -right-10 w-28 h-28 bg-brand-lime/20 rounded-full blur-[40px] pointer-events-none"></div>
-                        <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-sky-500/20 rounded-full blur-[40px] pointer-events-none"></div>
+                    <div class="relative rounded-2xl p-4 bg-gradient-to-br from-emerald-50/95 via-white to-sky-50/80 text-slate-900 border border-emerald-200/80 shadow-apple overflow-hidden group">
+                        <div class="absolute -top-10 -right-10 w-28 h-28 bg-emerald-400/20 rounded-full blur-[40px] pointer-events-none"></div>
+                        <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-sky-400/15 rounded-full blur-[40px] pointer-events-none"></div>
 
                         <div class="relative z-10 space-y-1.5">
                             <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-brand-lime animate-pulse"></span>
-                                <span class="text-xs font-black text-brand-lime uppercase tracking-wider">Lifestyle AI Assistant</span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span class="text-xs font-black text-emerald-700 uppercase tracking-wider">Lifestyle AI Assistant</span>
                             </div>
-                            <p class="text-xs text-slate-200 leading-relaxed font-medium">G'day Alexander! How can I help you automate tasks, look up Procore specs, or check wet weather site protocols today?</p>
+                            <p class="text-xs text-slate-600 leading-relaxed font-medium">G'day Alexander! How can I help you automate tasks, look up Procore specs, or check wet weather site protocols today?</p>
                         </div>
                     </div>
 
@@ -6338,12 +6935,12 @@ function openTimesheetsModal() {
 function openTaskModal(taskName, dateRange, colorTheme, crewAssigned, notes) {
     openModal(taskName, `
         <div class="space-y-4 py-1 text-xs">
-            <div class="p-4 rounded-2xl bg-slate-900 text-white space-y-2 border border-slate-800">
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-50/95 via-white to-teal-50/60 text-slate-900 space-y-2 border border-emerald-200/80 shadow-2xs">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-extrabold text-brand-lime uppercase tracking-wider">Scheduled Task</span>
-                    <span class="text-xs font-bold text-slate-300 bg-white/10 px-2.5 py-0.5 rounded-full">${dateRange}</span>
+                    <span class="text-xs font-extrabold text-emerald-700 uppercase tracking-wider">Scheduled Task</span>
+                    <span class="text-xs font-bold text-slate-600 bg-white/90 border border-slate-200/70 px-2.5 py-0.5 rounded-full">${dateRange}</span>
                 </div>
-                <h4 class="text-base font-black text-white tracking-tight">${taskName}</h4>
+                <h4 class="text-base font-black text-slate-900 tracking-tight">${taskName}</h4>
             </div>
 
             <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
@@ -7122,6 +7719,7 @@ const TEAM_DIRECTORY_DATA = [
     container.innerHTML = items.map(t => {
         const isAvailable = t.status === 'Available';
         const isService = t.status === 'Service';
+        const logInfo = parseToolLastLog(t.lastLogged);
         
         // Corner gradient colors strictly radiating from top-right apex
         const theme = isAvailable ? {
@@ -7145,7 +7743,12 @@ const TEAM_DIRECTORY_DATA = [
         });
 
         return `
-            <div class="relative overflow-hidden bg-white/85 backdrop-blur-2xl rounded-[26px] p-5 shadow-apple border ${theme.border} transition-all space-y-3.5 group hover:shadow-apple-lg">
+            <div onclick="openToolTransferModal('${t.id}')"
+                 role="button"
+                 tabindex="0"
+                 aria-label="${t.name} at ${t.location}, ${t.status}"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openToolTransferModal('${t.id}');}"
+                 class="relative overflow-hidden bg-white/85 backdrop-blur-2xl rounded-[26px] p-5 shadow-apple border ${theme.border} transition-all space-y-3.5 group hover:shadow-apple-lg active:scale-[0.985] cursor-pointer select-none">
                 <!-- Glassmorphic Corner Gradient Radiating strictly from Top-Right Corner (100% 0%) -->
                 <div class="absolute top-0 right-0 w-36 h-36 pointer-events-none rounded-tr-[26px]"
                      style="background: radial-gradient(circle at 100% 0%, ${theme.cornerColor} 0%, ${theme.cornerSoft} 45%, transparent 75%);">
@@ -7159,7 +7762,7 @@ const TEAM_DIRECTORY_DATA = [
                             <i class="fa-solid fa-location-dot text-xs text-slate-400 shrink-0"></i>
                             <span>Location: <strong class="text-slate-800 font-bold">${t.location}</strong></span>
                         </span>
-                        ${t.quantity ? `
+                        ${t.quantity && t.quantity > 1 ? `
                             <span class="text-slate-300">•</span>
                             <span class="inline-flex items-center gap-1 font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md text-xs">
                                 <i class="fa-solid fa-layer-group text-[10px] text-slate-400"></i>
@@ -7167,24 +7770,52 @@ const TEAM_DIRECTORY_DATA = [
                             </span>
                         ` : ''}
                         <span class="text-slate-300">•</span>
-                        <span class="font-bold ${theme.statusText}">${t.status}</span>
+                        <span class="font-bold ${theme.statusText}">${t.status === 'Service' ? 'Service • Until Pickup Ready' : t.status}</span>
+                        ${t.moveRequestedTo ? `
+                            <span class="inline-flex items-center gap-1 font-extrabold text-blue-700 bg-blue-50 border border-blue-200/80 px-2 py-0.5 rounded-full text-[11px]">
+                                <i class="fa-solid fa-paper-plane text-[9px]"></i>
+                                <span>Requested → ${t.moveRequestedTo}</span>
+                            </span>
+                        ` : ''}
                     </p>
                 </div>
 
                 <!-- Footer Transfer Log Row -->
                 <div class="relative z-10 pt-3.5 border-t border-slate-200/60 flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-slate-500 font-medium text-xs min-w-0">
-                        <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                            <i class="fa-regular fa-clock text-[10px]"></i>
+                    <div class="flex items-center gap-2.5 text-slate-500 font-medium text-xs min-w-0">
+                        <div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                            <i class="fa-regular fa-clock text-[11px]"></i>
                         </div>
-                        <span class="truncate">Last log: <strong class="text-slate-700 font-bold">${t.lastLogged || 'N/A'}</strong></span>
+                        <div class="flex flex-col leading-tight min-w-0">
+                            <span class="truncate text-slate-500">Last log: <strong class="text-slate-800 font-bold">${logInfo.dateText}</strong></span>
+                            ${logInfo.byText ? `<span class="text-[11px] font-semibold text-slate-400 truncate mt-0.5">${logInfo.byText}</span>` : ''}
+                        </div>
                     </div>
-                    <button onclick="openToolTransferModal('${t.id}')" 
-                            aria-label="Transfer ${t.name}"
-                            class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-brand-lime font-black transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer text-xs shadow-sm min-h-[44px] shrink-0">
-                        <span>Transfer</span>
-                        <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
-                    </button>
+                    ${isAvailable ? `
+                        <button type="button"
+                                onclick="event.stopPropagation(); openToolTransferModal('${t.id}')" 
+                                aria-label="Transfer ${t.name}"
+                                class="px-4 py-2.5 rounded-xl bg-slate-900 group-hover:bg-black text-brand-lime font-black transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer text-xs shadow-sm min-h-[44px] shrink-0">
+                            <span>Transfer</span>
+                            <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+                        </button>
+                    ` : (isService ? `
+                        <button type="button"
+                                onclick="event.stopPropagation(); openToolTransferModal('${t.id}')" 
+                                aria-label="${t.name} in service, unavailable until pickup ready"
+                                class="px-3.5 py-2.5 rounded-xl bg-amber-100/90 group-hover:bg-amber-200/80 text-amber-800 border border-amber-300/80 font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer text-xs min-h-[44px] shrink-0">
+                            <i class="fa-solid fa-lock text-[11px] text-amber-600"></i>
+                            <span>Pickup Pending</span>
+                        </button>
+                    ` : `
+                        <button type="button"
+                                onclick="event.stopPropagation(); openToolTransferModal('${t.id}')" 
+                                aria-label="Request move for ${t.name}"
+                                class="px-4 py-2.5 rounded-xl bg-slate-900 group-hover:bg-black text-brand-lime font-black transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer text-xs shadow-sm min-h-[44px] shrink-0">
+                            <span>Request Move</span>
+                            <i class="fa-solid fa-paper-plane text-[11px]"></i>
+                        </button>
+                    `)}
                 </div>
             </div>
         `;
@@ -7212,6 +7843,57 @@ function getCurrentWorkingSite() {
     return 'Lugarno Site';
 }
 
+function parseToolLastLog(lastLogged) {
+    if (!lastLogged) return { dateText: 'N/A', byText: '' };
+    const parts = String(lastLogged).split(/\s+by\s+/i);
+    if (parts.length >= 2) {
+        return {
+            dateText: parts[0].trim(),
+            byText: `by ${parts.slice(1).join(' by ').trim()}`
+        };
+    }
+    return { dateText: String(lastLogged).trim(), byText: '' };
+}
+
+function getToolCategoryIcon(category) {
+    const map = {
+        'power tools': 'fa-solid fa-screwdriver-wrench',
+        'setout': 'fa-solid fa-compass-drafting',
+        'access': 'fa-solid fa-stairs',
+        'concrete': 'fa-solid fa-trowel-bricks',
+        'safety': 'fa-solid fa-kit-medical',
+        'trailers': 'fa-solid fa-trailer',
+        'scaffolds': 'fa-solid fa-layer-group',
+        'bobcat': 'fa-solid fa-tractor',
+        'site': 'fa-solid fa-helmet-safety'
+    };
+    return map[(category || '').toLowerCase()] || 'fa-solid fa-screwdriver-wrench';
+}
+
+function updateTransferConfirmButtonLabel() {
+    if (!currentTransferTool) return;
+    const btnLabel = document.getElementById('transfer-confirm-btn-label');
+    if (!btnLabel) return;
+
+    const tool = currentTransferTool;
+    const isService = tool.status === 'Service';
+    const isInUse = tool.status === 'In Use';
+    const isBulk = Boolean(tool.quantity && tool.quantity > 1);
+
+    if (isService) {
+        btnLabel.textContent = 'Unavailable Until Pickup Ready';
+    } else if (isInUse) {
+        btnLabel.textContent = 'Request Move';
+    } else if (isBulk) {
+        const qtyInput = document.getElementById('transfer-input-qty');
+        const qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+        const unitName = tool.unit || 'Units';
+        btnLabel.textContent = `Transfer ${qty} ${unitName}`;
+    } else {
+        btnLabel.textContent = 'Transfer Equipment';
+    }
+}
+
 function openToolTransferModal(toolId) {
     closeSideDrawer();
     triggerHaptic('medium');
@@ -7220,94 +7902,196 @@ function openToolTransferModal(toolId) {
 
     currentTransferTool = tool;
 
-    // Update Equipment info strip
+    const isAvailable = tool.status === 'Available';
+    const isService = tool.status === 'Service';
+    const isInUse = tool.status === 'In Use';
+    const isBulk = Boolean(tool.quantity && tool.quantity > 1);
+
+    // 1. Update Sheet Header & Dynamic Ambient Glows
+    const modalTitle = document.getElementById('transfer-modal-title');
+    const modalSubtitle = document.getElementById('transfer-modal-subtitle');
+    const glow1 = document.getElementById('transfer-sheet-glow-1');
+    const glow2 = document.getElementById('transfer-sheet-glow-2');
+    const heroCard = document.getElementById('transfer-hero-card');
+    const heroOrb = document.getElementById('transfer-hero-orb');
+    const iconBox = document.getElementById('transfer-tool-icon-box');
+    const iconEl = document.getElementById('transfer-tool-icon');
     const nameEl = document.getElementById('transfer-tool-name');
     const metaEl = document.getElementById('transfer-tool-meta');
     const statusEl = document.getElementById('transfer-tool-status');
+
     if (nameEl) nameEl.textContent = tool.name;
-    if (metaEl) metaEl.textContent = `Category: ${tool.category.toUpperCase()} • Last: ${tool.lastLogged || 'N/A'}`;
-    
-    if (statusEl) {
-        statusEl.textContent = tool.status;
-        if (tool.status === 'Available') {
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0';
-        } else if (tool.status === 'Service') {
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 shrink-0';
-        } else {
-            statusEl.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 shrink-0';
+    if (metaEl) {
+        const unitBadge = isBulk ? ` • ${tool.quantity} ${tool.unit || 'Units'}` : '';
+        metaEl.textContent = `${tool.category.toUpperCase()}${unitBadge} • ${tool.location}`;
+    }
+    if (iconEl) iconEl.className = getToolCategoryIcon(tool.category);
+
+    // Status Banner, Route Wrapper, Quantity & Notes
+    const statusBanner = document.getElementById('transfer-status-banner');
+    const bannerIcon = document.getElementById('transfer-status-banner-icon');
+    const bannerTitle = document.getElementById('transfer-status-banner-title');
+    const bannerDesc = document.getElementById('transfer-status-banner-desc');
+    const routeWrapper = document.getElementById('transfer-route-wrapper');
+    const inputsWrapper = document.getElementById('transfer-inputs-wrapper');
+    const qtySection = document.getElementById('transfer-quantity-section');
+    const notesSection = document.getElementById('transfer-notes-section');
+    const notesLabel = document.getElementById('transfer-notes-label');
+    const descInput = document.getElementById('transfer-input-desc');
+    const confirmBtn = document.getElementById('transfer-confirm-btn');
+    const confirmIcon = document.getElementById('transfer-confirm-btn-icon');
+    const toDot = document.getElementById('transfer-to-dot');
+    const toHeaderLabel = document.getElementById('transfer-to-header-label');
+    const wheelGlow = document.getElementById('transfer-wheel-glow');
+    const centerArrow = document.getElementById('transfer-center-arrow');
+
+    if (isAvailable) {
+        if (modalTitle) modalTitle.textContent = 'Transfer Details';
+        if (modalSubtitle) modalSubtitle.textContent = isBulk ? 'Select destination & unit count for instant transfer' : 'Select destination site for instant movement';
+        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-emerald-400/20 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-teal-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[24px] p-4 bg-gradient-to-br from-emerald-50/95 via-white to-teal-50/60 text-slate-900 border border-emerald-200/80 shadow-apple transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-32 h-32 bg-emerald-400/25 rounded-full blur-[30px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/25 text-emerald-700 flex items-center justify-center text-base shrink-0 shadow-2xs';
+        if (statusEl) {
+            statusEl.textContent = 'Available';
+            statusEl.className = 'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100/90 text-emerald-800 border border-emerald-300/80 shrink-0 shadow-2xs';
         }
+        if (statusBanner) statusBanner.classList.add('hidden');
+        if (routeWrapper) routeWrapper.className = 'space-y-3 transition-opacity duration-300 opacity-100';
+        if (inputsWrapper) inputsWrapper.classList.remove('hidden');
+        if (notesSection) notesSection.classList.remove('hidden');
+        if (notesLabel) notesLabel.textContent = 'Transfer Notes';
+        if (descInput) descInput.placeholder = 'Optional notes (e.g. needed for framing stage)';
+        if (toDot) toDot.className = 'w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] shrink-0';
+        if (toHeaderLabel) toHeaderLabel.textContent = 'To Site';
+        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-32 h-24 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none';
+        if (centerArrow) centerArrow.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white border border-emerald-400/50 flex items-center justify-center text-xs shadow-sm';
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.className = 'w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:brightness-105 active:scale-[0.98] text-white font-black text-sm uppercase tracking-wider shadow-[0_10px_24px_-6px_rgba(16,185,129,0.45)] border border-emerald-400/40 transition-all flex items-center justify-center gap-2.5 cursor-pointer';
+        }
+        if (confirmIcon) confirmIcon.className = 'fa-solid fa-arrow-right-arrow-left text-xs';
+    } else if (isInUse) {
+        if (modalTitle) modalTitle.textContent = 'Request Equipment Move';
+        if (modalSubtitle) modalSubtitle.textContent = 'Currently active on site — request release & transfer';
+        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-blue-400/20 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-indigo-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[24px] p-4 bg-gradient-to-br from-blue-50/95 via-white to-indigo-50/60 text-slate-900 border border-blue-200/80 shadow-apple transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-32 h-32 bg-blue-400/25 rounded-full blur-[30px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/25 text-blue-700 flex items-center justify-center text-base shrink-0 shadow-2xs';
+        if (statusEl) {
+            statusEl.textContent = 'In Use';
+            statusEl.className = 'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-100/90 text-blue-800 border border-blue-300/80 shrink-0 shadow-2xs';
+        }
+        if (statusBanner) statusBanner.classList.add('hidden');
+        if (routeWrapper) routeWrapper.className = 'space-y-3 transition-opacity duration-300 opacity-100';
+        if (inputsWrapper) inputsWrapper.classList.remove('hidden');
+        if (notesSection) notesSection.classList.remove('hidden');
+        if (notesLabel) notesLabel.textContent = 'Move Request Note';
+        if (descInput) descInput.placeholder = 'When needed? (e.g. Required at Lugarno by 7:00 AM)';
+        if (toDot) toDot.className = 'w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)] shrink-0';
+        if (toHeaderLabel) toHeaderLabel.textContent = 'Request For';
+        if (wheelGlow) wheelGlow.className = 'absolute top-1/2 right-4 -translate-y-1/2 w-32 h-24 bg-blue-500/15 rounded-full blur-2xl pointer-events-none';
+        if (centerArrow) centerArrow.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white border border-blue-400/50 flex items-center justify-center text-xs shadow-sm';
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.className = 'w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 hover:brightness-105 active:scale-[0.98] text-white font-black text-sm uppercase tracking-wider shadow-[0_10px_24px_-6px_rgba(59,130,246,0.45)] border border-blue-400/40 transition-all flex items-center justify-center gap-2.5 cursor-pointer';
+        }
+        if (confirmIcon) confirmIcon.className = 'fa-solid fa-paper-plane text-xs';
+    } else {
+        // 'Service' status — Unavailable until workshop pickup is ready
+        if (modalTitle) modalTitle.textContent = 'Workshop Service Hold';
+        if (modalSubtitle) modalSubtitle.textContent = 'Unavailable until workshop pickup is ready';
+        if (glow1) glow1.className = 'absolute -top-16 -left-10 w-52 h-52 bg-amber-400/20 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (glow2) glow2.className = 'absolute top-36 -right-12 w-52 h-52 bg-orange-400/15 rounded-full blur-[65px] pointer-events-none transition-colors duration-500';
+        if (heroCard) heroCard.className = 'relative overflow-hidden rounded-[24px] p-4 bg-gradient-to-br from-amber-50/95 via-white to-orange-50/60 text-slate-900 border border-amber-200/85 shadow-apple transition-all duration-300';
+        if (heroOrb) heroOrb.className = 'absolute -top-10 -right-10 w-32 h-32 bg-amber-400/25 rounded-full blur-[30px] pointer-events-none';
+        if (iconBox) iconBox.className = 'w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/25 text-amber-700 flex items-center justify-center text-base shrink-0 shadow-2xs';
+        if (statusEl) {
+            statusEl.textContent = 'In Service';
+            statusEl.className = 'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100/90 text-amber-800 border border-amber-300/80 shrink-0 shadow-2xs';
+        }
+        if (statusBanner) {
+            statusBanner.className = 'rounded-2xl p-3.5 bg-gradient-to-r from-amber-50/95 via-orange-50/75 to-white/95 border border-amber-200/90 shadow-2xs transition-all';
+            if (bannerIcon) bannerIcon.className = 'w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-xs';
+            if (bannerIcon) bannerIcon.innerHTML = '<i class="fa-solid fa-screwdriver-wrench"></i>';
+            if (bannerTitle) bannerTitle.textContent = 'Unavailable Until Pickup Is Ready';
+            if (bannerDesc) bannerDesc.textContent = `Logged ${tool.lastLogged || 'by Workshop'}. This item is undergoing maintenance and cannot be transferred until workshop pickup is ready.`;
+        }
+        if (routeWrapper) routeWrapper.className = 'space-y-3 transition-opacity duration-300 opacity-45 pointer-events-none select-none';
+        if (inputsWrapper) inputsWrapper.classList.add('hidden');
+        if (confirmBtn) {
+            confirmBtn.disabled = true;
+            confirmBtn.className = 'w-full py-4 rounded-2xl bg-gradient-to-r from-amber-100/90 via-orange-50/90 to-amber-100/90 text-amber-800 font-black text-xs sm:text-sm uppercase tracking-wider border border-amber-300/80 transition-all flex items-center justify-center gap-2 cursor-not-allowed';
+        }
+        if (confirmIcon) confirmIcon.className = 'fa-solid fa-lock text-xs text-amber-700';
     }
 
-    // "From" card is locked to the last site it was logged to (1 selection only)
+    // "From" card is locked to the last site it was logged to (date on line 1, "by Name" below it)
     const fromNameEl = document.getElementById('transfer-from-name');
     const fromDescEl = document.getElementById('transfer-from-desc');
+    const fromByEl = document.getElementById('transfer-from-by');
+    const logInfo = parseToolLastLog(tool.lastLogged);
     if (fromNameEl) fromNameEl.textContent = tool.location;
-    if (fromDescEl) fromDescEl.textContent = tool.lastLogged ? `Logged: ${tool.lastLogged}` : 'Current Location';
+    if (fromDescEl) fromDescEl.textContent = `Last log: ${logInfo.dateText}`;
+    if (fromByEl) {
+        fromByEl.textContent = logInfo.byText;
+        fromByEl.classList.toggle('hidden', !logInfo.byText);
+    }
 
-    // Default "To" site:
-    // User requirement: automatically opens as the site you're working at (Lugarno Site) so you can easily
-    // click transfer again immediately. If the tool is ALREADY at the working site, default to Caringbah HQ (depot).
+    // Default "To" site: working site (Lugarno Site) unless already there
     const workingSite = getCurrentWorkingSite();
     let defaultIndex = ALL_TRANSFER_SITES.findIndex(s => s.name.toLowerCase() === workingSite.toLowerCase());
-    
     if (tool.location.toLowerCase() === workingSite.toLowerCase()) {
-        // Tool is already at Lugarno, default to Caringbah HQ or first alternative
         const altIndex = ALL_TRANSFER_SITES.findIndex(s => s.name !== tool.location);
         defaultIndex = altIndex !== -1 ? altIndex : 0;
     } else if (defaultIndex === -1) {
         defaultIndex = 0;
     }
-    
     currentTransferToIndex = defaultIndex;
 
     // Render all sites into the "To" scroller
     renderTransferToItems();
 
-    // Setup quantity & availability
+    // Only show unit quantity stepper if the item actually has multiple units (e.g. Acro Props) and is not in Service
     const qtyInput = document.getElementById('transfer-input-qty');
     const unitLabel = document.getElementById('transfer-input-unit');
     const availLabel = document.getElementById('transfer-amount-available');
-    const btnLabel = document.getElementById('transfer-confirm-btn-label');
-    const descInput = document.getElementById('transfer-input-desc');
 
-    const isBulk = Boolean(tool.quantity && tool.quantity > 1);
-    const unitName = tool.unit || (isBulk ? 'Units' : 'Unit');
+    if (qtySection) {
+        qtySection.classList.toggle('hidden', !isBulk || isService);
+    }
+
+    const unitName = tool.unit || 'Units';
     const initialQty = isBulk ? Math.min(10, tool.quantity) : 1;
 
     if (qtyInput) {
         qtyInput.value = initialQty;
-        qtyInput.max = tool.quantity || 999;
+        qtyInput.max = isBulk ? tool.quantity : 1;
     }
     if (unitLabel) unitLabel.textContent = unitName;
-    if (availLabel) {
-        if (tool.quantity) {
-            availLabel.textContent = `Available: ${tool.quantity} ${unitName}`;
-        } else {
-            availLabel.textContent = `1 Unit in stock`;
-        }
-    }
-    if (btnLabel) {
-        btnLabel.textContent = initialQty > 1 ? `Transfer ${initialQty} ${unitName}` : `Transfer Equipment`;
+    if (availLabel && isBulk) {
+        availLabel.textContent = `Available: ${tool.quantity} ${unitName}`;
     }
     if (descInput) descInput.value = '';
+
+    updateTransferConfirmButtonLabel();
 
     // Animate open
     const overlay = document.getElementById('tool-transfer-modal-overlay');
     const sheet = document.getElementById('tool-transfer-sheet');
     if (overlay && sheet) {
-        // Clear any leftover inline transforms/transitions from gestures
         sheet.classList.remove('is-dragging');
         sheet.style.transform = '';
         sheet.style.transition = '';
 
-        // Pre-scroll the scroller into exact position BEFORE the sheet moves (prevents repaint hitch)
         const scroller = document.getElementById('transfer-to-scroller');
         if (scroller) {
             scroller.scrollTop = currentTransferToIndex * 112;
             updateTransferToItemStyles(currentTransferToIndex);
         }
 
-        // Show overlay and smoothly animate sheet in using the Apple sheet spring curve
         overlay.classList.remove('opacity-0', 'pointer-events-none');
         overlay.setAttribute('aria-hidden', 'false');
         requestAnimationFrame(() => {
@@ -7318,23 +8102,26 @@ function openToolTransferModal(toolId) {
 }
 
 function adjustTransferQuantity(delta) {
+    if (!currentTransferTool || !currentTransferTool.quantity || currentTransferTool.quantity <= 1) return;
     triggerHaptic('light');
     const input = document.getElementById('transfer-input-qty');
     if (!input) return;
     let val = parseInt(input.value) || 1;
-    const max = currentTransferTool && currentTransferTool.quantity ? currentTransferTool.quantity : 999;
+    const max = currentTransferTool.quantity;
     val = Math.max(1, Math.min(max, val + delta));
     input.value = val;
     onTransferQuantityChange(val);
 }
 
 function onTransferQuantityChange(val) {
-    const qty = parseInt(val) || 1;
-    const btnLabel = document.getElementById('transfer-confirm-btn-label');
-    if (btnLabel && currentTransferTool) {
-        const unitName = currentTransferTool.unit || 'Units';
-        btnLabel.textContent = qty > 1 ? `Transfer ${qty} ${unitName}` : `Transfer Equipment`;
+    if (!currentTransferTool) return;
+    const max = currentTransferTool.quantity || 1;
+    const clamped = Math.max(1, Math.min(max, parseInt(val) || 1));
+    const input = document.getElementById('transfer-input-qty');
+    if (input && String(input.value) !== String(clamped) && val !== '') {
+        input.value = clamped;
     }
+    updateTransferConfirmButtonLabel();
 }
 
 function closeToolTransferModal() {
@@ -7356,17 +8143,22 @@ function renderTransferToItems() {
     const scroller = document.getElementById('transfer-to-scroller');
     if (!scroller) return;
 
+    const isInUse = currentTransferTool && currentTransferTool.status === 'In Use';
+    const selectedIconClass = isInUse
+        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm'
+        : 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm';
+
     scroller.innerHTML = ALL_TRANSFER_SITES.map((site, idx) => {
         const isSelected = idx === currentTransferToIndex;
         return `
             <div onclick="selectTransferToSite(${idx})" 
                  id="transfer-to-item-${idx}" 
                  class="h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2.5 cursor-pointer transition-all duration-200 ${isSelected ? 'opacity-100 scale-100' : 'opacity-40 hover:opacity-75 scale-95'}">
-                <div id="transfer-to-icon-${idx}" class="w-12 h-12 rounded-2xl ${isSelected ? 'bg-slate-900 text-brand-lime shadow-md' : 'bg-slate-200/90 text-slate-500'} flex items-center justify-center text-xl mb-1.5 transition-all">
+                <div id="transfer-to-icon-${idx}" class="w-12 h-12 rounded-2xl ${isSelected ? selectedIconClass : 'bg-slate-200/90 text-slate-500'} flex items-center justify-center text-xl mb-1.5 transition-all">
                     <i class="${site.icon}"></i>
                 </div>
                 <span id="transfer-to-name-${idx}" class="text-sm sm:text-base font-black ${isSelected ? 'text-slate-900' : 'text-slate-500'} tracking-tight line-clamp-1">${site.name}</span>
-                <span id="transfer-to-addr-${idx}" class="text-xs ${isSelected ? 'text-emerald-600 font-black' : 'text-slate-400 font-semibold'} line-clamp-1 mt-0.5">${site.address}</span>
+                <span id="transfer-to-addr-${idx}" class="text-xs ${isSelected ? (isInUse ? 'text-blue-600 font-black' : 'text-emerald-600 font-black') : 'text-slate-400 font-semibold'} line-clamp-1 mt-0.5">${site.address}</span>
             </div>
         `;
     }).join('');
@@ -7395,6 +8187,14 @@ function selectTransferToSite(index) {
 }
 
 function updateTransferToItemStyles(activeIndex) {
+    const isInUse = currentTransferTool && currentTransferTool.status === 'In Use';
+    const selectedIconClass = isInUse
+        ? "w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm flex items-center justify-center text-xl mb-1.5 transition-all"
+        : "w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm flex items-center justify-center text-xl mb-1.5 transition-all";
+    const selectedAddrClass = isInUse
+        ? "text-xs text-blue-600 font-black line-clamp-1 mt-0.5"
+        : "text-xs text-emerald-600 font-black line-clamp-1 mt-0.5";
+
     ALL_TRANSFER_SITES.forEach((site, idx) => {
         const item = document.getElementById(`transfer-to-item-${idx}`);
         const icon = document.getElementById(`transfer-to-icon-${idx}`);
@@ -7406,9 +8206,9 @@ function updateTransferToItemStyles(activeIndex) {
         const isSelected = idx === activeIndex;
         if (isSelected) {
             item.className = "h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2.5 cursor-pointer transition-all duration-200 opacity-100 scale-100";
-            if (icon) icon.className = "w-12 h-12 rounded-2xl bg-slate-900 text-brand-lime shadow-md flex items-center justify-center text-xl mb-1.5 transition-all";
+            if (icon) icon.className = selectedIconClass;
             if (name) name.className = "text-sm sm:text-base font-black text-slate-900 tracking-tight line-clamp-1";
-            if (addr) addr.className = "text-xs text-emerald-600 font-black line-clamp-1 mt-0.5";
+            if (addr) addr.className = selectedAddrClass;
         } else {
             item.className = "h-[112px] snap-center shrink-0 flex flex-col items-center justify-center text-center p-2.5 cursor-pointer transition-all duration-200 opacity-40 hover:opacity-75 scale-95";
             if (icon) icon.className = "w-12 h-12 rounded-2xl bg-slate-200/90 text-slate-500 flex items-center justify-center text-xl mb-1.5 transition-all";
@@ -7416,28 +8216,50 @@ function updateTransferToItemStyles(activeIndex) {
             if (addr) addr.className = "text-xs text-slate-400 font-semibold line-clamp-1 mt-0.5";
         }
     });
+
+    updateTransferConfirmButtonLabel();
 }
 
 function confirmToolTransfer() {
     if (!currentTransferTool) return;
+
+    // 1. Guard Service items: unavailable until workshop pickup is ready
+    if (currentTransferTool.status === 'Service') {
+        triggerHaptic('light');
+        showToast('Workshop Hold', `${currentTransferTool.name} is unavailable until pickup is ready.`);
+        return;
+    }
+
     triggerHaptic('success');
     
     const fromSite = currentTransferTool.location;
     const destSite = ALL_TRANSFER_SITES[currentTransferToIndex] ? ALL_TRANSFER_SITES[currentTransferToIndex].name : 'Lugarno Site';
-    
+    const isBulk = Boolean(currentTransferTool.quantity && currentTransferTool.quantity > 1);
     const qtyInput = document.getElementById('transfer-input-qty');
-    const qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+    const qty = isBulk && qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
     const unitName = currentTransferTool.unit || (qty > 1 ? 'Units' : 'Unit');
 
-    // Update tool location & last log record with the exact amount moved!
+    // 2. If item is currently "In Use", log a Move Request instead of an immediate transfer
+    if (currentTransferTool.status === 'In Use') {
+        currentTransferTool.moveRequestedTo = destSite;
+        currentTransferTool.lastLogged = '14 Oct by Alexander F.';
+        filterToolsDirectory();
+        showToast('Move Request Sent', `Requested ${currentTransferTool.name} move from ${fromSite} to ${destSite}`);
+        closeToolTransferModal();
+        return;
+    }
+
+    // 3. Available item: execute transfer immediately
     currentTransferTool.location = destSite;
-    currentTransferTool.lastLogged = `${qty} ${unitName} moved by Alexander F. today`;
+    delete currentTransferTool.moveRequestedTo;
+    currentTransferTool.lastLogged = '14 Oct by Alexander F.';
     
-    // Re-render tools directory so UI reflects the movement
     filterToolsDirectory();
 
-    // Feedback toast & confetti
-    showToast('Transfer Logged', `${qty}x ${currentTransferTool.name} transferred to ${destSite}`);
+    const toastMsg = isBulk
+        ? `${qty} ${unitName} (${currentTransferTool.name}) transferred to ${destSite}`
+        : `${currentTransferTool.name} transferred to ${destSite}`;
+    showToast('Transfer Logged', toastMsg);
     
     if (typeof confetti === 'function') {
         confetti({
@@ -7447,7 +8269,6 @@ function confirmToolTransfer() {
         });
     }
 
-    // Close modal
     closeToolTransferModal();
 }
 
@@ -7612,11 +8433,13 @@ const NOTIFICATIONS_DATA = [
 
 function openNotificationsView() {
     triggerHaptic('light');
-    const activeNavTab = getActiveNavTab() || 'home';
-    if (activeNavTab !== 'notifications') {
-        viewBeforeNotifications = activeNavTab;
+    if (currentActiveViewName === 'notifications') {
+        closeNotificationsView();
+        return;
     }
-    switchTab('notifications');
+    viewBeforeNotifications = currentActiveViewName || getActiveNavTab() || 'home';
+    subpageParentMap['notifications'] = viewBeforeNotifications;
+    switchTab('notifications', { forceMode: 'push' });
     renderNotificationsFeed(currentActiveNotifFilter);
 
     const notifBtn = document.getElementById('btn-notifications');
@@ -7631,7 +8454,7 @@ function closeNotificationsView() {
     if (notifBtn) {
         notifBtn.classList.remove('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
     }
-    switchTab(viewBeforeNotifications || 'home');
+    switchTab(viewBeforeNotifications || 'home', { forceMode: 'pop', silentHaptic: true });
 }
 
 function filterNotifications(category) {
@@ -7712,11 +8535,13 @@ function handleNotificationAction(e, id, actionType) {
             showToast('Site Status', 'You are already signed out.');
         }
     } else if (actionType === 'tool') {
-        closeNotificationsView();
+        const notifBtn = document.getElementById('btn-notifications');
+        if (notifBtn) notifBtn.classList.remove('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
         switchTab('tools');
         showToast('Tools & Gear', 'Viewing DeWalt 54V Table Saw movement');
     } else if (actionType === 'roster') {
-        closeNotificationsView();
+        const notifBtn = document.getElementById('btn-notifications');
+        if (notifBtn) notifBtn.classList.remove('border-brand-lime', 'shadow-[0_0_12px_rgba(204,255,0,0.3)]');
         switchTab('week');
     } else if (actionType === 'docket') {
         triggerHaptic('medium');
